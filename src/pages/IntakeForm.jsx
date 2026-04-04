@@ -144,7 +144,7 @@ export default function IntakeForm() {
   }
 
   return (
-    <div style={{ background: 'var(--bg-app)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <Navbar />
 
       <motion.main

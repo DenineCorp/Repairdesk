@@ -588,7 +588,7 @@ export default function TechDashboard() {
   )
 
   return (
-    <div style={{ background: 'var(--bg-app)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <Navbar />
       <Toast toasts={toasts} />
       <OfflineBanner />

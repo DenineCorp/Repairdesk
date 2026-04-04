@@ -34,7 +34,7 @@ export default function Verify2FA() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'var(--bg-app)',
+      background: 'transparent',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

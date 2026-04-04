@@ -72,7 +72,7 @@ export default function TicketDetail() {
   if (loading) return <><Navbar /><LoadingSpinner message="Loading ticket…" /></>
 
   if (error || !ticket) return (
-    <div style={{ background: 'var(--bg-app)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <Navbar />
       <div style={{ maxWidth: 700, margin: '0 auto', padding: '80px 24px', textAlign: 'center' }}>
         <p style={{ color: 'var(--accent-red)', fontSize: 14 }}>{error ?? 'Ticket not found.'}</p>
@@ -86,7 +86,7 @@ export default function TicketDetail() {
   const overdue = isOverdue(ticket.date_expected, ticket.status)
 
   return (
-    <div style={{ background: 'var(--bg-app)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <Navbar />
 
       {/* Screen view */}

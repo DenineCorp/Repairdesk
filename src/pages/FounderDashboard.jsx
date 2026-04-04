@@ -347,7 +347,7 @@ export default function FounderDashboard() {
   }
 
   return (
-    <div style={{ background: 'var(--bg-app)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <Navbar />
       <Toast toasts={toasts} />
       <OfflineBanner />
