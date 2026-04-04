@@ -120,19 +120,25 @@ export default function Login() {
           </p>
         </div>
 
+        {/* Aurora gradient border wrapper */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(227,24,55,0.45) 0%, rgba(147,51,234,0.25) 45%, rgba(59,130,246,0.2) 80%, rgba(227,24,55,0.3) 100%)',
+          borderRadius: 22,
+          padding: 1,
+          boxShadow: '0 0 100px rgba(227,24,55,0.18), 0 0 200px rgba(147,51,234,0.08)',
+        }}>
         {/* Glass card */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-          backdropFilter: 'blur(40px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-          borderRadius: 20,
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'linear-gradient(160deg, rgba(255,255,255,0.075) 0%, rgba(255,255,255,0.02) 100%)',
+          backdropFilter: 'blur(48px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(48px) saturate(200%)',
+          borderRadius: 21,
           padding: '36px 32px',
           boxShadow: `
-            0 2px 0 rgba(255,255,255,0.06) inset,
-            0 -1px 0 rgba(0,0,0,0.3) inset,
-            0 24px 64px rgba(0,0,0,0.5),
-            0 8px 24px rgba(0,0,0,0.3)
+            0 2px 0 rgba(255,255,255,0.08) inset,
+            0 -1px 0 rgba(0,0,0,0.2) inset,
+            0 32px 80px rgba(0,0,0,0.65),
+            0 8px 32px rgba(0,0,0,0.4)
           `,
           position: 'relative',
           overflow: 'hidden',
@@ -267,6 +273,7 @@ export default function Login() {
             </button>
           </form>
         </div>
+        </div>{/* end gradient border wrapper */}
 
         {/* Footer */}
         <p style={{

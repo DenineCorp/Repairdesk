@@ -79,13 +79,13 @@ function SkeletonFounder() {
     <>
       <div className="kpi-grid" style={{ marginBottom: 24 }}>
         {[0,1,2,3].map(i => (
-          <div key={i} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}>
+          <div key={i} className="glass-stat" style={{ borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}>
             <div className="skeleton" style={{ width: 80, height: 24, marginBottom: 8 }} />
             <div className="skeleton" style={{ width: 100, height: 12 }} />
           </div>
         ))}
       </div>
-      <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+      <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
             {[0,1,2].map(i => (
@@ -300,17 +300,13 @@ export default function FounderDashboard() {
   const KpiCard = ({ label, value, color }) => (
     <motion.div
       variants={itemVariants}
-      style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px 20px',
-      }}
+      className="glass-stat"
+      style={{ borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}
     >
-      <div style={{ fontSize: 24, fontWeight: 600, color: color ?? 'var(--text-primary)', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>
+      <div style={{ fontSize: 24, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>
         {value}
       </div>
-      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>{label}</div>
+      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6 }}>{label}</div>
     </motion.div>
   )
 
@@ -342,7 +338,7 @@ export default function FounderDashboard() {
     letterSpacing: '0.05em',
     textAlign: 'left',
     borderBottom: '1px solid var(--border-subtle)',
-    background: 'var(--bg-elevated)',
+    background: 'rgba(255,255,255,0.04)',
     whiteSpace: 'nowrap',
   }
 
@@ -399,9 +395,7 @@ export default function FounderDashboard() {
             </motion.div>
 
             {/* Revenue chart */}
-            <div style={{
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
+            <div className="glass-card" style={{
               borderRadius: 'var(--radius-lg)',
               padding: 20,
               marginBottom: 24,
@@ -458,9 +452,7 @@ export default function FounderDashboard() {
             </div>
 
             {/* Job history table */}
-            <div style={{
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
+            <div className="glass-card" style={{
               borderRadius: 'var(--radius-lg)',
               overflow: 'hidden',
             }}>

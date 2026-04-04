@@ -4,13 +4,13 @@
 
 :root {
   --page-pad-x: 24px;
-  --bg-app: #0c0c0d;
-  --bg-surface: #111113;
-  --bg-elevated: #1a1a1f;
-  --bg-hover: #1f1f26;
-  --border-subtle: rgba(255,255,255,0.06);
-  --border-default: rgba(255,255,255,0.1);
-  --border-strong: rgba(255,255,255,0.18);
+  --bg-app: #04040C;
+  --bg-surface: rgba(255,255,255,0.04);
+  --bg-elevated: rgba(255,255,255,0.07);
+  --bg-hover: rgba(255,255,255,0.07);
+  --border-subtle: rgba(255,255,255,0.07);
+  --border-default: rgba(255,255,255,0.11);
+  --border-strong: rgba(255,255,255,0.2);
   --text-primary: #f0f0f0;
   --text-secondary: #8b8b9a;
   --text-tertiary: #4a4a5a;
@@ -41,7 +41,7 @@ html {
 }
 
 body {
-  background-color: #08080f;
+  background-color: #04040C;
   background-image: url('/motherboard.jpg');
   background-size: cover;
   background-position: center;
@@ -60,7 +60,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-color: rgba(5,5,18,0.90);
+  background-color: rgba(3,3,14,0.91);
   z-index: 0;
   pointer-events: none;
 }
@@ -70,8 +70,10 @@ body::after {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(227,24,55,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 50%, rgba(227,24,55,0.03) 0%, transparent 60%);
+    radial-gradient(ellipse 65% 55% at 8% 25%, rgba(227,24,55,0.16) 0%, transparent 58%),
+    radial-gradient(ellipse 45% 45% at 92% 10%, rgba(147,51,234,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 65% 88%, rgba(227,24,55,0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 35% at 30% 68%, rgba(79,70,229,0.07) 0%, transparent 50%);
   z-index: 0;
   pointer-events: none;
 }
@@ -79,6 +81,53 @@ body::after {
 #root {
   position: relative;
   z-index: 1;
+}
+
+/* ── Glass card system (Apiant-style floating panels) ───────────────────────  */
+.glass-card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.065) 0%, rgba(255,255,255,0.018) 100%);
+  backdrop-filter: blur(36px) saturate(180%);
+  -webkit-backdrop-filter: blur(36px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.09);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.06) inset,
+    0 -1px 0 rgba(0,0,0,0.12) inset,
+    0 32px 80px rgba(0,0,0,0.6),
+    0 8px 32px rgba(0,0,0,0.35),
+    0 0 80px rgba(227,24,55,0.06);
+  position: relative;
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 8%; right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  pointer-events: none;
+}
+
+/* Stat/KPI card — slightly brighter, individual glow */
+.glass-stat {
+  background: linear-gradient(135deg, rgba(255,255,255,0.075) 0%, rgba(255,255,255,0.025) 100%);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.11);
+  box-shadow:
+    0 2px 0 rgba(255,255,255,0.07) inset,
+    0 -1px 0 rgba(0,0,0,0.1) inset,
+    0 20px 56px rgba(0,0,0,0.55),
+    0 4px 16px rgba(0,0,0,0.3),
+    0 0 48px rgba(227,24,55,0.07);
+  position: relative;
+  overflow: hidden;
+}
+.glass-stat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  pointer-events: none;
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }

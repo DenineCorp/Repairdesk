@@ -200,9 +200,7 @@ export default function IntakeForm() {
         </AnimatePresence>
 
         {/* Form card */}
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-subtle)',
+        <div className="glass-card" style={{
           borderRadius: 'var(--radius-xl)',
           padding: 24,
         }}>

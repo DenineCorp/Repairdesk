@@ -555,15 +555,11 @@ export default function TechDashboard() {
   const StatCard = ({ label, value, color }) => (
     <motion.div
       variants={itemVariants}
-      style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px 20px',
-      }}
+      className="glass-stat"
+      style={{ borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}
     >
-      <div style={{ fontSize: 28, fontWeight: 600, color: color ?? 'var(--text-primary)', lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>{label}</div>
+      <div style={{ fontSize: 28, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em' }}>{value}</div>
+      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6, letterSpacing: '0.01em' }}>{label}</div>
     </motion.div>
   )
 
@@ -630,13 +626,13 @@ export default function TechDashboard() {
           <>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
               {[0,1,2].map(i => (
-                <div key={i} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}>
+                <div key={i} className="glass-stat" style={{ borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}>
                   <div className="skeleton" style={{ width: 48, height: 28, marginBottom: 8 }} />
                   <div className="skeleton" style={{ width: 80, height: 12 }} />
                 </div>
               ))}
             </div>
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
+            <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', padding: 16 }}>
               <div className="skeleton" style={{ width: 120, height: 11, marginBottom: 16 }} />
               <SkeletonRows count={3} />
             </div>
@@ -655,18 +651,18 @@ export default function TechDashboard() {
 
             {/* Overdue + Due Today */}
             <div className="split-grid">
-              <div style={{ background: 'var(--bg-surface)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
+              <div className="glass-card" style={{ border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
                 <SectionHeading showDot={overdue.length > 0} dotColor="var(--accent-red)">Overdue</SectionHeading>
                 {overdue.length === 0 ? <EmptyState text="No overdue jobs" /> : renderRows(overdue, 'var(--accent-red)')}
               </div>
-              <div style={{ background: 'var(--bg-surface)', border: '1px solid rgba(245,158,11,0.15)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
+              <div className="glass-card" style={{ border: '1px solid rgba(245,158,11,0.18)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
                 <SectionHeading showDot={false}>Due Today</SectionHeading>
                 {dueToday.length === 0 ? <EmptyState text="Nothing due today" /> : renderRows(dueToday, 'var(--accent-amber)')}
               </div>
             </div>
 
             {/* All active */}
-            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
+            <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', padding: 16 }}>
               <SectionHeading showDot={false}>All Active Jobs</SectionHeading>
               {active.length === 0 ? <EmptyState text="No active jobs" /> : renderRows(active, null)}
             </div>

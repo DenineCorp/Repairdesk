@@ -165,9 +165,7 @@ export default function TicketDetail() {
         </div>
 
         {/* Info grid */}
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-subtle)',
+        <div className="glass-card" style={{
           borderRadius: 'var(--radius-lg)',
           padding: 24,
           display: 'grid',
@@ -194,9 +192,7 @@ export default function TicketDetail() {
         </div>
 
         {/* Notification section */}
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-subtle)',
+        <div className="glass-card" style={{
           borderRadius: 'var(--radius-lg)',
           padding: 16,
           display: 'flex',
