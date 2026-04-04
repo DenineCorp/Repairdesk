@@ -31,7 +31,22 @@ export default function Setup2FA() {
 
   useEffect(() => {
     async function enroll() {
-      const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp' })
+      // Check for existing factors
+      const { data: factorsData } = await supabase.auth.mfa.listFactors()
+      const existingTotp = factorsData?.totp ?? []
+
+      // If a verified factor already exists, skip setup
+      if (existingTotp.some(f => f.status === 'verified')) {
+        navigate('/verify-2fa', { replace: true })
+        return
+      }
+
+      // Unenroll any stale unverified factors before re-enrolling
+      for (const factor of existingTotp) {
+        await supabase.auth.mfa.unenroll({ factorId: factor.id })
+      }
+
+      const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'RepairDesk' })
       if (error) {
         setError(error.message)
         setEnrolling(false)
@@ -43,7 +58,7 @@ export default function Setup2FA() {
       setEnrolling(false)
     }
     enroll()
-  }, [])
+  }, [navigate])
 
   const handleVerify = async (e) => {
     e.preventDefault()
