@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx -y @aidesigner/agent-skills init)",
+      "Bash(npm create:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
