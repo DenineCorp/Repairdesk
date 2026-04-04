@@ -80,10 +80,11 @@ export default function Login() {
       overflow: 'hidden',
     }}>
       {/* Subtle gradient */}
+      {/* Radial glow centred on the card */}
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.08), transparent)',
+        background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(6,182,212,0.07) 0%, rgba(59,130,246,0.05) 40%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
@@ -98,12 +99,15 @@ export default function Login() {
           zIndex: 1,
         }}
       >
-        {/* Card */}
+        {/* Card — glassmorphism */}
         <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-subtle)',
+          background: 'rgba(17,17,19,0.55)',
+          backdropFilter: 'blur(24px) saturate(160%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+          border: '1px solid rgba(255,255,255,0.08)',
           borderRadius: 'var(--radius-xl)',
           padding: 32,
+          boxShadow: '0 8px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
         }}>
           {/* Logo */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
