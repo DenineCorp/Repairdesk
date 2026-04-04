@@ -4,26 +4,66 @@ import { motion } from 'framer-motion'
 import { Wrench } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
 
+const LOCKOUT_DURATION_MS = 30_000
+const MAX_ATTEMPTS = 5
+
+function sanitizeAuthError(err) {
+  const msg = err?.message ?? String(err)
+  if (msg.includes('Invalid login credentials') || msg.includes('invalid_credentials')) return 'Invalid email or password.'
+  if (msg.includes('Email not confirmed')) return 'Please verify your email address first.'
+  if (msg.includes('Too many requests')) return 'Too many attempts. Please wait before trying again.'
+  return 'Sign in failed. Please try again.'
+}
+
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [focusedField, setFocusedField] = useState(null)
+  const [attempts, setAttempts] = useState(0)
+  const [lockedUntil, setLockedUntil] = useState(null)
+  const [countdown, setCountdown] = useState(0)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!lockedUntil) return
+    const interval = setInterval(() => {
+      const remaining = Math.ceil((lockedUntil - Date.now()) / 1000)
+      if (remaining <= 0) { setLockedUntil(null); setCountdown(0) }
+      else setCountdown(remaining)
+    }, 500)
+    return () => clearInterval(interval)
+  }, [lockedUntil])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+
+    if (lockedUntil && Date.now() < lockedUntil) {
+      setError(`Too many failed attempts. Try again in ${countdown}s.`)
+      return
+    }
+
     setLoading(true)
 
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
     if (signInError) {
-      setError(signInError.message)
+      const next = attempts + 1
+      if (next >= MAX_ATTEMPTS) {
+        setLockedUntil(Date.now() + LOCKOUT_DURATION_MS)
+        setCountdown(LOCKOUT_DURATION_MS / 1000)
+        setAttempts(0)
+        setError(`Too many failed attempts. Try again in ${LOCKOUT_DURATION_MS / 1000}s.`)
+      } else {
+        setAttempts(next)
+        setError(sanitizeAuthError(signInError))
+      }
       setLoading(false)
       return
     }
 
+    setAttempts(0)
     const { data: mfaData } = await supabase.auth.mfa.listFactors()
     const totpFactors = mfaData?.totp ?? []
     navigate(totpFactors.length === 0 ? '/setup-2fa' : '/verify-2fa')

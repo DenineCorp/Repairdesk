@@ -35,6 +35,15 @@ function RequireAuth({ children }) {
   return children
 }
 
+/** Requires a valid session but NOT AAL2 — used for the 2FA setup/verify flow */
+function RequireSession({ children }) {
+  const { user, loading } = useAuth()
+  const location = useLocation()
+  if (loading) return <LoadingSpinner message="Authenticating…" />
+  if (!user) return <Navigate to="/login" state={{ from: location }} replace />
+  return children
+}
+
 /** After login + 2FA, redirect root to the correct dashboard by role */
 function RoleRedirect() {
   const { role, loading } = useAuth()
@@ -49,8 +58,8 @@ export default function App() {
       <Routes>
         {/* Public */}
         <Route path="/login" element={<Login />} />
-        <Route path="/setup-2fa" element={<Setup2FA />} />
-        <Route path="/verify-2fa" element={<Verify2FA />} />
+        <Route path="/setup-2fa" element={<RequireSession><Setup2FA /></RequireSession>} />
+        <Route path="/verify-2fa" element={<RequireSession><Verify2FA /></RequireSession>} />
 
         {/* Protected */}
         <Route path="/" element={<RequireAuth><RoleRedirect /></RequireAuth>} />

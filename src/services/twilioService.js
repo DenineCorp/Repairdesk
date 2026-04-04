@@ -1,25 +1,23 @@
+import { supabase } from './supabaseClient'
+
+/**
+ * Sends an SMS via the /api/send-sms serverless function.
+ * Twilio credentials live server-side only and are never exposed to the client.
+ */
 export async function sendSMS({ to, message }) {
-  const accountSid = import.meta.env.VITE_TWILIO_ACCOUNT_SID
-  const authToken = import.meta.env.VITE_TWILIO_AUTH_TOKEN
-  const from = import.meta.env.VITE_TWILIO_FROM_NUMBER
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) throw new Error('Not authenticated')
 
-  const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`
-
-  const body = new URLSearchParams()
-  body.append('To', to)
-  body.append('From', from)
-  body.append('Body', message)
-
-  const response = await fetch(url, {
+  const response = await fetch('/api/send-sms', {
     method: 'POST',
     headers: {
-      'Authorization': 'Basic ' + btoa(`${accountSid}:${authToken}`),
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
     },
-    body,
+    body: JSON.stringify({ to, message }),
   })
 
-  const data = await response.json()
-  if (!response.ok) throw new Error(data.message || 'SMS failed')
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) throw new Error(data.error || 'SMS failed')
   return data
 }

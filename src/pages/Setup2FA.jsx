@@ -48,7 +48,7 @@ export default function Setup2FA() {
 
       const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'RepairDesk' })
       if (error) {
-        setError(error.message)
+        setError('Failed to start 2FA setup — please refresh and try again.')
         setEnrolling(false)
         return
       }
@@ -67,12 +67,13 @@ export default function Setup2FA() {
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code })
       if (error) throw error
-      // Fetch role and redirect
-      const { data: { user } } = await supabase.auth.getUser()
-      const role = user?.user_metadata?.role
+      // Fetch role server-side (app_metadata, tamper-proof)
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/get-role', { headers: { Authorization: `Bearer ${session.access_token}` } })
+      const { role } = res.ok ? await res.json() : {}
       navigate(role === 'founder' ? '/founder-dashboard' : '/tech-dashboard', { replace: true })
     } catch (err) {
-      setError(err.message || 'Verification failed — try again')
+      setError('Invalid code — try again')
       setVerifying(false)
     }
   }

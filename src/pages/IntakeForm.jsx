@@ -96,8 +96,13 @@ export default function IntakeForm() {
     e.preventDefault()
     setError(null)
 
-    if (!form.customer_phone.trim()) {
+    const phoneClean = form.customer_phone.trim()
+    if (!phoneClean) {
       setError('Phone number is required.')
+      return
+    }
+    if (!/^\+[1-9]\d{7,14}$/.test(phoneClean)) {
+      setError('Phone must be in E.164 format, e.g. +15550001234')
       return
     }
     if (form.date_expected < today()) {

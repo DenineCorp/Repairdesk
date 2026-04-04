@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ChevronLeft, Printer, Bell } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
+import { sendSMS } from '../services/twilioService'
 import Navbar from '../components/Navbar'
 import StatusBadge from '../components/StatusBadge'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -54,20 +55,36 @@ export default function TicketDetail() {
   const [ticket, setTicket] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [notifying, setNotifying] = useState(false)
+  const [notifStatus, setNotifStatus] = useState(null) // 'sent' | 'error'
 
   useEffect(() => {
     async function fetchTicket() {
       const { data, error } = await supabase
         .from('tickets')
-        .select('*')
+        .select('id, issue_id, customer_name, customer_phone, device, issue, date_in, date_expected, status, created_by')
         .eq('id', id)
         .single()
-      if (error) setError(error.message)
+      if (error) setError('Failed to load ticket.')
       else setTicket(data)
       setLoading(false)
     }
     fetchTicket()
   }, [id])
+
+  const handleSendNotification = async () => {
+    setNotifying(true)
+    setNotifStatus(null)
+    try {
+      const message = `Hi ${ticket.customer_name}, your repair (${ticket.issue_id}) is now ${ticket.status}. Thank you — Elect Technologies.`
+      await sendSMS({ to: ticket.customer_phone, message })
+      setNotifStatus('sent')
+    } catch {
+      setNotifStatus('error')
+    } finally {
+      setNotifying(false)
+    }
+  }
 
   if (loading) return <><Navbar /><LoadingSpinner message="Loading ticket…" /></>
 
@@ -199,34 +216,42 @@ export default function TicketDetail() {
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: 12,
+          flexWrap: 'wrap',
         }}>
           <div>
             <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 2 }}>
               Customer Notification
             </p>
             <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
-              Send an update to the customer about this ticket
+              {notifStatus === 'sent'
+                ? `SMS sent to ${ticket.customer_phone}`
+                : notifStatus === 'error'
+                  ? 'Failed to send SMS — check phone number format.'
+                  : 'Send a status update SMS to the customer'}
             </p>
           </div>
           <button
+            onClick={handleSendNotification}
+            disabled={notifying || notifStatus === 'sent'}
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              background: 'var(--accent-green-dim)',
-              color: 'var(--accent-green)',
-              border: '1px solid rgba(16,185,129,0.2)',
+              background: notifStatus === 'sent' ? 'rgba(16,185,129,0.08)' : 'var(--accent-green-dim)',
+              color: notifStatus === 'error' ? 'var(--accent-red)' : 'var(--accent-green)',
+              border: notifStatus === 'error' ? '1px solid rgba(239,68,68,0.2)' : '1px solid rgba(16,185,129,0.2)',
               borderRadius: 'var(--radius-md)',
               padding: '7px 14px',
               fontSize: 13, fontWeight: 500,
-              cursor: 'pointer',
+              cursor: notifying || notifStatus === 'sent' ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit',
               transition: 'background 150ms',
               flexShrink: 0,
+              opacity: notifStatus === 'sent' ? 0.6 : 1,
             }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.2)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-green-dim)'}
+            onMouseEnter={e => { if (!notifying && notifStatus !== 'sent') e.currentTarget.style.background = 'rgba(16,185,129,0.2)' }}
+            onMouseLeave={e => { if (!notifying && notifStatus !== 'sent') e.currentTarget.style.background = 'var(--accent-green-dim)' }}
           >
             <Bell size={13} strokeWidth={2} />
-            Send Notification
+            {notifying ? 'Sending…' : notifStatus === 'sent' ? 'Sent' : 'Send Notification'}
           </button>
         </div>
       </motion.main>
