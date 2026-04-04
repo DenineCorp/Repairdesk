@@ -129,15 +129,15 @@ export default function Setup2FA() {
           ) : qrCode ? (
             <form onSubmit={handleVerify} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
               {/* QR code */}
-              <div className="qr-wrapper" style={{
-                width: 200, height: 200,
+              <div style={{
                 background: 'white',
                 borderRadius: 'var(--radius-md)',
                 padding: 10,
                 flexShrink: 0,
-              }}
-                dangerouslySetInnerHTML={{ __html: qrCode }}
-              />
+                lineHeight: 0,
+              }}>
+                <img src={qrCode} alt="2FA QR code" width={180} height={180} style={{ display: 'block' }} />
+              </div>
 
               {/* Secret key */}
               <div style={{ width: '100%' }}>
