@@ -34,7 +34,7 @@ export default function Login() {
     background: focusedField === field
       ? 'rgba(255,255,255,0.05)'
       : 'rgba(255,255,255,0.03)',
-    border: `1px solid ${focusedField === field ? 'rgba(6,182,212,0.4)' : 'rgba(255,255,255,0.08)'}`,
+    border: `1px solid ${focusedField === field ? 'rgba(227,24,55,0.4)' : 'rgba(255,255,255,0.08)'}`,
     borderRadius: 10,
     padding: '13px 16px',
     color: '#f0f0f0',
@@ -44,9 +44,9 @@ export default function Login() {
     letterSpacing: '0.01em',
     transition: 'all 200ms ease',
     boxShadow: focusedField === field
-      ? '0 0 0 3px rgba(6,182,212,0.08), inset 0 1px 2px rgba(0,0,0,0.2)'
+      ? '0 0 0 3px rgba(227,24,55,0.08), inset 0 1px 2px rgba(0,0,0,0.2)'
       : 'inset 0 1px 2px rgba(0,0,0,0.15)',
-    caretColor: '#06b6d4',
+    caretColor: '#E31837',
   })
 
   return (
@@ -68,7 +68,7 @@ export default function Login() {
         width: 700,
         height: 700,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(6,182,212,0.08) 0%, rgba(59,130,246,0.05) 35%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(227,24,55,0.08) 0%, rgba(227,24,55,0.04) 35%, transparent 70%)',
         pointerEvents: 'none',
         transform: 'translateY(-40px)',
       }} />
@@ -92,13 +92,13 @@ export default function Login() {
               width: 52,
               height: 52,
               borderRadius: 16,
-              background: 'rgba(6,182,212,0.1)',
-              border: '1px solid rgba(6,182,212,0.2)',
+              background: 'rgba(227,24,55,0.1)',
+              border: '1px solid rgba(227,24,55,0.2)',
               marginBottom: 16,
-              boxShadow: '0 0 32px rgba(6,182,212,0.12)',
+              boxShadow: '0 0 32px rgba(227,24,55,0.12)',
             }}
           >
-            <Wrench size={22} color="#06b6d4" strokeWidth={1.75} />
+            <Wrench size={22} color="#E31837" strokeWidth={1.75} />
           </motion.div>
           <h1 style={{
             fontSize: 22,
@@ -225,8 +225,8 @@ export default function Login() {
               style={{
                 width: '100%',
                 background: loading
-                  ? 'rgba(6,182,212,0.3)'
-                  : 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+                  ? 'rgba(227,24,55,0.35)'
+                  : '#E31837',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 10,
@@ -239,19 +239,21 @@ export default function Login() {
                 marginTop: 4,
                 position: 'relative',
                 overflow: 'hidden',
-                boxShadow: loading ? 'none' : '0 4px 20px rgba(6,182,212,0.25), 0 1px 0 rgba(255,255,255,0.15) inset',
+                boxShadow: loading ? 'none' : '0 4px 20px rgba(227,24,55,0.3), 0 1px 0 rgba(255,255,255,0.15) inset',
                 transition: 'all 200ms ease',
               }}
               onMouseEnter={e => {
                 if (!loading) {
                   e.currentTarget.style.transform = 'translateY(-1px)'
-                  e.currentTarget.style.boxShadow = '0 8px 28px rgba(6,182,212,0.35), 0 1px 0 rgba(255,255,255,0.15) inset'
+                  e.currentTarget.style.boxShadow = '0 8px 28px rgba(227,24,55,0.45), 0 1px 0 rgba(255,255,255,0.15) inset'
+                  e.currentTarget.style.background = '#c0162f'
                 }
               }}
               onMouseLeave={e => {
                 if (!loading) {
                   e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(6,182,212,0.25), 0 1px 0 rgba(255,255,255,0.15) inset'
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(227,24,55,0.3), 0 1px 0 rgba(255,255,255,0.15) inset'
+                  e.currentTarget.style.background = '#E31837'
                 }
               }}
               onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'translateY(0) scale(0.99)' }}

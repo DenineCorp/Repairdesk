@@ -47,8 +47,8 @@ function FocusableInput({ style, ...props }) {
       style={{
         ...inputStyle,
         ...style,
-        borderColor: focused ? 'rgba(59,130,246,0.5)' : 'var(--border-subtle)',
-        boxShadow: focused ? '0 0 0 3px rgba(59,130,246,0.08)' : 'none',
+        borderColor: focused ? 'rgba(227,24,55,0.5)' : 'var(--border-subtle)',
+        boxShadow: focused ? '0 0 0 3px rgba(227,24,55,0.08)' : 'none',
       }}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
@@ -64,8 +64,8 @@ function FocusableTextarea({ style, ...props }) {
       style={{
         ...inputStyle,
         ...style,
-        borderColor: focused ? 'rgba(59,130,246,0.5)' : 'var(--border-subtle)',
-        boxShadow: focused ? '0 0 0 3px rgba(59,130,246,0.08)' : 'none',
+        borderColor: focused ? 'rgba(227,24,55,0.5)' : 'var(--border-subtle)',
+        boxShadow: focused ? '0 0 0 3px rgba(227,24,55,0.08)' : 'none',
         resize: 'vertical',
         minHeight: 100,
       }}
@@ -268,7 +268,7 @@ export default function IntakeForm() {
                 disabled={submitting}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
-                  background: submitting ? 'rgba(59,130,246,0.6)' : 'var(--accent-blue)',
+                  background: submitting ? 'rgba(227,24,55,0.5)' : 'var(--accent-blue)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 'var(--radius-md)',
@@ -279,7 +279,7 @@ export default function IntakeForm() {
                   fontFamily: 'inherit',
                   transition: 'background 150ms',
                 }}
-                onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = '#2563eb' }}
+                onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = '#c0162f' }}
                 onMouseLeave={e => { if (!submitting) e.currentTarget.style.background = 'var(--accent-blue)' }}
               >
                 <Plus size={14} strokeWidth={2.5} />

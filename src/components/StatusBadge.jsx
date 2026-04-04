@@ -8,7 +8,7 @@ const STATUS_CONFIG = {
   'in progress': {
     color: 'var(--accent-blue)',
     bg: 'var(--accent-blue-dim)',
-    border: 'rgba(59,130,246,0.2)',
+    border: 'rgba(227,24,55,0.2)',
     label: 'In Progress',
   },
   ready: {

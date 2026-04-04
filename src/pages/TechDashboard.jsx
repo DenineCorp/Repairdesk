@@ -72,7 +72,7 @@ function Toast({ toasts }) {
 function PaymentBadge({ status }) {
   const cfg = {
     paid:    { color: 'var(--accent-green)', bg: 'var(--accent-green-dim)', border: 'rgba(16,185,129,0.2)', label: 'Paid' },
-    partial: { color: 'var(--accent-cyan)',  bg: 'var(--accent-cyan-dim)',  border: 'rgba(6,182,212,0.2)',  label: 'Partial' },
+    partial: { color: 'var(--accent-cyan)',  bg: 'var(--accent-cyan-dim)',  border: 'rgba(255,77,109,0.2)',  label: 'Partial' },
     unpaid:  { color: 'var(--accent-amber)', bg: 'var(--accent-amber-dim)', border: 'rgba(245,158,11,0.2)', label: 'Unpaid' },
   }[status?.toLowerCase()] ?? { color: 'var(--text-tertiary)', bg: 'transparent', border: 'var(--border-subtle)', label: status ?? 'Unpaid' }
 
@@ -168,7 +168,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
           outline: 'none',
           fontFamily: 'inherit',
         }}
-        onFocus={e => e.target.style.borderColor = 'rgba(59,130,246,0.5)'}
+        onFocus={e => e.target.style.borderColor = 'rgba(227,24,55,0.5)'}
         onBlur={e => e.target.style.borderColor = 'var(--border-default)'}
       />
       </div>
@@ -618,7 +618,7 @@ export default function TechDashboard() {
               padding: '8px 14px', fontSize: 13, fontWeight: 500,
               cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#2563eb'}
+            onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}
             onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-blue)'}
           >
             <Plus size={14} strokeWidth={2.5} />

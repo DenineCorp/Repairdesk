@@ -75,7 +75,7 @@ export default function Setup2FA() {
     }}>
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.08), transparent)',
+        background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(227,24,55,0.08), transparent)',
         pointerEvents: 'none',
       }} />
 
@@ -173,7 +173,7 @@ export default function Setup2FA() {
                   onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder="000000"
                   style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = 'rgba(59,130,246,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.08)' }}
+                  onFocus={e => { e.target.style.borderColor = 'rgba(227,24,55,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(227,24,55,0.08)' }}
                   onBlur={e => { e.target.style.borderColor = 'var(--border-subtle)'; e.target.style.boxShadow = 'none' }}
                   autoComplete="one-time-code"
                 />
@@ -184,7 +184,7 @@ export default function Setup2FA() {
                 disabled={verifying || code.length !== 6}
                 style={{
                   width: '100%',
-                  background: verifying || code.length !== 6 ? 'rgba(59,130,246,0.5)' : 'var(--accent-blue)',
+                  background: verifying || code.length !== 6 ? 'rgba(227,24,55,0.5)' : 'var(--accent-blue)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 'var(--radius-md)',
@@ -194,7 +194,7 @@ export default function Setup2FA() {
                   fontFamily: 'inherit',
                   transition: 'background 150ms ease',
                 }}
-                onMouseEnter={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#2563eb' }}
+                onMouseEnter={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#c0162f' }}
                 onMouseLeave={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = 'var(--accent-blue)' }}
               >
                 {verifying ? 'Verifying…' : 'Activate 2FA'}

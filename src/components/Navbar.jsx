@@ -6,7 +6,7 @@ export default function Navbar() {
 
   const rolePill = role === 'founder'
     ? { bg: 'var(--accent-amber-dim)', color: 'var(--accent-amber)', border: 'rgba(245,158,11,0.2)', label: 'Founder' }
-    : { bg: 'var(--accent-blue-dim)', color: 'var(--accent-blue)', border: 'rgba(59,130,246,0.2)', label: 'Technician' }
+    : { bg: 'var(--accent-blue-dim)', color: 'var(--accent-blue)', border: 'rgba(227,24,55,0.2)', label: 'Technician' }
 
   return (
     <header
@@ -30,7 +30,7 @@ export default function Navbar() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: 1200, margin: '0 auto' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Wrench size={16} color="var(--accent-cyan)" strokeWidth={2} />
+          <Wrench size={16} color="var(--accent-blue)" strokeWidth={2} />
           <span style={{ fontWeight: 600, fontSize: 15, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
             RepairDesk
           </span>

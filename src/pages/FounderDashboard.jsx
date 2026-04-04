@@ -377,7 +377,7 @@ export default function FounderDashboard() {
               padding: '8px 14px', fontSize: 13, fontWeight: 500,
               cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#2563eb'}
+            onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}
             onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-blue)'}
           >
             <Plus size={14} strokeWidth={2.5} />
@@ -441,7 +441,7 @@ export default function FounderDashboard() {
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   style={{ ...inputStyle, width: '100%', paddingLeft: 32 }}
-                  onFocus={e => { e.target.style.borderColor = 'rgba(59,130,246,0.4)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.07)' }}
+                  onFocus={e => { e.target.style.borderColor = 'rgba(227,24,55,0.4)'; e.target.style.boxShadow = '0 0 0 3px rgba(227,24,55,0.07)' }}
                   onBlur={e => { e.target.style.borderColor = 'var(--border-subtle)'; e.target.style.boxShadow = 'none' }}
                 />
               </div>
@@ -555,7 +555,7 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
           const cfg = ps === 'paid'
             ? { color: 'var(--accent-green)', bg: 'var(--accent-green-dim)', border: 'rgba(16,185,129,0.2)', label: 'Paid' }
             : ps === 'partial'
-            ? { color: 'var(--accent-blue)', bg: 'var(--accent-blue-dim)', border: 'rgba(59,130,246,0.2)', label: 'Partial' }
+            ? { color: 'var(--accent-cyan)', bg: 'var(--accent-cyan-dim)', border: 'rgba(255,77,109,0.2)', label: 'Partial' }
             : { color: 'var(--accent-amber)', bg: 'var(--accent-amber-dim)', border: 'rgba(245,158,11,0.2)', label: 'Unpaid' }
           return (
             <span style={{
