@@ -193,7 +193,7 @@ function NotifyButton({ ticket, addToast }) {
     e.stopPropagation()
     setState('loading')
     const { data: { user } } = await supabase.auth.getUser()
-    const message = `Hi ${ticket.customer_name}, your device ${ticket.device} (Ref: ${ticket.issue_id}) is ready for collection. Please visit us at your earliest convenience.`
+    const message = `Hi ${ticket.customer_name}, your device ${ticket.device} (Ref: ${ticket.issue_id}) is ready for collection. Please visit Elect Technologies during business hours.`
     let smsFailed = false
     try {
       await sendSMS({ to: ticket.customer_phone, message })

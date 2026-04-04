@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Wrench } from 'lucide-react'
-import { useAuth } from '../hooks/useAuth'
+import { supabase } from '../services/supabaseClient'
 
 const inputStyle = {
   width: '100%',
@@ -31,21 +31,31 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const { signIn } = useAuth()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const { data, error: signInError } = await signIn(email, password)
+
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
     if (signInError) {
       setError(signInError.message)
       setLoading(false)
       return
     }
-    const role = data.user?.user_metadata?.role
-    navigate(role === 'founder' ? '/founder-dashboard' : '/tech-dashboard')
+
+    // Check if user has TOTP enrolled
+    const { data: mfaData } = await supabase.auth.mfa.listFactors()
+    const totpFactors = mfaData?.totp ?? []
+
+    if (totpFactors.length === 0) {
+      // First time — send to enroll
+      navigate('/setup-2fa')
+    } else {
+      // Already enrolled — send to verify
+      navigate('/verify-2fa')
+    }
   }
 
   const focusInput = (e) => {
@@ -66,6 +76,7 @@ export default function Login() {
       justifyContent: 'center',
       padding: '24px 16px',
       position: 'relative',
+      zIndex: 1,
       overflow: 'hidden',
     }}>
       {/* Subtle gradient */}
@@ -103,7 +114,7 @@ export default function Login() {
               </span>
             </div>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-              Sign in to your workspace
+              Sign in to your Elect Technologies workspace
             </p>
           </div>
 
@@ -183,7 +194,7 @@ export default function Login() {
         </div>
 
         <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-tertiary)', marginTop: 16 }}>
-          Authorised staff only
+          Elect Technologies — authorised staff only
         </p>
       </motion.div>
     </div>
