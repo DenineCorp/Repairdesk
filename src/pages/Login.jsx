@@ -4,33 +4,12 @@ import { motion } from 'framer-motion'
 import { Wrench } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
 
-const inputStyle = {
-  width: '100%',
-  background: 'var(--bg-elevated)',
-  border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-md)',
-  padding: '9px 12px',
-  color: 'var(--text-primary)',
-  fontSize: 14,
-  outline: 'none',
-  fontFamily: 'inherit',
-  transition: 'border-color 150ms ease, box-shadow 150ms ease',
-}
-
-const labelStyle = {
-  display: 'block',
-  fontSize: 12,
-  fontWeight: 500,
-  color: 'var(--text-secondary)',
-  letterSpacing: '0.01em',
-  marginBottom: 6,
-}
-
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [focusedField, setFocusedField] = useState(null)
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -45,33 +24,36 @@ export default function Login() {
       return
     }
 
-    // Check if user has TOTP enrolled
     const { data: mfaData } = await supabase.auth.mfa.listFactors()
     const totpFactors = mfaData?.totp ?? []
-
-    if (totpFactors.length === 0) {
-      // First time — send to enroll
-      navigate('/setup-2fa')
-    } else {
-      // Already enrolled — send to verify
-      navigate('/verify-2fa')
-    }
+    navigate(totpFactors.length === 0 ? '/setup-2fa' : '/verify-2fa')
   }
 
-  const focusInput = (e) => {
-    e.target.style.borderColor = 'rgba(59,130,246,0.5)'
-    e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.08)'
-  }
-  const blurInput = (e) => {
-    e.target.style.borderColor = 'var(--border-subtle)'
-    e.target.style.boxShadow = 'none'
-  }
+  const inputStyle = (field) => ({
+    width: '100%',
+    background: focusedField === field
+      ? 'rgba(255,255,255,0.05)'
+      : 'rgba(255,255,255,0.03)',
+    border: `1px solid ${focusedField === field ? 'rgba(6,182,212,0.4)' : 'rgba(255,255,255,0.08)'}`,
+    borderRadius: 10,
+    padding: '13px 16px',
+    color: '#f0f0f0',
+    fontSize: 14,
+    outline: 'none',
+    fontFamily: 'inherit',
+    letterSpacing: '0.01em',
+    transition: 'all 200ms ease',
+    boxShadow: focusedField === field
+      ? '0 0 0 3px rgba(6,182,212,0.08), inset 0 1px 2px rgba(0,0,0,0.2)'
+      : 'inset 0 1px 2px rgba(0,0,0,0.15)',
+    caretColor: '#06b6d4',
+  })
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'transparent',
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px 16px',
@@ -79,96 +61,161 @@ export default function Login() {
       zIndex: 1,
       overflow: 'hidden',
     }}>
-      {/* Subtle gradient */}
-      {/* Radial glow centred on the card */}
+
+      {/* Focused ambient glow — blooms outward from card centre */}
       <div style={{
         position: 'absolute',
-        inset: 0,
-        background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(6,182,212,0.07) 0%, rgba(59,130,246,0.05) 40%, transparent 70%)',
+        width: 700,
+        height: 700,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(6,182,212,0.08) 0%, rgba(59,130,246,0.05) 35%, transparent 70%)',
         pointerEvents: 'none',
+        transform: 'translateY(-40px)',
       }} />
 
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-        style={{
-          width: '100%',
-          maxWidth: 380,
-          position: 'relative',
-          zIndex: 1,
-        }}
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}
       >
-        {/* Card — glassmorphism */}
-        <div style={{
-          background: 'rgba(17,17,19,0.55)',
-          backdropFilter: 'blur(24px) saturate(160%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(160%)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 'var(--radius-xl)',
-          padding: 32,
-          boxShadow: '0 8px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
-        }}>
-          {/* Logo */}
-          <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-              <Wrench size={20} color="var(--accent-cyan)" strokeWidth={2} />
-              <span style={{ fontWeight: 700, fontSize: 20, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-                RepairDesk
-              </span>
-            </div>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-              Sign in to your Elect Technologies workspace
-            </p>
-          </div>
+        {/* Logo mark — above card */}
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 52,
+              height: 52,
+              borderRadius: 16,
+              background: 'rgba(6,182,212,0.1)',
+              border: '1px solid rgba(6,182,212,0.2)',
+              marginBottom: 16,
+              boxShadow: '0 0 32px rgba(6,182,212,0.12)',
+            }}
+          >
+            <Wrench size={22} color="#06b6d4" strokeWidth={1.75} />
+          </motion.div>
+          <h1 style={{
+            fontSize: 22,
+            fontWeight: 600,
+            color: '#f0f0f0',
+            letterSpacing: '-0.03em',
+            marginBottom: 6,
+            lineHeight: 1.2,
+          }}>
+            RepairDesk
+          </h1>
+          <p style={{
+            fontSize: 13,
+            color: 'rgba(139,139,154,0.9)',
+            letterSpacing: '0.01em',
+            lineHeight: 1.5,
+          }}>
+            Elect Technologies — staff portal
+          </p>
+        </div>
 
-          {/* Divider */}
-          <div style={{ height: 1, background: 'var(--border-subtle)', margin: '24px 0' }} />
+        {/* Glass card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          borderRadius: 20,
+          border: '1px solid rgba(255,255,255,0.1)',
+          padding: '36px 32px',
+          boxShadow: `
+            0 2px 0 rgba(255,255,255,0.06) inset,
+            0 -1px 0 rgba(0,0,0,0.3) inset,
+            0 24px 64px rgba(0,0,0,0.5),
+            0 8px 24px rgba(0,0,0,0.3)
+          `,
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+
+          {/* Inner top-edge sheen */}
+          <div style={{
+            position: 'absolute',
+            top: 0, left: '10%', right: '10%',
+            height: 1,
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+            pointerEvents: 'none',
+          }} />
 
           {/* Error */}
           {error && (
-            <div style={{
-              background: 'var(--accent-red-dim)',
-              border: '1px solid rgba(239,68,68,0.2)',
-              color: 'var(--accent-red)',
-              borderRadius: 'var(--radius-md)',
-              padding: '8px 12px',
-              fontSize: 13,
-              marginBottom: 16,
-            }}>
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                background: 'rgba(239,68,68,0.08)',
+                border: '1px solid rgba(239,68,68,0.2)',
+                color: '#f87171',
+                borderRadius: 10,
+                padding: '10px 14px',
+                fontSize: 13,
+                marginBottom: 20,
+                letterSpacing: '0.01em',
+              }}
+            >
               {error}
-            </div>
+            </motion.div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label style={labelStyle}>Email address</label>
+              <label style={{
+                display: 'block',
+                fontSize: 11,
+                fontWeight: 600,
+                color: 'rgba(139,139,154,0.8)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                marginBottom: 8,
+              }}>
+                Email
+              </label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                style={inputStyle}
-                placeholder="you@company.com"
+                style={inputStyle('email')}
+                placeholder="you@electtechnologies.com"
                 autoComplete="email"
-                onFocus={focusInput}
-                onBlur={blurInput}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField(null)}
               />
             </div>
 
             <div>
-              <label style={labelStyle}>Password</label>
+              <label style={{
+                display: 'block',
+                fontSize: 11,
+                fontWeight: 600,
+                color: 'rgba(139,139,154,0.8)',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                marginBottom: 8,
+              }}>
+                Password
+              </label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                style={inputStyle}
-                placeholder="••••••••"
+                style={inputStyle('password')}
+                placeholder="••••••••••••"
                 autoComplete="current-password"
-                onFocus={focusInput}
-                onBlur={blurInput}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
               />
             </div>
 
@@ -177,28 +224,57 @@ export default function Login() {
               disabled={loading}
               style={{
                 width: '100%',
-                background: loading ? 'rgba(59,130,246,0.6)' : 'var(--accent-blue)',
+                background: loading
+                  ? 'rgba(6,182,212,0.3)'
+                  : 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
                 color: '#fff',
                 border: 'none',
-                borderRadius: 'var(--radius-md)',
-                padding: '9px 16px',
+                borderRadius: 10,
+                padding: '13px 16px',
                 fontSize: 14,
-                fontWeight: 500,
+                fontWeight: 600,
+                letterSpacing: '0.01em',
                 cursor: loading ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit',
-                transition: 'background 150ms ease',
                 marginTop: 4,
+                position: 'relative',
+                overflow: 'hidden',
+                boxShadow: loading ? 'none' : '0 4px 20px rgba(6,182,212,0.25), 0 1px 0 rgba(255,255,255,0.15) inset',
+                transition: 'all 200ms ease',
               }}
-              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#2563eb' }}
-              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = 'var(--accent-blue)' }}
+              onMouseEnter={e => {
+                if (!loading) {
+                  e.currentTarget.style.transform = 'translateY(-1px)'
+                  e.currentTarget.style.boxShadow = '0 8px 28px rgba(6,182,212,0.35), 0 1px 0 rgba(255,255,255,0.15) inset'
+                }
+              }}
+              onMouseLeave={e => {
+                if (!loading) {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(6,182,212,0.25), 0 1px 0 rgba(255,255,255,0.15) inset'
+                }
+              }}
+              onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'translateY(0) scale(0.99)' }}
+              onMouseUp={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)' }}
             >
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading ? (
+                <span style={{ opacity: 0.7 }}>Signing in…</span>
+              ) : (
+                'Sign in'
+              )}
             </button>
           </form>
         </div>
 
-        <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-tertiary)', marginTop: 16 }}>
-          Elect Technologies — authorised staff only
+        {/* Footer */}
+        <p style={{
+          textAlign: 'center',
+          fontSize: 11,
+          color: 'rgba(74,74,90,0.8)',
+          marginTop: 20,
+          letterSpacing: '0.03em',
+        }}>
+          AUTHORISED ACCESS ONLY
         </p>
       </motion.div>
     </div>
