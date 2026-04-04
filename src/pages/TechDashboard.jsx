@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, CheckCircle, XCircle, Bell } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
 import { sendSMS } from '../services/twilioService'
+import { logAudit } from '../utils/auditLogger'
 import Navbar from '../components/Navbar'
 import StatusBadge from '../components/StatusBadge'
 
@@ -120,6 +121,17 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
       if (error) throw error
       setFlashSaved(true)
       setTimeout(() => setFlashSaved(false), 1200)
+      logAudit({
+        action: 'payment.updated',
+        entity: 'payment',
+        entityId: payment.id,
+        details: {
+          issue_id: ticket?.issue_id,
+          customer_name: ticket?.customer_name,
+          payment_status: payStatus,
+          amount_paid: amountVal.toFixed(2),
+        },
+      })
       onSaved()
     } catch (err) {
       onError(err.message)
@@ -272,6 +284,18 @@ function NotifyButton({ ticket, addToast }) {
       sent_at: new Date().toISOString(),
     })
     if (dbError) console.error('[NotifyButton] DB insert error:', dbError)
+    logAudit({
+      action: 'notification.sent',
+      entity: 'notification',
+      entityId: ticket.id,
+      details: {
+        issue_id: ticket.issue_id,
+        customer_name: ticket.customer_name,
+        customer_phone: ticket.customer_phone,
+        channel: 'sms',
+        status: smsFailed ? 'failed' : 'sent',
+      },
+    })
     if (smsFailed) {
       addToast('SMS failed — check phone number', 'error')
       setState('idle')
@@ -522,6 +546,7 @@ export default function TechDashboard() {
   }, [fetchTickets])
 
   const updateStatus = async (ticketId, newStatus) => {
+    const ticket = tickets.find(t => t.id === ticketId)
     setUpdating(ticketId)
     const { error } = await supabase
       .from('tickets')
@@ -534,6 +559,17 @@ export default function TechDashboard() {
       setFlashRows(prev => ({ ...prev, [ticketId]: true }))
       setTimeout(() => setFlashRows(prev => { const n = { ...prev }; delete n[ticketId]; return n }), 800)
       addToast('Status updated', 'success')
+      logAudit({
+        action: 'ticket.status_changed',
+        entity: 'ticket',
+        entityId: ticketId,
+        details: {
+          issue_id: ticket?.issue_id,
+          customer_name: ticket?.customer_name,
+          old_status: ticket?.status,
+          new_status: newStatus,
+        },
+      })
       await fetchTickets()
     }
     setUpdating(null)

@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, Bell, CheckCircle, XCircle } from 'lucide-react'
+import { Plus, Search, Bell, CheckCircle, XCircle, Download } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { supabase } from '../services/supabaseClient'
 import { sendSMS } from '../services/twilioService'
+import { downloadCsv } from '../utils/exportCsv'
+import { logAudit } from '../utils/auditLogger'
 import Navbar from '../components/Navbar'
 import StatusBadge from '../components/StatusBadge'
 
@@ -210,6 +212,18 @@ function NotifyButton({ ticket, addToast }) {
       sent_at: new Date().toISOString(),
     })
     if (dbError) console.error('[NotifyButton] DB insert error:', dbError)
+    logAudit({
+      action: 'notification.sent',
+      entity: 'notification',
+      entityId: ticket.id,
+      details: {
+        issue_id: ticket.issue_id,
+        customer_name: ticket.customer_name,
+        customer_phone: ticket.customer_phone,
+        channel: 'sms',
+        status: smsFailed ? 'failed' : 'sent',
+      },
+    })
     if (smsFailed) {
       addToast('SMS failed — check phone number', 'error')
       setState('idle')
@@ -259,6 +273,23 @@ export default function FounderDashboard() {
     setToasts(prev => [...prev, { id, message, type }])
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3500)
   }, [])
+
+  const handleExport = () => {
+    const ts = new Date().toISOString().split('T')[0]
+    const rows = filtered.map(t => ({
+      'Issue ID':       t.issue_id,
+      'Customer':       t.customer_name,
+      'Phone':          t.customer_phone,
+      'Device':         t.device,
+      'Issue':          t.issue,
+      'Status':         t.status,
+      'Date In':        formatDate(t.date_in),
+      'Expected':       formatDate(t.date_expected),
+      'Payment Status': t.payments?.[0]?.payment_status ?? 'unpaid',
+      'Amount (CAD)':   t.payments?.[0]?.amount_paid ? parseFloat(t.payments[0].amount_paid).toFixed(2) : '0.00',
+    }))
+    downloadCsv(`repairdesk-export-${ts}.csv`, rows)
+  }
 
   const fetchData = async () => {
     const { data: tickets, error } = await supabase
@@ -425,7 +456,7 @@ export default function FounderDashboard() {
               </ResponsiveContainer>
             </div>
 
-            {/* Search + filter */}
+            {/* Search + filter + export */}
             <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
               <div style={{ flex: 1, position: 'relative' }}>
                 <Search size={14} color="var(--text-tertiary)" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
@@ -449,6 +480,32 @@ export default function FounderDashboard() {
                 <option value="partial">Partial</option>
                 <option value="paid">Paid</option>
               </select>
+
+              <button
+                onClick={handleExport}
+                disabled={filtered.length === 0}
+                title="Export visible rows as CSV"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  background: 'none',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-md)',
+                  color: 'var(--text-secondary)',
+                  fontSize: 13, fontWeight: 500,
+                  padding: '7px 12px',
+                  cursor: filtered.length === 0 ? 'not-allowed' : 'pointer',
+                  fontFamily: 'inherit',
+                  opacity: filtered.length === 0 ? 0.4 : 1,
+                  transition: 'color 150ms, border-color 150ms',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+                onMouseEnter={e => { if (filtered.length > 0) { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--border-strong)' } }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border-default)' }}
+              >
+                <Download size={13} strokeWidth={2} />
+                Export CSV
+              </button>
             </div>
 
             {/* Job history table */}

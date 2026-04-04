@@ -10,6 +10,7 @@ import TechDashboard from './pages/TechDashboard'
 import FounderDashboard from './pages/FounderDashboard'
 import IntakeForm from './pages/IntakeForm'
 import TicketDetail from './pages/TicketDetail'
+import AuditLog from './pages/AuditLog'
 
 /** Redirects unauthenticated users; enforces AAL2 if TOTP is enrolled */
 function RequireAuth({ children }) {
@@ -67,6 +68,7 @@ export default function App() {
         <Route path="/founder-dashboard" element={<RequireAuth><FounderDashboard /></RequireAuth>} />
         <Route path="/intake" element={<RequireAuth><IntakeForm /></RequireAuth>} />
         <Route path="/ticket/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
+        <Route path="/audit-log" element={<RequireAuth><AuditLog /></RequireAuth>} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

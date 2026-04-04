@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, CheckCircle } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
 import { generateIssueId } from '../utils/issueId'
+import { logAudit } from '../utils/auditLogger'
 import Navbar from '../components/Navbar'
 
 const today = () => new Date().toISOString().split('T')[0]
@@ -139,6 +140,18 @@ export default function IntakeForm() {
         .insert({ ticket_id: ticket.id, payment_status: 'unpaid', amount_paid: 0, updated_by: user.id })
 
       if (paymentError) throw paymentError
+
+      logAudit({
+        action: 'ticket.created',
+        entity: 'ticket',
+        entityId: ticket.id,
+        details: {
+          issue_id,
+          customer_name: form.customer_name.trim(),
+          device: form.device.trim(),
+          customer_phone: form.customer_phone.trim(),
+        },
+      })
 
       setSuccessId(issue_id)
       setTimeout(() => navigate(`/ticket/${ticket.id}`), 1200)
