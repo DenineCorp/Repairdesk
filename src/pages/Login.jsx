@@ -68,7 +68,7 @@ export default function Login() {
         width: 700,
         height: 700,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(227,24,55,0.08) 0%, rgba(227,24,55,0.04) 35%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(227,24,55,0.05) 0%, rgba(227,24,55,0.02) 35%, transparent 70%)',
         pointerEvents: 'none',
         transform: 'translateY(-40px)',
       }} />
@@ -122,10 +122,10 @@ export default function Login() {
 
         {/* Aurora gradient border wrapper */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(227,24,55,0.45) 0%, rgba(147,51,234,0.25) 45%, rgba(59,130,246,0.2) 80%, rgba(227,24,55,0.3) 100%)',
+          background: 'linear-gradient(135deg, rgba(227,24,55,0.22) 0%, rgba(147,51,234,0.14) 45%, rgba(59,130,246,0.1) 80%, rgba(227,24,55,0.15) 100%)',
           borderRadius: 22,
           padding: 1,
-          boxShadow: '0 0 100px rgba(227,24,55,0.18), 0 0 200px rgba(147,51,234,0.08)',
+          boxShadow: '0 0 60px rgba(227,24,55,0.09)',
         }}>
         {/* Glass card */}
         <div style={{

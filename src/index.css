@@ -160,6 +160,13 @@ input[type="number"]::-webkit-outer-spin-button {
   font-family: 'Inter', sans-serif !important;
 }
 
+/* QR code SVG scaling */
+.qr-wrapper svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
 /* Pulse animation for overdue dot */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }

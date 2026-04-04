@@ -129,13 +129,12 @@ export default function Setup2FA() {
           ) : qrCode ? (
             <form onSubmit={handleVerify} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
               {/* QR code */}
-              <div style={{
+              <div className="qr-wrapper" style={{
                 width: 200, height: 200,
                 background: 'white',
                 borderRadius: 'var(--radius-md)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                padding: 8,
-                overflow: 'hidden',
+                padding: 10,
+                flexShrink: 0,
               }}
                 dangerouslySetInnerHTML={{ __html: qrCode }}
               />
