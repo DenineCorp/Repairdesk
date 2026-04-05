@@ -3,31 +3,53 @@
 @tailwind utilities;
 
 :root {
-  --page-pad-x: 24px;
-  --bg-app: #04040C;
-  --bg-surface: rgba(255,255,255,0.04);
-  --bg-elevated: rgba(255,255,255,0.07);
-  --bg-hover: rgba(255,255,255,0.07);
-  --border-subtle: rgba(255,255,255,0.07);
-  --border-default: rgba(255,255,255,0.11);
-  --border-strong: rgba(255,255,255,0.2);
-  --text-primary: #f0f0f0;
-  --text-secondary: #8b8b9a;
-  --text-tertiary: #4a4a5a;
-  --accent-blue: #E31837;
-  --accent-blue-dim: rgba(227,24,55,0.12);
-  --accent-cyan: #FF4D6D;
-  --accent-cyan-dim: rgba(255,77,109,0.1);
-  --accent-amber: #f59e0b;
-  --accent-amber-dim: rgba(245,158,11,0.1);
-  --accent-green: #10b981;
-  --accent-green-dim: rgba(16,185,129,0.1);
-  --accent-red: #ef4444;
-  --accent-red-dim: rgba(239,68,68,0.1);
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --page-pad-x:       24px;
+
+  /* Backgrounds */
+  --bg-app:           #f5f5f7;
+  --bg-surface:       #ffffff;
+  --bg-elevated:      #f5f5f7;
+  --bg-hover:         #e8e8ed;
+
+  /* Text */
+  --text-primary:     #1d1d1f;
+  --text-secondary:   #6e6e73;
+  --text-tertiary:    #aeaeb2;
+
+  /* Accent — Apple blue */
+  --accent-blue:      #0071e3;
+  --accent-blue-hover:#0077ed;
+  --accent-blue-dim:  rgba(0,113,227,0.08);
+
+  /* Accent — kept for issue-ID highlights */
+  --accent-cyan:      #32ade6;
+  --accent-cyan-dim:  rgba(50,173,230,0.10);
+
+  /* Semantic */
+  --accent-green:     #34c759;
+  --accent-green-dim: rgba(52,199,89,0.10);
+  --accent-amber:     #ff9f0a;
+  --accent-amber-dim: rgba(255,159,10,0.10);
+  --accent-red:       #ff3b30;
+  --accent-red-dim:   rgba(255,59,48,0.08);
+
+  /* Borders */
+  --border-subtle:    rgba(0,0,0,0.06);
+  --border-default:   rgba(0,0,0,0.12);
+  --border-strong:    rgba(0,0,0,0.22);
+
+  /* Radius */
+  --radius-sm:        6px;
+  --radius-md:        10px;
+  --radius-lg:        14px;
+  --radius-xl:        18px;
+  --radius-2xl:       24px;
+
+  /* Elevation shadows */
+  --shadow-1: 0 1px 4px rgba(0,0,0,0.05);
+  --shadow-2: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-3: 0 8px 24px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-4: 0 20px 60px rgba(0,0,0,0.14), 0 4px 16px rgba(0,0,0,0.08);
 }
 
 *, *::before, *::after {
@@ -41,41 +63,13 @@ html {
 }
 
 body {
-  background-color: #04040C;
-  background-image: url('/motherboard.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-color: var(--bg-app);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  position: relative;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-color: rgba(3,3,14,0.91);
-  z-index: 0;
-  pointer-events: none;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 65% 55% at 8% 25%, rgba(227,24,55,0.16) 0%, transparent 58%),
-    radial-gradient(ellipse 45% 45% at 92% 10%, rgba(147,51,234,0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 65% 88%, rgba(227,24,55,0.09) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 35% at 30% 68%, rgba(79,70,229,0.07) 0%, transparent 50%);
-  z-index: 0;
-  pointer-events: none;
 }
 
 #root {
@@ -83,53 +77,20 @@ body::after {
   z-index: 1;
 }
 
-/* ── Glass card system (Apiant-style floating panels) ───────────────────────  */
+/* ── Card system ─────────────────────────────────────────────────────────────── */
 .glass-card {
-  background: linear-gradient(160deg, rgba(255,255,255,0.065) 0%, rgba(255,255,255,0.018) 100%);
-  backdrop-filter: blur(36px) saturate(180%);
-  -webkit-backdrop-filter: blur(36px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.09);
-  box-shadow:
-    0 2px 0 rgba(255,255,255,0.06) inset,
-    0 -1px 0 rgba(0,0,0,0.12) inset,
-    0 32px 80px rgba(0,0,0,0.6),
-    0 8px 32px rgba(0,0,0,0.35),
-    0 0 80px rgba(227,24,55,0.06);
-  position: relative;
-}
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 8%; right: 8%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
-  pointer-events: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-2);
 }
 
-/* Stat/KPI card — slightly brighter, individual glow */
 .glass-stat {
-  background: linear-gradient(135deg, rgba(255,255,255,0.075) 0%, rgba(255,255,255,0.025) 100%);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.11);
-  box-shadow:
-    0 2px 0 rgba(255,255,255,0.07) inset,
-    0 -1px 0 rgba(0,0,0,0.1) inset,
-    0 20px 56px rgba(0,0,0,0.55),
-    0 4px 16px rgba(0,0,0,0.3),
-    0 0 48px rgba(227,24,55,0.07);
-  position: relative;
-  overflow: hidden;
-}
-.glass-stat::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  pointer-events: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-1);
 }
 
+/* ── Scrollbar ────────────────────────────────────────────────────────────────  */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -138,36 +99,37 @@ body::after {
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
 
-/* Input date picker icon */
+/* ── Form controls ───────────────────────────────────────────────────────────── */
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5);
+  filter: none;
+  opacity: 0.5;
   cursor: pointer;
 }
 
-/* Number input spinners */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   opacity: 0.4;
 }
 
-/* Recharts tooltip */
+/* ── Recharts tooltip ────────────────────────────────────────────────────────── */
 .recharts-tooltip-wrapper .recharts-default-tooltip {
-  background: var(--bg-elevated) !important;
+  background: var(--bg-surface) !important;
   border: 1px solid var(--border-default) !important;
   border-radius: var(--radius-md) !important;
   color: var(--text-primary) !important;
   font-size: 12px !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
+  box-shadow: var(--shadow-3) !important;
 }
 
-/* QR code SVG scaling */
+/* ── QR code ─────────────────────────────────────────────────────────────────── */
 .qr-wrapper svg {
   width: 100% !important;
   height: 100% !important;
   display: block;
 }
 
-/* Pulse animation for overdue dot */
+/* ── Pulse animation ─────────────────────────────────────────────────────────── */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.85); }
@@ -176,37 +138,10 @@ input[type="number"]::-webkit-outer-spin-button {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* Print styles */
-@media print {
-  .no-print { display: none !important; }
-  .print-only { display: block !important; }
-  body { background: white !important; color: black !important; }
-}
-.print-only { display: none; }
-
-/* ── Responsive layout helpers ─────────────────────────────────────────────── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.split-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-/* Navbar responsive elements */
-.nav-email { display: inline; }
-.nav-signout-text { display: inline; }
-
-/* ── Skeleton loader ─────────────────────────────────────────────────────────  */
+/* ── Skeleton loader ─────────────────────────────────────────────────────────── */
 @keyframes skeleton-shimmer {
-  0%, 100% { opacity: 0.35; }
-  50%       { opacity: 0.65; }
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.7; }
 }
 .skeleton {
   background: var(--bg-elevated);
@@ -214,7 +149,33 @@ input[type="number"]::-webkit-outer-spin-button {
   animation: skeleton-shimmer 1.5s ease-in-out infinite;
 }
 
-/* ── Mobile ──────────────────────────────────────────────────────────────────  */
+/* ── Print ───────────────────────────────────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  body { background: white !important; color: black !important; }
+}
+.print-only { display: none; }
+
+/* ── Layout helpers ──────────────────────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.nav-email { display: inline; }
+.nav-signout-text { display: inline; }
+
+/* ── Mobile ──────────────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   :root { --page-pad-x: 16px; }
 

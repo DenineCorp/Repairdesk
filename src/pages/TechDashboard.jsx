@@ -203,7 +203,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
         }}
       >
         {PAYMENT_STATUSES.map(s => (
-          <option key={s} value={s} style={{ background: '#1a1a1f' }}>
+          <option key={s} value={s} style={{ background: '#ffffff' }}>
             {s.charAt(0).toUpperCase() + s.slice(1)}
           </option>
         ))}
@@ -477,7 +477,7 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flas
         }}
       >
         {STATUSES.map(s => (
-          <option key={s} value={s} style={{ background: '#1a1a1f' }}>
+          <option key={s} value={s} style={{ background: '#ffffff' }}>
             {s.charAt(0).toUpperCase() + s.slice(1)}
           </option>
         ))}

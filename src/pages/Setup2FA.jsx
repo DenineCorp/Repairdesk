@@ -81,7 +81,7 @@ export default function Setup2FA() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'transparent',
+      background: '#f5f5f7',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -89,11 +89,7 @@ export default function Setup2FA() {
       position: 'relative',
       zIndex: 1,
     }}>
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(227,24,55,0.08), transparent)',
-        pointerEvents: 'none',
-      }} />
+      <div style={{ display: 'none' }} />
 
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -102,13 +98,11 @@ export default function Setup2FA() {
         style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}
       >
         <div style={{
-          background: 'linear-gradient(160deg, rgba(255,255,255,0.075) 0%, rgba(255,255,255,0.02) 100%)',
-          backdropFilter: 'blur(48px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(48px) saturate(200%)',
-          border: '1px solid rgba(255,255,255,0.09)',
-          borderRadius: 'var(--radius-xl)',
+          background: '#ffffff',
+          border: '1px solid rgba(0,0,0,0.08)',
+          borderRadius: 'var(--radius-2xl)',
           padding: 32,
-          boxShadow: '0 2px 0 rgba(255,255,255,0.07) inset, 0 -1px 0 rgba(0,0,0,0.15) inset, 0 32px 80px rgba(0,0,0,0.65), 0 8px 32px rgba(0,0,0,0.4), 0 0 80px rgba(227,24,55,0.08)',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
         }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>

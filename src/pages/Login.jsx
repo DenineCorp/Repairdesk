@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Wrench } from 'lucide-react'
@@ -16,12 +16,12 @@ function sanitizeAuthError(err) {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail]         = useState('')
+  const [password, setPassword]   = useState('')
+  const [error, setError]         = useState(null)
+  const [loading, setLoading]     = useState(false)
   const [focusedField, setFocusedField] = useState(null)
-  const [attempts, setAttempts] = useState(0)
+  const [attempts, setAttempts]   = useState(0)
   const [lockedUntil, setLockedUntil] = useState(null)
   const [countdown, setCountdown] = useState(0)
   const navigate = useNavigate()
@@ -39,14 +39,11 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
-
     if (lockedUntil && Date.now() < lockedUntil) {
       setError(`Too many failed attempts. Try again in ${countdown}s.`)
       return
     }
-
     setLoading(true)
-
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
     if (signInError) {
       const next = attempts + 1
@@ -62,7 +59,6 @@ export default function Login() {
       setLoading(false)
       return
     }
-
     setAttempts(0)
     const { data: mfaData } = await supabase.auth.mfa.listFactors()
     const totpFactors = mfaData?.totp ?? []
@@ -71,159 +67,105 @@ export default function Login() {
 
   const inputStyle = (field) => ({
     width: '100%',
-    background: focusedField === field
-      ? 'rgba(255,255,255,0.05)'
-      : 'rgba(255,255,255,0.03)',
-    border: `1px solid ${focusedField === field ? 'rgba(227,24,55,0.4)' : 'rgba(255,255,255,0.08)'}`,
-    borderRadius: 10,
-    padding: '13px 16px',
-    color: '#f0f0f0',
-    fontSize: 14,
+    background: '#ffffff',
+    border: `1px solid ${focusedField === field ? '#0071e3' : 'rgba(0,0,0,0.12)'}`,
+    borderRadius: 'var(--radius-md)',
+    padding: '11px 14px',
+    color: '#1d1d1f',
+    fontSize: 15,
     outline: 'none',
     fontFamily: 'inherit',
-    letterSpacing: '0.01em',
-    transition: 'all 200ms ease',
-    boxShadow: focusedField === field
-      ? '0 0 0 3px rgba(227,24,55,0.08), inset 0 1px 2px rgba(0,0,0,0.2)'
-      : 'inset 0 1px 2px rgba(0,0,0,0.15)',
-    caretColor: '#E31837',
+    transition: 'border-color 150ms ease, box-shadow 150ms ease',
+    boxShadow: focusedField === field ? '0 0 0 4px rgba(0,113,227,0.15)' : 'none',
+    caretColor: '#0071e3',
   })
 
   return (
     <div style={{
       minHeight: '100vh',
+      background: '#f5f5f7',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px 16px',
-      position: 'relative',
-      zIndex: 1,
-      overflow: 'hidden',
     }}>
-
-      {/* Focused ambient glow — blooms outward from card centre */}
-      <div style={{
-        position: 'absolute',
-        width: 700,
-        height: 700,
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(227,24,55,0.05) 0%, rgba(227,24,55,0.02) 35%, transparent 70%)',
-        pointerEvents: 'none',
-        transform: 'translateY(-40px)',
-      }} />
-
       <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        style={{ width: '100%', maxWidth: 400 }}
       >
-        {/* Logo mark — above card */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        {/* Logo mark */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.08, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
               width: 52,
               height: 52,
-              borderRadius: 16,
-              background: 'rgba(227,24,55,0.1)',
-              border: '1px solid rgba(227,24,55,0.2)',
+              borderRadius: 14,
+              background: 'rgba(0,113,227,0.08)',
+              border: '1px solid rgba(0,113,227,0.15)',
               marginBottom: 16,
-              boxShadow: '0 0 32px rgba(227,24,55,0.12)',
             }}
           >
-            <Wrench size={22} color="#E31837" strokeWidth={1.75} />
+            <Wrench size={22} color="#0071e3" strokeWidth={1.75} />
           </motion.div>
           <h1 style={{
             fontSize: 22,
             fontWeight: 600,
-            color: '#f0f0f0',
-            letterSpacing: '-0.03em',
+            color: '#1d1d1f',
+            letterSpacing: '-0.025em',
             marginBottom: 6,
             lineHeight: 1.2,
           }}>
             RepairDesk
           </h1>
-          <p style={{
-            fontSize: 13,
-            color: 'rgba(139,139,154,0.9)',
-            letterSpacing: '0.01em',
-            lineHeight: 1.5,
-          }}>
+          <p style={{ fontSize: 14, color: '#6e6e73' }}>
             Elect Technologies — staff portal
           </p>
         </div>
 
-        {/* Aurora gradient border wrapper */}
+        {/* Card */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(227,24,55,0.22) 0%, rgba(147,51,234,0.14) 45%, rgba(59,130,246,0.1) 80%, rgba(227,24,55,0.15) 100%)',
-          borderRadius: 22,
-          padding: 1,
-          boxShadow: '0 0 60px rgba(227,24,55,0.09)',
-        }}>
-        {/* Glass card */}
-        <div style={{
-          background: 'linear-gradient(160deg, rgba(255,255,255,0.075) 0%, rgba(255,255,255,0.02) 100%)',
-          backdropFilter: 'blur(48px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(48px) saturate(200%)',
-          borderRadius: 21,
+          background: '#ffffff',
+          border: '1px solid rgba(0,0,0,0.08)',
+          borderRadius: 'var(--radius-2xl)',
           padding: '36px 32px',
-          boxShadow: `
-            0 2px 0 rgba(255,255,255,0.08) inset,
-            0 -1px 0 rgba(0,0,0,0.2) inset,
-            0 32px 80px rgba(0,0,0,0.65),
-            0 8px 32px rgba(0,0,0,0.4)
-          `,
-          position: 'relative',
-          overflow: 'hidden',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
         }}>
-
-          {/* Inner top-edge sheen */}
-          <div style={{
-            position: 'absolute',
-            top: 0, left: '10%', right: '10%',
-            height: 1,
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
-            pointerEvents: 'none',
-          }} />
-
           {/* Error */}
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               style={{
-                background: 'rgba(239,68,68,0.08)',
-                border: '1px solid rgba(239,68,68,0.2)',
-                color: '#f87171',
-                borderRadius: 10,
+                background: 'rgba(255,59,48,0.06)',
+                border: '1px solid rgba(255,59,48,0.18)',
+                color: '#ff3b30',
+                borderRadius: 'var(--radius-md)',
                 padding: '10px 14px',
                 fontSize: 13,
                 marginBottom: 20,
-                letterSpacing: '0.01em',
               }}
             >
               {error}
             </motion.div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
               <label style={{
                 display: 'block',
-                fontSize: 11,
-                fontWeight: 600,
-                color: 'rgba(139,139,154,0.8)',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                marginBottom: 8,
+                fontSize: 12,
+                fontWeight: 500,
+                color: '#6e6e73',
+                marginBottom: 7,
               }}>
                 Email
               </label>
@@ -243,12 +185,10 @@ export default function Login() {
             <div>
               <label style={{
                 display: 'block',
-                fontSize: 11,
-                fontWeight: 600,
-                color: 'rgba(139,139,154,0.8)',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                marginBottom: 8,
+                fontSize: 12,
+                fontWeight: 500,
+                color: '#6e6e73',
+                marginBottom: 7,
               }}>
                 Password
               </label>
@@ -270,60 +210,35 @@ export default function Login() {
               disabled={loading}
               style={{
                 width: '100%',
-                background: loading
-                  ? 'rgba(227,24,55,0.35)'
-                  : '#E31837',
+                background: loading ? 'rgba(0,113,227,0.45)' : '#0071e3',
                 color: '#fff',
                 border: 'none',
-                borderRadius: 10,
-                padding: '13px 16px',
-                fontSize: 14,
-                fontWeight: 600,
-                letterSpacing: '0.01em',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px 16px',
+                fontSize: 15,
+                fontWeight: 400,
                 cursor: loading ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit',
                 marginTop: 4,
-                position: 'relative',
-                overflow: 'hidden',
-                boxShadow: loading ? 'none' : '0 4px 20px rgba(227,24,55,0.3), 0 1px 0 rgba(255,255,255,0.15) inset',
-                transition: 'all 200ms ease',
+                transition: 'background 200ms ease, transform 80ms ease',
               }}
-              onMouseEnter={e => {
-                if (!loading) {
-                  e.currentTarget.style.transform = 'translateY(-1px)'
-                  e.currentTarget.style.boxShadow = '0 8px 28px rgba(227,24,55,0.45), 0 1px 0 rgba(255,255,255,0.15) inset'
-                  e.currentTarget.style.background = '#c0162f'
-                }
-              }}
-              onMouseLeave={e => {
-                if (!loading) {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(227,24,55,0.3), 0 1px 0 rgba(255,255,255,0.15) inset'
-                  e.currentTarget.style.background = '#E31837'
-                }
-              }}
-              onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'translateY(0) scale(0.99)' }}
-              onMouseUp={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)' }}
+              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#0077ed' }}
+              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#0071e3' }}
+              onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'scale(0.98)' }}
+              onMouseUp={e => { if (!loading) e.currentTarget.style.transform = 'scale(1)' }}
             >
-              {loading ? (
-                <span style={{ opacity: 0.7 }}>Signing in…</span>
-              ) : (
-                'Sign in'
-              )}
+              {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
         </div>
-        </div>{/* end gradient border wrapper */}
 
-        {/* Footer */}
         <p style={{
           textAlign: 'center',
-          fontSize: 11,
-          color: 'rgba(74,74,90,0.8)',
+          fontSize: 12,
+          color: '#aeaeb2',
           marginTop: 20,
-          letterSpacing: '0.03em',
         }}>
-          AUTHORISED ACCESS ONLY
+          Authorised access only
         </p>
       </motion.div>
     </div>

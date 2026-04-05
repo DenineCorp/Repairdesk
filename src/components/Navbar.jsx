@@ -20,11 +20,11 @@ export default function Navbar() {
         right: 0,
         height: 52,
         zIndex: 100,
-        background: 'linear-gradient(180deg, rgba(4,4,14,0.88) 0%, rgba(4,4,14,0.82) 100%)',
-        backdropFilter: 'blur(24px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 1px 0 rgba(227,24,55,0.08) inset, 0 4px 32px rgba(0,0,0,0.4)',
+        background: 'rgba(255,255,255,0.82)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        borderBottom: '1px solid rgba(0,0,0,0.08)',
+        boxShadow: 'none',
         display: 'flex',
         alignItems: 'center',
         padding: '0 20px',
@@ -33,7 +33,7 @@ export default function Navbar() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: 1200, margin: '0 auto' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Wrench size={16} color="var(--accent-blue)" strokeWidth={2} />
+          <Wrench size={16} color="#0071e3" strokeWidth={2} />
           <span style={{ fontWeight: 600, fontSize: 15, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
             RepairDesk
           </span>
