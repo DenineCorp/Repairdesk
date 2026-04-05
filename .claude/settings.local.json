@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npx -y @aidesigner/agent-skills init)",
       "Bash(npm create:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(curl -L \"https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80\" -o \"C:\\\\Users\\\\DELL\\\\Downloads\\\\REPAIRDESK\\\\public\\\\images\\\\motherboard.jpg\")",
+      "WebFetch(domain:dribbble.com)",
+      "Bash(gh api:*)"
     ]
   }
 }

@@ -67,9 +67,7 @@ export default function Setup2FA() {
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code })
       if (error) throw error
-      const { data: { session } } = await supabase.auth.getSession()
-      const role = session?.user?.user_metadata?.role
-      navigate(role === 'founder' ? '/founder-dashboard' : '/tech-dashboard', { replace: true })
+      navigate('/', { replace: true })
     } catch (err) {
       setError('Invalid code — try again')
       setVerifying(false)
