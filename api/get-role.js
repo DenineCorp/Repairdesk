@@ -22,14 +22,14 @@ export default async function handler(req, res) {
   const token = authHeader.slice(7)
 
   const supabaseUrl = process.env.SUPABASE_URL
-  const serviceKey  = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const anonKey    = process.env.SUPABASE_ANON_KEY
 
-  if (!supabaseUrl || !serviceKey) {
-    console.error('[get-role] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
+  if (!supabaseUrl || !anonKey) {
+    console.error('[get-role] Missing SUPABASE_URL or SUPABASE_ANON_KEY')
     return res.status(503).json({ error: 'Server misconfiguration' })
   }
 
-  const supabase = createClient(supabaseUrl, serviceKey, {
+  const supabase = createClient(supabaseUrl, anonKey, {
     auth: { persistSession: false },
   })
 

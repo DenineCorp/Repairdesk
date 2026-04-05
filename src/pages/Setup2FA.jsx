@@ -67,10 +67,8 @@ export default function Setup2FA() {
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code })
       if (error) throw error
-      // Fetch role server-side (app_metadata, tamper-proof)
       const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch('/api/get-role', { headers: { Authorization: `Bearer ${session.access_token}` } })
-      const { role } = res.ok ? await res.json() : {}
+      const role = session?.user?.user_metadata?.role
       navigate(role === 'founder' ? '/founder-dashboard' : '/tech-dashboard', { replace: true })
     } catch (err) {
       setError('Invalid code — try again')
