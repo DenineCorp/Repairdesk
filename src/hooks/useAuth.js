@@ -7,11 +7,15 @@ async function fetchSecureRole(session) {
     const res = await fetch('/api/get-role', {
       headers: { Authorization: `Bearer ${session.access_token}` },
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      // API unreachable (env vars not configured) — fall back to user_metadata
+      return session.user?.user_metadata?.role ?? null
+    }
     const { role } = await res.json()
-    return role
+    // If API returned null, fall back to user_metadata
+    return role ?? session.user?.user_metadata?.role ?? null
   } catch {
-    return null
+    return session.user?.user_metadata?.role ?? null
   }
 }
 
