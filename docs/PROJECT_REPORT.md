@@ -41,7 +41,7 @@ An internal staff tool for Elect Technologies repair operations. Not customer-fa
 
 ### Core Workflow
 1. A technician logs a new device repair (customer name, phone, device, issue, dates, optional warranty)
-2. A unique Issue ID is auto-generated (e.g. `RD-48271`)
+2. A serial Issue ID is auto-generated (e.g. `26-0001`, `26-0002`) — year prefix + arrival sequence
 3. The ticket moves through statuses: `Pending → In Progress → Ready → Collected`
 4. Payment is tracked per ticket (`Unpaid → Partial → Paid`) with amount in CAD
 5. When a device is ready, the technician sends an SMS notification to the customer
@@ -106,7 +106,7 @@ Twilio credentials and the Supabase Service Role Key never touch the browser. Th
 
 ### Ticket Management
 - New ticket intake form with: customer name, phone (E.164 validated), device, issue description, date in, expected completion, optional warranty period (days)
-- Auto-generated unique Issue IDs using `crypto.getRandomValues()` (cryptographically secure)
+- Auto-generated serial Issue IDs in `YY-NNNN` format (e.g. `26-0001`) — year prefix derived from current year, NNNN is the next sequential number queried from the `tickets` table
 - Status progression: Pending → In Progress → Ready → Collected
 - Real-time updates via Supabase Postgres Changes subscription
 - Overdue ticket detection and highlighting
@@ -179,6 +179,7 @@ Twilio credentials and the Supabase Service Role Key never touch the browser. Th
 | `e47a117` | ET logo, warranty field, payment on label, self-signup, viewer role |
 | `bfb22f5` | Hardened .gitignore, untracked local config files |
 | `d093777` | Role management UI for founders |
+| `02b94fa` | Serial ticket IDs — `YY-NNNN` format for first-come-first-serve queue |
 
 ---
 
@@ -225,20 +226,23 @@ Diagnosis: `Setup2FA.jsx` and `Verify2FA.jsx` were calling `supabase.auth.getSes
 
 A full security audit was conducted against OWASP standards. Six findings were identified and resolved.
 
-### HIGH-1 — Insecure Random ID Generation
+### HIGH-1 — Insecure Random ID Generation → Evolved to Serial IDs
 **File:** `src/utils/issueId.js`
-**Finding:** Issue IDs were generated using `Math.random()`, which is not cryptographically secure and is predictable given enough observations. An attacker could enumerate or predict Issue IDs.
-**Fix:** Replaced with `crypto.getRandomValues(new Uint32Array(1))` — the browser's cryptographically secure random number generator (CSPRNG). This is the same API used by password managers and cryptographic libraries.
+**Original Finding:** Issue IDs were generated using `Math.random()`, which is not cryptographically secure and is predictable given enough observations.
+**Initial Fix:** Replaced with `crypto.getRandomValues(new Uint32Array(1))` — the browser's CSPRNG.
+
+**Subsequent Change (operational requirement):** Issue IDs were later changed from random to sequential — format `YY-NNNN` (e.g. `26-0001`, `26-0002`). The year prefix resets the sequence each calendar year. This allows technicians to determine device arrival order directly from the label, supporting a first-come-first-serve repair queue.
 
 ```js
-// Before (insecure)
-const digits = String(Math.floor(10000 + Math.random() * 90000))
-
-// After (secure)
-const arr = new Uint32Array(1)
-crypto.getRandomValues(arr)
-const digits = String(10000 + (arr[0] % 90000)).padStart(5, '0')
+// Final implementation
+const yy = new Date().getFullYear().toString().slice(-2)   // "26"
+const { count } = await supabase
+  .from('tickets').select('id', { count: 'exact', head: true })
+  .like('issue_id', `${yy}-%`)
+return `${yy}-${String((count ?? 0) + 1).padStart(4, '0')}` // "26-0001"
 ```
+
+**Security note on predictability:** Sequential IDs are inherently guessable. This is acceptable here because: (a) the system is internal-only, behind email-domain-restricted signup, email verification, and mandatory TOTP 2FA; (b) ticket IDs are display labels — they carry no access control weight; (c) all routes are protected by `RequireAuth`. Sequential IDs would be a concern in a public API where IDs act as access tokens — they do not here.
 
 ### HIGH-2 — Phone Number Injection Vector
 **File:** `src/pages/IntakeForm.jsx`
