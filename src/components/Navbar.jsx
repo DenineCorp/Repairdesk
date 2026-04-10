@@ -1,4 +1,4 @@
-import { LogOut, ClipboardList } from 'lucide-react'
+import { LogOut, ClipboardList, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
@@ -46,24 +46,42 @@ export default function Navbar() {
               {user.email}
             </span>
 
-            {/* Audit log — founders only */}
+            {/* Founder-only nav links */}
             {role === 'founder' && (
-              <button
-                onClick={() => navigate('/audit-log')}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500,
-                  padding: '3px 8px', borderRadius: 'var(--radius-sm)',
-                  transition: 'color 150ms, background 150ms',
-                  fontFamily: 'inherit',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--bg-elevated)' }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'none' }}
-              >
-                <ClipboardList size={13} strokeWidth={2} />
-                <span className="nav-signout-text">Activity Log</span>
-              </button>
+              <>
+                <button
+                  onClick={() => navigate('/users')}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500,
+                    padding: '3px 8px', borderRadius: 'var(--radius-sm)',
+                    transition: 'color 150ms, background 150ms',
+                    fontFamily: 'inherit',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--bg-elevated)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'none' }}
+                >
+                  <Users size={13} strokeWidth={2} />
+                  <span className="nav-signout-text">Users</span>
+                </button>
+                <button
+                  onClick={() => navigate('/audit-log')}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500,
+                    padding: '3px 8px', borderRadius: 'var(--radius-sm)',
+                    transition: 'color 150ms, background 150ms',
+                    fontFamily: 'inherit',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--bg-elevated)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'none' }}
+                >
+                  <ClipboardList size={13} strokeWidth={2} />
+                  <span className="nav-signout-text">Activity Log</span>
+                </button>
+              </>
             )}
 
             {/* Role pill */}
