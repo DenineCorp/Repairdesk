@@ -1,4 +1,4 @@
-import { Wrench, LogOut, ClipboardList } from 'lucide-react'
+import { LogOut, ClipboardList } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
@@ -8,7 +8,9 @@ export default function Navbar() {
 
   const rolePill = role === 'founder'
     ? { bg: 'var(--accent-amber-dim)', color: 'var(--accent-amber)', border: 'rgba(245,158,11,0.2)', label: 'Founder' }
-    : { bg: 'var(--accent-blue-dim)', color: 'var(--accent-blue)', border: 'rgba(227,24,55,0.2)', label: 'Technician' }
+    : role === 'viewer'
+      ? { bg: 'rgba(142,142,147,0.12)', color: 'var(--text-secondary)', border: 'rgba(142,142,147,0.2)', label: 'Viewer' }
+      : { bg: 'var(--accent-blue-dim)', color: 'var(--accent-blue)', border: 'rgba(0,113,227,0.2)', label: 'Technician' }
 
   return (
     <header
@@ -33,10 +35,7 @@ export default function Navbar() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: 1200, margin: '0 auto' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Wrench size={16} color="#0071e3" strokeWidth={2} />
-          <span style={{ fontWeight: 600, fontSize: 15, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-            RepairDesk
-          </span>
+          <img src="/logo.jpg" alt="Elect Technologies" style={{ height: 28, width: 28, objectFit: 'contain', borderRadius: 4 }} />
         </div>
 
         {/* Right */}

@@ -53,6 +53,14 @@ function RoleRedirect() {
   return <Navigate to="/tech-dashboard" replace />
 }
 
+/** Block viewer-role accounts from write-access routes */
+function RequireNotViewer({ children }) {
+  const { role, loading } = useAuth()
+  if (loading) return <LoadingSpinner message="Loading…" />
+  if (role === 'viewer') return <Navigate to="/tech-dashboard" replace />
+  return children
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -66,7 +74,7 @@ export default function App() {
         <Route path="/" element={<RequireAuth><RoleRedirect /></RequireAuth>} />
         <Route path="/tech-dashboard" element={<RequireAuth><TechDashboard /></RequireAuth>} />
         <Route path="/founder-dashboard" element={<RequireAuth><FounderDashboard /></RequireAuth>} />
-        <Route path="/intake" element={<RequireAuth><IntakeForm /></RequireAuth>} />
+        <Route path="/intake" element={<RequireAuth><RequireNotViewer><IntakeForm /></RequireNotViewer></RequireAuth>} />
         <Route path="/ticket/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
         <Route path="/audit-log" element={<RequireAuth><AuditLog /></RequireAuth>} />
 

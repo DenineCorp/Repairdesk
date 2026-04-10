@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, CheckCircle, XCircle, Bell } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
@@ -394,7 +395,7 @@ const SectionHeading = ({ children, showDot, dotColor }) => (
 )
 
 // ── Ticket Row ────────────────────────────────────────────────────────────────
-const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flashSuccess, onPaymentSaved, onPaymentError, addToast }) => {
+const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flashSuccess, onPaymentSaved, onPaymentError, addToast, readOnly }) => {
   const overdue = isOverdue(ticket.date_expected, ticket.status)
   const [hovered, setHovered] = useState(false)
   const payment = ticket.payments?.[0]
@@ -452,39 +453,41 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flas
         <StatusBadge status={ticket.status} />
       </div>
 
-      {/* Notify button — only for ready tickets */}
-      {ticket.status === 'ready' && (
+      {/* Notify button — only for ready tickets, not for viewers */}
+      {!readOnly && ticket.status === 'ready' && (
         <div onClick={e => e.stopPropagation()}>
           <NotifyButton ticket={ticket} addToast={addToast} />
         </div>
       )}
 
-      {/* Ticket status select */}
-      <select
-        value={ticket.status}
-        onChange={e => { e.stopPropagation(); onStatusChange(ticket.id, e.target.value) }}
-        disabled={updating === ticket.id}
-        onClick={e => e.stopPropagation()}
-        style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-sm)',
-          color: 'var(--text-primary)',
-          fontSize: 12, padding: '4px 8px',
-          cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
-          opacity: updating === ticket.id ? 0.5 : 1,
-          flexShrink: 0,
-        }}
-      >
-        {STATUSES.map(s => (
-          <option key={s} value={s} style={{ background: '#ffffff' }}>
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-          </option>
-        ))}
-      </select>
+      {/* Ticket status select — hidden for viewers */}
+      {!readOnly && (
+        <select
+          value={ticket.status}
+          onChange={e => { e.stopPropagation(); onStatusChange(ticket.id, e.target.value) }}
+          disabled={updating === ticket.id}
+          onClick={e => e.stopPropagation()}
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-sm)',
+            color: 'var(--text-primary)',
+            fontSize: 12, padding: '4px 8px',
+            cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
+            opacity: updating === ticket.id ? 0.5 : 1,
+            flexShrink: 0,
+          }}
+        >
+          {STATUSES.map(s => (
+            <option key={s} value={s} style={{ background: '#ffffff' }}>
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </option>
+          ))}
+        </select>
+      )}
 
-      {/* Payment controls — only if a payment row exists */}
-      {payment && (
+      {/* Payment controls — hidden for viewers */}
+      {!readOnly && payment && (
         <PaymentControls
           payment={payment}
           ticket={ticket}
@@ -512,6 +515,8 @@ const itemVariants = {
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 export default function TechDashboard() {
   const navigate = useNavigate()
+  const { role } = useAuth()
+  const readOnly = role === 'viewer'
   const [tickets, setTickets] = useState([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(null)
@@ -613,6 +618,7 @@ export default function TechDashboard() {
             onPaymentSaved={handlePaymentSaved}
             onPaymentError={handlePaymentError}
             addToast={addToast}
+            readOnly={readOnly}
           />
         </motion.div>
       ))}
@@ -641,21 +647,23 @@ export default function TechDashboard() {
               {active.length} active job{active.length !== 1 ? 's' : ''}
             </p>
           </div>
-          <button
-            onClick={() => navigate('/intake')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              background: 'var(--accent-blue)', color: '#fff',
-              border: 'none', borderRadius: 'var(--radius-md)',
-              padding: '8px 14px', fontSize: 13, fontWeight: 500,
-              cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}
-            onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-blue)'}
-          >
-            <Plus size={14} strokeWidth={2.5} />
-            New Ticket
-          </button>
+          {!readOnly && (
+            <button
+              onClick={() => navigate('/intake')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                background: 'var(--accent-blue)', color: '#fff',
+                border: 'none', borderRadius: 'var(--radius-md)',
+                padding: '8px 14px', fontSize: 13, fontWeight: 500,
+                cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-blue)'}
+            >
+              <Plus size={14} strokeWidth={2.5} />
+              New Ticket
+            </button>
+          )}
         </div>
 
         {loading ? (

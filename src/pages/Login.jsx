@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Wrench } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
 
 const LOCKOUT_DURATION_MS = 30_000
@@ -16,10 +15,13 @@ function sanitizeAuthError(err) {
 }
 
 export default function Login() {
+  const [mode, setMode]           = useState('login') // 'login' | 'signup'
   const [email, setEmail]         = useState('')
   const [password, setPassword]   = useState('')
+  const [confirmPw, setConfirmPw] = useState('')
   const [error, setError]         = useState(null)
   const [loading, setLoading]     = useState(false)
+  const [signupDone, setSignupDone] = useState(false)
   const [focusedField, setFocusedField] = useState(null)
   const [attempts, setAttempts]   = useState(0)
   const [lockedUntil, setLockedUntil] = useState(null)
@@ -35,6 +37,39 @@ export default function Login() {
     }, 500)
     return () => clearInterval(interval)
   }, [lockedUntil])
+
+  const handleSignup = async (e) => {
+    e.preventDefault()
+    setError(null)
+    if (!email.toLowerCase().includes('@electtech')) {
+      setError('Sign-up is restricted to Elect Technologies email addresses.')
+      return
+    }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.')
+      return
+    }
+    if (password !== confirmPw) {
+      setError('Passwords do not match.')
+      return
+    }
+    setLoading(true)
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { role: 'viewer' } },
+    })
+    setLoading(false)
+    if (signUpError) {
+      if (signUpError.message?.includes('already registered')) {
+        setError('An account with this email already exists.')
+      } else {
+        setError('Sign-up failed — please try again.')
+      }
+      return
+    }
+    setSignupDone(true)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -102,30 +137,10 @@ export default function Login() {
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.08, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 52,
-              height: 52,
-              borderRadius: 14,
-              background: 'rgba(0,113,227,0.08)',
-              border: '1px solid rgba(0,113,227,0.15)',
-              marginBottom: 16,
-            }}
+            style={{ marginBottom: 16 }}
           >
-            <Wrench size={22} color="#0071e3" strokeWidth={1.75} />
+            <img src="/logo.jpg" alt="Elect Technologies" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 16 }} />
           </motion.div>
-          <h1 style={{
-            fontSize: 22,
-            fontWeight: 600,
-            color: '#1d1d1f',
-            letterSpacing: '-0.025em',
-            marginBottom: 6,
-            lineHeight: 1.2,
-          }}>
-            RepairDesk
-          </h1>
           <p style={{ fontSize: 14, color: '#6e6e73' }}>
             Elect Technologies — staff portal
           </p>
@@ -139,6 +154,27 @@ export default function Login() {
           padding: '36px 32px',
           boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
         }}>
+          {/* Mode tabs */}
+          <div style={{ display: 'flex', gap: 0, marginBottom: 28, background: 'rgba(0,0,0,0.04)', borderRadius: 'var(--radius-md)', padding: 3 }}>
+            {['login', 'signup'].map(m => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => { setMode(m); setError(null); setSignupDone(false) }}
+                style={{
+                  flex: 1, border: 'none', fontFamily: 'inherit', fontSize: 13, fontWeight: 500,
+                  cursor: 'pointer', padding: '7px 0', borderRadius: 'calc(var(--radius-md) - 1px)',
+                  transition: 'background 150ms, color 150ms',
+                  background: mode === m ? '#ffffff' : 'transparent',
+                  color: mode === m ? '#1d1d1f' : '#6e6e73',
+                  boxShadow: mode === m ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                }}
+              >
+                {m === 'login' ? 'Sign in' : 'Create account'}
+              </button>
+            ))}
+          </div>
+
           {/* Error */}
           {error && (
             <motion.div
@@ -158,78 +194,157 @@ export default function Login() {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: 12,
-                fontWeight: 500,
-                color: '#6e6e73',
-                marginBottom: 7,
-              }}>
-                Email
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                style={inputStyle('email')}
-                placeholder="you@electtechnologies.com"
-                autoComplete="email"
-                onFocus={() => setFocusedField('email')}
-                onBlur={() => setFocusedField(null)}
-              />
+          {/* Signup success */}
+          {signupDone ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '16px 0',
+            }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: '50%',
+                background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 16px',
+                fontSize: 22,
+              }}>✓</div>
+              <p style={{ fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>Check your email</p>
+              <p style={{ fontSize: 13, color: '#6e6e73', lineHeight: 1.5 }}>
+                We sent a confirmation link to <strong>{email}</strong>. Verify your email, then sign in to set up 2FA.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setMode('login'); setSignupDone(false); setError(null) }}
+                style={{
+                  marginTop: 20, background: '#0071e3', color: '#fff', border: 'none',
+                  borderRadius: 'var(--radius-md)', padding: '10px 24px',
+                  fontSize: 14, fontWeight: 400, cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                Go to sign in
+              </button>
             </div>
-
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: 12,
-                fontWeight: 500,
-                color: '#6e6e73',
-                marginBottom: 7,
-              }}>
-                Password
-              </label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                style={inputStyle('password')}
-                placeholder="••••••••••••"
-                autoComplete="current-password"
-                onFocus={() => setFocusedField('password')}
-                onBlur={() => setFocusedField(null)}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%',
-                background: loading ? 'rgba(0,113,227,0.45)' : '#0071e3',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                padding: '12px 16px',
-                fontSize: 15,
-                fontWeight: 400,
-                cursor: loading ? 'not-allowed' : 'pointer',
-                fontFamily: 'inherit',
-                marginTop: 4,
-                transition: 'background 200ms ease, transform 80ms ease',
-              }}
-              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#0077ed' }}
-              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#0071e3' }}
-              onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'scale(0.98)' }}
-              onMouseUp={e => { if (!loading) e.currentTarget.style.transform = 'scale(1)' }}
-            >
-              {loading ? 'Signing in…' : 'Sign in'}
-            </button>
-          </form>
+          ) : mode === 'signup' ? (
+            <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                  Work email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  style={inputStyle('email')}
+                  placeholder="you@electtech.com"
+                  autoComplete="email"
+                  onFocus={() => setFocusedField('email')}
+                  onBlur={() => setFocusedField(null)}
+                />
+                <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 5 }}>Must be an @electtech email address</p>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                  Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  style={inputStyle('password')}
+                  placeholder="Min. 8 characters"
+                  autoComplete="new-password"
+                  onFocus={() => setFocusedField('password')}
+                  onBlur={() => setFocusedField(null)}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                  Confirm password
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={confirmPw}
+                  onChange={e => setConfirmPw(e.target.value)}
+                  style={inputStyle('confirmPw')}
+                  placeholder="••••••••••••"
+                  autoComplete="new-password"
+                  onFocus={() => setFocusedField('confirmPw')}
+                  onBlur={() => setFocusedField(null)}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%', background: loading ? 'rgba(0,113,227,0.45)' : '#0071e3',
+                  color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
+                  padding: '12px 16px', fontSize: 15, fontWeight: 400,
+                  cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', marginTop: 4,
+                  transition: 'background 200ms ease, transform 80ms ease',
+                }}
+                onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#0077ed' }}
+                onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#0071e3' }}
+                onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'scale(0.98)' }}
+                onMouseUp={e => { if (!loading) e.currentTarget.style.transform = 'scale(1)' }}
+              >
+                {loading ? 'Creating account…' : 'Create account'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  style={inputStyle('email')}
+                  placeholder="you@electtechnologies.com"
+                  autoComplete="email"
+                  onFocus={() => setFocusedField('email')}
+                  onBlur={() => setFocusedField(null)}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                  Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  style={inputStyle('password')}
+                  placeholder="••••••••••••"
+                  autoComplete="current-password"
+                  onFocus={() => setFocusedField('password')}
+                  onBlur={() => setFocusedField(null)}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%', background: loading ? 'rgba(0,113,227,0.45)' : '#0071e3',
+                  color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
+                  padding: '12px 16px', fontSize: 15, fontWeight: 400,
+                  cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', marginTop: 4,
+                  transition: 'background 200ms ease, transform 80ms ease',
+                }}
+                onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#0077ed' }}
+                onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#0071e3' }}
+                onMouseDown={e => { if (!loading) e.currentTarget.style.transform = 'scale(0.98)' }}
+                onMouseUp={e => { if (!loading) e.currentTarget.style.transform = 'scale(1)' }}
+              >
+                {loading ? 'Signing in…' : 'Sign in'}
+              </button>
+            </form>
+          )}
         </div>
 
         <p style={{
@@ -238,7 +353,7 @@ export default function Login() {
           color: '#aeaeb2',
           marginTop: 20,
         }}>
-          Authorised access only
+          {mode === 'signup' ? 'Read-only access by default — a founder can escalate your role.' : 'Authorised access only'}
         </p>
       </motion.div>
     </div>

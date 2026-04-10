@@ -89,6 +89,7 @@ export default function IntakeForm() {
     issue: '',
     date_in: today(),
     date_expected: '',
+    warranty_days: '',
   })
 
   const set = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }))
@@ -129,6 +130,7 @@ export default function IntakeForm() {
           date_expected: form.date_expected,
           status: 'pending',
           created_by: user.id,
+          ...(form.warranty_days !== '' && { warranty_days: parseInt(form.warranty_days, 10) }),
         })
         .select()
         .single()
@@ -244,13 +246,16 @@ export default function IntakeForm() {
               <FocusableTextarea required value={form.issue} onChange={set('issue')} placeholder="Describe the problem the customer reported…" rows={4} />
             </Field>
 
-            {/* Dates */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {/* Dates + Warranty */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
               <Field label="Date brought in">
                 <FocusableInput type="date" required value={form.date_in} onChange={set('date_in')} />
               </Field>
               <Field label="Expected completion">
                 <FocusableInput type="date" required value={form.date_expected} onChange={set('date_expected')} min={form.date_in} />
+              </Field>
+              <Field label="Warranty (days)">
+                <FocusableInput type="number" min="0" step="1" placeholder="e.g. 90" value={form.warranty_days} onChange={set('warranty_days')} />
               </Field>
             </div>
 

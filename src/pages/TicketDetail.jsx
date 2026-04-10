@@ -62,7 +62,7 @@ export default function TicketDetail() {
     async function fetchTicket() {
       const { data, error } = await supabase
         .from('tickets')
-        .select('id, issue_id, customer_name, customer_phone, device, issue, date_in, date_expected, status, created_by')
+        .select('id, issue_id, customer_name, customer_phone, device, issue, date_in, date_expected, status, warranty_days, created_by, payments(payment_status, amount_paid)')
         .eq('id', id)
         .single()
       if (error) setError('Failed to load ticket.')
@@ -195,11 +195,11 @@ export default function TicketDetail() {
           <FieldBlock label="Phone" value={ticket.customer_phone} mono />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
             <FieldBlock label="Date in" value={formatDate(ticket.date_in)} />
-            <FieldBlock
-              label="Expected"
-              value={formatDate(ticket.date_expected)}
-            />
+            <FieldBlock label="Expected" value={formatDate(ticket.date_expected)} />
           </div>
+          {ticket.warranty_days != null && (
+            <FieldBlock label="Warranty" value={`${ticket.warranty_days} day${ticket.warranty_days !== 1 ? 's' : ''}`} />
+          )}
           <div style={{ gridColumn: '1 / -1' }}>
             <p style={fieldLabelStyle}>Issue description</p>
             <p style={{ ...fieldValueStyle, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
@@ -256,7 +256,7 @@ export default function TicketDetail() {
         </div>
       </motion.main>
 
-      {/* Print-only label — clean black-and-white, logic unchanged */}
+      {/* Print-only label */}
       <div className="print-only">
         <div style={{
           fontFamily: 'monospace',
@@ -268,8 +268,8 @@ export default function TicketDetail() {
           background: 'white',
         }}>
           <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <div style={{ fontSize: 11, letterSpacing: 4, textTransform: 'uppercase' }}>RepairDesk</div>
-            <div style={{ fontSize: 30, fontWeight: 900, letterSpacing: 2, marginTop: 4 }}>{ticket.issue_id}</div>
+            <img src="/logo.jpg" alt="Elect Technologies" style={{ width: 48, height: 48, objectFit: 'contain', display: 'block', margin: '0 auto 8px' }} />
+            <div style={{ fontSize: 30, fontWeight: 900, letterSpacing: 2 }}>{ticket.issue_id}</div>
           </div>
           <hr style={{ borderColor: 'black', margin: '12px 0' }} />
           <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
@@ -282,6 +282,8 @@ export default function TicketDetail() {
                 ['Date In',  formatDate(ticket.date_in)],
                 ['Expected', formatDate(ticket.date_expected)],
                 ['Status',   ticket.status.toUpperCase()],
+                ['Payment',  (ticket.payments?.[0]?.payment_status ?? 'unpaid').toUpperCase()],
+                ...(ticket.warranty_days != null ? [['Warranty', `${ticket.warranty_days} day${ticket.warranty_days !== 1 ? 's' : ''}`]] : []),
               ].map(([label, value]) => (
                 <tr key={label}>
                   <td style={{ fontWeight: 'bold', paddingRight: 12, paddingBottom: 6, whiteSpace: 'nowrap', verticalAlign: 'top' }}>{label}:</td>
