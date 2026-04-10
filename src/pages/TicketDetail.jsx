@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ChevronLeft, Printer, Bell } from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import { supabase } from '../services/supabaseClient'
 import { sendSMS } from '../services/twilioService'
 import Navbar from '../components/Navbar'
@@ -278,7 +279,7 @@ export default function TicketDetail() {
                 ['Customer', ticket.customer_name],
                 ['Phone',    ticket.customer_phone],
                 ['Device',   ticket.device],
-                ['Issue',    ticket.issue.length > 80 ? ticket.issue.slice(0, 80) + '…' : ticket.issue],
+                ['Issue',    ticket.issue.length > 60 ? ticket.issue.slice(0, 60) + '…' : ticket.issue],
                 ['Date In',  formatDate(ticket.date_in)],
                 ['Expected', formatDate(ticket.date_expected)],
                 ['Status',   ticket.status.toUpperCase()],
@@ -292,6 +293,34 @@ export default function TicketDetail() {
               ))}
             </tbody>
           </table>
+
+          {/* QR code — customer copy */}
+          <hr style={{ borderColor: 'black', margin: '14px 0 10px' }} />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', gap: 10 }}>
+            <p style={{ fontSize: 10, color: 'black', margin: 0, maxWidth: 200, lineHeight: 1.4 }}>
+              Customer Copy — Scan for ticket info
+            </p>
+            <QRCodeSVG
+              value={JSON.stringify({
+                id: ticket.issue_id,
+                customer: ticket.customer_name,
+                phone: ticket.customer_phone,
+                device: ticket.device,
+                issue: ticket.issue,
+                status: ticket.status,
+                dateIn: ticket.date_in,
+                dateExpected: ticket.date_expected,
+                payment: ticket.payments?.[0]?.payment_status ?? 'unpaid',
+                warranty: ticket.warranty_days ?? null,
+              })}
+              size={88}
+              bgColor="white"
+              fgColor="black"
+              level="M"
+            />
+          </div>
+          <hr style={{ borderStyle: 'dashed', borderColor: 'black', margin: '14px 0 4px' }} />
+          <p style={{ fontSize: 9, textAlign: 'center', color: 'black', margin: 0 }}>✂ cut here</p>
         </div>
       </div>
     </div>

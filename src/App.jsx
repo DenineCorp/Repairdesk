@@ -51,6 +51,7 @@ function RoleRedirect() {
   const { role, loading } = useAuth()
   if (loading) return <LoadingSpinner message="Loading…" />
   if (role === 'founder') return <Navigate to="/founder-dashboard" replace />
+  if (role === 'viewer') return <Navigate to="/viewer" replace />
   return <Navigate to="/tech-dashboard" replace />
 }
 
@@ -58,7 +59,7 @@ function RoleRedirect() {
 function RequireNotViewer({ children }) {
   const { role, loading } = useAuth()
   if (loading) return <LoadingSpinner message="Loading…" />
-  if (role === 'viewer') return <Navigate to="/tech-dashboard" replace />
+  if (role === 'viewer') return <Navigate to="/viewer" replace />
   return children
 }
 
@@ -74,6 +75,7 @@ export default function App() {
         {/* Protected */}
         <Route path="/" element={<RequireAuth><RoleRedirect /></RequireAuth>} />
         <Route path="/tech-dashboard" element={<RequireAuth><TechDashboard /></RequireAuth>} />
+        <Route path="/viewer" element={<RequireAuth><TechDashboard /></RequireAuth>} />
         <Route path="/founder-dashboard" element={<RequireAuth><FounderDashboard /></RequireAuth>} />
         <Route path="/intake" element={<RequireAuth><RequireNotViewer><IntakeForm /></RequireNotViewer></RequireAuth>} />
         <Route path="/ticket/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />

@@ -41,8 +41,8 @@ export default function Login() {
   const handleSignup = async (e) => {
     e.preventDefault()
     setError(null)
-    if (!email.toLowerCase().includes('@electtech')) {
-      setError('Sign-up is restricted to Elect Technologies email addresses.')
+    if (!email.toLowerCase().endsWith('@electtech.ca')) {
+      setError('Sign-up is restricted to @electtech.ca email addresses.')
       return
     }
     if (password.length < 8) {
@@ -235,12 +235,12 @@ export default function Login() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   style={inputStyle('email')}
-                  placeholder="you@electtech.com"
+                  placeholder="you@electtech.ca"
                   autoComplete="email"
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
                 />
-                <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 5 }}>Must be an @electtech email address</p>
+                <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 5 }}>Must be an @electtech.ca email address</p>
               </div>
               <div>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
@@ -304,7 +304,7 @@ export default function Login() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   style={inputStyle('email')}
-                  placeholder="you@electtechnologies.com"
+                  placeholder="you@electtech.ca"
                   autoComplete="email"
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
