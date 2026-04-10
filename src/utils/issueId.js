@@ -1,31 +1,23 @@
 import { supabase } from '../services/supabaseClient'
 
 /**
- * Generates a unique Issue ID in the format RPR-XXXXX.
- * Retries until a unique ID is confirmed in the database.
+ * Generates a serial Issue ID in the format YY-NNNN.
+ * YY = last 2 digits of current year (e.g. "26")
+ * NNNN = next sequential number for that year, zero-padded to 4 digits
+ * Examples: 26-0001, 26-0002, 26-0003
  */
 export async function generateIssueId() {
-  const MAX_ATTEMPTS = 10
+  const yy = new Date().getFullYear().toString().slice(-2)
+  const prefix = `${yy}-`
 
-  for (let i = 0; i < MAX_ATTEMPTS; i++) {
-    const arr = new Uint32Array(1)
-    crypto.getRandomValues(arr)
-    const digits = String(10000 + (arr[0] % 90000)).padStart(5, '0') // 10000–99999
-    const candidate = `RPR-${digits}`
+  // Count how many tickets already exist for this year
+  const { count, error } = await supabase
+    .from('tickets')
+    .select('id', { count: 'exact', head: true })
+    .like('issue_id', `${prefix}%`)
 
-    const { data, error } = await supabase
-      .from('tickets')
-      .select('id')
-      .eq('issue_id', candidate)
-      .maybeSingle()
+  if (error) throw new Error(`Issue ID generation failed: ${error.message}`)
 
-    if (error) throw new Error(`Issue ID check failed: ${error.message}`)
-
-    if (!data) {
-      // No existing row — this ID is unique
-      return candidate
-    }
-  }
-
-  throw new Error('Failed to generate a unique Issue ID after multiple attempts.')
+  const next = (count ?? 0) + 1
+  return `${prefix}${String(next).padStart(4, '0')}`
 }
