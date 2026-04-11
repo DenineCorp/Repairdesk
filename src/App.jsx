@@ -63,6 +63,14 @@ function RequireNotViewer({ children }) {
   return children
 }
 
+/** Restrict route to founder only */
+function RequireFounder({ children }) {
+  const { role, loading } = useAuth()
+  if (loading) return <LoadingSpinner message="Loading…" />
+  if (role !== 'founder') return <Navigate to="/" replace />
+  return children
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -80,7 +88,7 @@ export default function App() {
         <Route path="/intake" element={<RequireAuth><RequireNotViewer><IntakeForm /></RequireNotViewer></RequireAuth>} />
         <Route path="/ticket/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
         <Route path="/audit-log" element={<RequireAuth><AuditLog /></RequireAuth>} />
-        <Route path="/users" element={<RequireAuth><RequireNotViewer><UserManagement /></RequireNotViewer></RequireAuth>} />
+        <Route path="/users" element={<RequireAuth><RequireFounder><UserManagement /></RequireFounder></RequireAuth>} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

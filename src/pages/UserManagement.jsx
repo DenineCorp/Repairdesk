@@ -38,23 +38,26 @@ export default function UserManagement() {
   const [users, setUsers]       = useState([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
-  const [saving, setSaving]     = useState(null) // userId currently being saved
-  const [pendingRoles, setPendingRoles] = useState({}) // { userId: newRole }
-  const [flash, setFlash]       = useState({}) // { userId: 'saved' | 'error' }
+  const [saving, setSaving]     = useState(null)
+  const [pendingRoles, setPendingRoles] = useState({})
+  const [flash, setFlash]       = useState({})
   const [currentUserId, setCurrentUserId] = useState(null)
 
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      setCurrentUserId(session?.user?.id)
-      const res = await fetch('/api/manage-roles', {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      })
-      if (!res.ok) throw new Error('Failed to load users')
-      const { users: data } = await res.json()
-      // Sort: founders first, then technicians, then viewers; alphabetically within groups
+      const { data: { user } } = await supabase.auth.getUser()
+      setCurrentUserId(user?.id)
+
+      // Read from profiles table — RLS ensures only founders can see all rows
+      const { data, error: fetchErr } = await supabase
+        .from('profiles')
+        .select('id, email, role, created_at')
+        .order('created_at', { ascending: true })
+
+      if (fetchErr) throw new Error(fetchErr.message)
+
       data.sort((a, b) => {
         const order = { founder: 0, technician: 1, viewer: 2 }
         const diff = (order[a.role] ?? 2) - (order[b.role] ?? 2)
@@ -62,7 +65,7 @@ export default function UserManagement() {
       })
       setUsers(data)
     } catch (err) {
-      setError(err.message)
+      setError('Failed to load users — make sure the profiles table and RLS policies are set up in Supabase.')
     } finally {
       setLoading(false)
     }
@@ -79,20 +82,13 @@ export default function UserManagement() {
     if (!newRole) return
     setSaving(userId)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch('/api/manage-roles', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ userId, role: newRole }),
+      // Calls a SECURITY DEFINER RPC — no service role key needed
+      const { error: rpcErr } = await supabase.rpc('update_user_role', {
+        target_user_id: userId,
+        new_role: newRole,
       })
-      if (!res.ok) {
-        const { error } = await res.json()
-        throw new Error(error)
-      }
-      // Update local state
+      if (rpcErr) throw new Error(rpcErr.message)
+
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u))
       setPendingRoles(prev => { const n = { ...prev }; delete n[userId]; return n })
       setFlash(prev => ({ ...prev, [userId]: 'saved' }))
@@ -156,9 +152,9 @@ export default function UserManagement() {
           fontSize: 12, color: 'var(--text-secondary)',
         }}>
           <strong style={{ color: 'var(--text-primary)', marginRight: 4 }}>Roles:</strong>
-          <span><strong style={{ color: 'var(--accent-amber)' }}>Founder</strong> — full access, all dashboards</span>
+          <span><strong style={{ color: 'var(--accent-amber)' }}>Founder</strong> — full access + user management</span>
           <span style={{ color: 'var(--border-default)' }}>·</span>
-          <span><strong style={{ color: 'var(--accent-blue)' }}>Technician</strong> — can create &amp; update tickets</span>
+          <span><strong style={{ color: 'var(--accent-blue)' }}>Technician</strong> — full access, cannot manage users</span>
           <span style={{ color: 'var(--border-default)' }}>·</span>
           <span><strong style={{ color: 'var(--text-secondary)' }}>Viewer</strong> — read-only, default for new accounts</span>
         </div>
@@ -175,7 +171,6 @@ export default function UserManagement() {
           </div>
         ) : (
           <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', padding: 0 }}>
-            {/* Table header */}
             <div style={{
               display: 'grid', gridTemplateColumns: '1fr 140px 140px 100px',
               gap: 12, padding: '10px 16px',
@@ -209,7 +204,6 @@ export default function UserManagement() {
                     transition: 'background 300ms',
                   }}
                 >
-                  {/* Email */}
                   <div>
                     <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: isSelf ? 600 : 400 }}>
                       {u.email}
@@ -222,12 +216,8 @@ export default function UserManagement() {
                     </div>
                   </div>
 
-                  {/* Current role */}
-                  <div>
-                    <RolePill role={u.role} />
-                  </div>
+                  <div><RolePill role={u.role} /></div>
 
-                  {/* Role selector */}
                   <div>
                     {isSelf ? (
                       <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>—</span>
@@ -254,7 +244,6 @@ export default function UserManagement() {
                     )}
                   </div>
 
-                  {/* Save button */}
                   <div>
                     {!isSelf && (
                       <button
