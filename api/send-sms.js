@@ -33,9 +33,14 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields: to, message' })
   }
 
-  // Enforce E.164 format (+[country code][number], 8–15 digits total)
-  if (!/^\+[1-9]\d{7,14}$/.test(to)) {
-    return res.status(400).json({ error: 'Invalid phone number. Use E.164 format (e.g. +14155552671)' })
+  // Normalize to E.164 — strip formatting, assume +1 for 10-digit North American numbers
+  let normalized = to.replace(/\D/g, '')
+  if (normalized.length === 10) normalized = '+1' + normalized           // e.g. 6475551234 → +16475551234
+  else if (normalized.length === 11 && normalized.startsWith('1')) normalized = '+' + normalized  // e.g. 16475551234 → +16475551234
+  else if (!to.startsWith('+')) normalized = '+' + normalized            // already had country code digits
+
+  if (!/^\+[1-9]\d{7,14}$/.test(normalized)) {
+    return res.status(400).json({ error: `Invalid phone number "${to}" — save numbers as 10 digits (6475551234) or E.164 (+16475551234)` })
   }
 
   if (message.length > 1600) {
@@ -52,7 +57,7 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'SMS service unavailable' })
   }
 
-  const body = new URLSearchParams({ To: to, From: from, Body: message })
+  const body = new URLSearchParams({ To: normalized, From: from, Body: message })
 
   const twilioRes = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,

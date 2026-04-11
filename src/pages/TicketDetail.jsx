@@ -80,8 +80,8 @@ export default function TicketDetail() {
       const message = `Hi ${ticket.customer_name}, your repair (${ticket.issue_id}) is now ${ticket.status}. Thank you — Elect Technologies.`
       await sendSMS({ to: ticket.customer_phone, message })
       setNotifStatus('sent')
-    } catch {
-      setNotifStatus('error')
+    } catch (err) {
+      setNotifStatus(err?.message ?? 'SMS failed')
     } finally {
       setNotifying(false)
     }
@@ -226,8 +226,8 @@ export default function TicketDetail() {
             <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
               {notifStatus === 'sent'
                 ? `SMS sent to ${ticket.customer_phone}`
-                : notifStatus === 'error'
-                  ? 'Failed to send SMS — check phone number format.'
+                : notifStatus && notifStatus !== 'sent'
+                  ? notifStatus
                   : 'Send a status update SMS to the customer'}
             </p>
           </div>
@@ -316,7 +316,7 @@ export default function TicketDetail() {
             </div>
             <div style={{ padding: 4, background: 'white', border: '1px solid #ccc', borderRadius: 4, lineHeight: 0 }}>
               <QRCodeSVG
-                value={`${window.location.origin}/ticket/${ticket.id}`}
+                value={`${window.location.origin}/status/${ticket.issue_id}`}
                 size={130}
                 bgColor="#ffffff"
                 fgColor="#000000"
