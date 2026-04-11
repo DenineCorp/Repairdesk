@@ -316,17 +316,7 @@ export default function TicketDetail() {
             </div>
             <div style={{ padding: 4, background: 'white', border: '1px solid #ccc', borderRadius: 4, lineHeight: 0 }}>
               <QRCodeSVG
-                value={JSON.stringify({
-                  id:  ticket.issue_id,
-                  n:   ticket.customer_name,
-                  ph:  ticket.customer_phone,
-                  dev: ticket.device,
-                  st:  ticket.status,
-                  pay: ticket.payments?.[0]?.payment_status ?? 'unpaid',
-                  din: ticket.date_in,
-                  due: ticket.date_expected,
-                  ...(ticket.warranty_days != null && { war: ticket.warranty_days }),
-                })}
+                value={`${window.location.origin}/ticket/${ticket.id}`}
                 size={130}
                 bgColor="#ffffff"
                 fgColor="#000000"
