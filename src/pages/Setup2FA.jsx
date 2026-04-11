@@ -46,7 +46,7 @@ export default function Setup2FA() {
         await supabase.auth.mfa.unenroll({ factorId: factor.id })
       }
 
-      const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'RepairDesk' })
+      const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'ET ServiceDesk' })
       if (error) {
         setError('Failed to start 2FA setup — please refresh and try again.')
         setEnrolling(false)

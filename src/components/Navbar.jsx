@@ -47,7 +47,7 @@ export default function Navbar() {
             lineHeight: 1,
             userSelect: 'none',
           }}>
-            <span style={{ fontWeight: 400, color: '#4f9cf9' }}>Elect</span>
+            <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
             <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
           </span>
         </div>

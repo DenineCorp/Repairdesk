@@ -288,7 +288,7 @@ export default function FounderDashboard() {
       'Payment Status': t.payments?.[0]?.payment_status ?? 'unpaid',
       'Amount (CAD)':   t.payments?.[0]?.amount_paid ? parseFloat(t.payments[0].amount_paid).toFixed(2) : '0.00',
     }))
-    downloadCsv(`repairdesk-export-${ts}.csv`, rows)
+    downloadCsv(`et-servicedesk-export-${ts}.csv`, rows)
   }
 
   const fetchData = async () => {
