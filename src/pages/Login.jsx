@@ -61,10 +61,12 @@ export default function Login() {
     })
     setLoading(false)
     if (signUpError) {
-      if (signUpError.message?.includes('already registered')) {
-        setError('An account with this email already exists.')
+      if (signUpError.message?.includes('already registered') || signUpError.message?.includes('already exists')) {
+        setError('An account with this email already exists. Try signing in instead.')
+      } else if (signUpError.message?.includes('Email not confirmed')) {
+        setError('Account created — check your email inbox to confirm before signing in.')
       } else {
-        setError('Sign-up failed — please try again.')
+        setError(signUpError.message ?? 'Sign-up failed — please try again.')
       }
       return
     }
@@ -118,12 +120,14 @@ export default function Login() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f5f5f7',
+      background: 'transparent',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px 16px',
+      position: 'relative',
+      zIndex: 1,
     }}>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -131,20 +135,27 @@ export default function Login() {
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         style={{ width: '100%', maxWidth: 400 }}
       >
-        {/* Logo mark */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.08, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            style={{ marginBottom: 16 }}
-          >
-            <img src="/logo.jpg" alt="Elect Technologies" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 16 }} />
-          </motion.div>
-          <p style={{ fontSize: 14, color: '#6e6e73' }}>
-            Elect Technologies — staff portal
+        {/* Logo + company name */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.08, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          style={{ textAlign: 'center', marginBottom: 32 }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 10 }}>
+            <img src="/logo.jpg" alt="Elect Technologies" style={{ width: 48, height: 48, objectFit: 'contain', borderRadius: 12 }} />
+            <span style={{
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
+              fontSize: 22, letterSpacing: '-0.02em', lineHeight: 1,
+            }}>
+              <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
+              <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
+            </span>
+          </div>
+          <p style={{ fontSize: 13, color: 'rgba(242,242,247,0.45)' }}>
+            Staff portal — internal use only
           </p>
-        </div>
+        </motion.div>
 
         {/* Card */}
         <div style={{
