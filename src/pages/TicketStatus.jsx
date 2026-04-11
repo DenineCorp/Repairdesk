@@ -25,7 +25,7 @@ export default function TicketStatus() {
     async function load() {
       const { data, error } = await supabase
         .from('tickets')
-        .select('issue_id, device, status, date_in, date_expected, warranty_days')
+        .select('issue_id, device, issue, status, date_in, date_expected, warranty_days')
         .eq('issue_id', issueId)
         .maybeSingle()
 
@@ -108,12 +108,12 @@ export default function TicketStatus() {
                 <p style={{ fontSize: 13, color: '#6e6e73' }}>{cfg.desc}</p>
               </div>
 
-              {/* Details — device + dates only, no customer data */}
+              {/* Details — device, issue description, dates. No customer personal data. */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 20px' }}>
                 {[
-                  ['Device',    ticket.device],
+                  ['Device',     ticket.device],
                   ['Brought in', formatDate(ticket.date_in)],
-                  ['Expected',  formatDate(ticket.date_expected)],
+                  ['Expected',   formatDate(ticket.date_expected)],
                   ...(ticket.warranty_days != null
                     ? [['Warranty', `${ticket.warranty_days} day${ticket.warranty_days !== 1 ? 's' : ''}`]]
                     : []),
@@ -125,6 +125,16 @@ export default function TicketStatus() {
                     <p style={{ fontSize: 14, fontWeight: 500, color: '#1d1d1f' }}>{value}</p>
                   </div>
                 ))}
+
+                {/* Issue description — full width */}
+                {ticket.issue && (
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <p style={{ fontSize: 11, color: '#aeaeb2', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+                      Issue
+                    </p>
+                    <p style={{ fontSize: 14, fontWeight: 500, color: '#1d1d1f', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>{ticket.issue}</p>
+                  </div>
+                )}
               </div>
 
               <p style={{ fontSize: 11, color: '#aeaeb2', textAlign: 'center', marginTop: 20 }}>
