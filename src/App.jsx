@@ -13,6 +13,7 @@ import IntakeForm from './pages/IntakeForm'
 import TicketDetail from './pages/TicketDetail'
 import AuditLog from './pages/AuditLog'
 import UserManagement from './pages/UserManagement'
+import TicketStatus from './pages/TicketStatus'
 
 /** Redirects unauthenticated users; enforces AAL2 if TOTP is enrolled */
 function RequireAuth({ children }) {
@@ -79,6 +80,7 @@ export default function App() {
       <Routes>
         {/* Public */}
         <Route path="/login" element={<Login />} />
+        <Route path="/status/:issueId" element={<TicketStatus />} />
         <Route path="/setup-2fa" element={<RequireSession><Setup2FA /></RequireSession>} />
         <Route path="/verify-2fa" element={<RequireSession><Verify2FA /></RequireSession>} />
 
