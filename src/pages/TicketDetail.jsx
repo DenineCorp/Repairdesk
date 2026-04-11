@@ -268,9 +268,18 @@ export default function TicketDetail() {
           color: 'black',
           background: 'white',
         }}>
-          <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <img src="/logo.jpg" alt="Elect Technologies" style={{ width: 48, height: 48, objectFit: 'contain', display: 'block', margin: '0 auto 8px' }} />
-            <div style={{ fontSize: 30, fontWeight: 900, letterSpacing: 2 }}>{ticket.issue_id}</div>
+          {/* Label header — logo + company name + issue ID */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img src="/logo.jpg" alt="ET" style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: 6 }} />
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'black', letterSpacing: 0.3, lineHeight: 1.2 }}>
+                  Elect Technologies
+                </div>
+                <div style={{ fontSize: 9, color: '#555', letterSpacing: 0.2 }}>Service Receipt</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: 2, color: 'black' }}>{ticket.issue_id}</div>
           </div>
           <hr style={{ borderColor: 'black', margin: '12px 0' }} />
           <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
@@ -295,29 +304,36 @@ export default function TicketDetail() {
           </table>
 
           {/* QR code — customer copy */}
-          <hr style={{ borderColor: 'black', margin: '14px 0 10px' }} />
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', gap: 10 }}>
-            <p style={{ fontSize: 10, color: 'black', margin: 0, maxWidth: 200, lineHeight: 1.4 }}>
-              Customer Copy — Scan for ticket info
-            </p>
-            <QRCodeSVG
-              value={JSON.stringify({
-                id: ticket.issue_id,
-                customer: ticket.customer_name,
-                phone: ticket.customer_phone,
-                device: ticket.device,
-                issue: ticket.issue,
-                status: ticket.status,
-                dateIn: ticket.date_in,
-                dateExpected: ticket.date_expected,
-                payment: ticket.payments?.[0]?.payment_status ?? 'unpaid',
-                warranty: ticket.warranty_days ?? null,
-              })}
-              size={88}
-              bgColor="white"
-              fgColor="black"
-              level="M"
-            />
+          <hr style={{ borderColor: 'black', margin: '14px 0 12px' }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 12 }}>
+            <div>
+              <p style={{ fontSize: 10, fontWeight: 700, color: 'black', margin: '0 0 3px' }}>
+                Customer Copy
+              </p>
+              <p style={{ fontSize: 9, color: '#555', margin: 0, lineHeight: 1.4 }}>
+                Scan QR to view ticket details
+              </p>
+            </div>
+            <div style={{ padding: 4, background: 'white', border: '1px solid #ccc', borderRadius: 4, lineHeight: 0 }}>
+              <QRCodeSVG
+                value={JSON.stringify({
+                  id:  ticket.issue_id,
+                  n:   ticket.customer_name,
+                  ph:  ticket.customer_phone,
+                  dev: ticket.device,
+                  st:  ticket.status,
+                  pay: ticket.payments?.[0]?.payment_status ?? 'unpaid',
+                  din: ticket.date_in,
+                  due: ticket.date_expected,
+                  ...(ticket.warranty_days != null && { war: ticket.warranty_days }),
+                })}
+                size={130}
+                bgColor="#ffffff"
+                fgColor="#000000"
+                level="H"
+                includeMargin={true}
+              />
+            </div>
           </div>
           <hr style={{ borderStyle: 'dashed', borderColor: 'black', margin: '14px 0 4px' }} />
           <p style={{ fontSize: 9, textAlign: 'center', color: 'black', margin: 0 }}>✂ cut here</p>
