@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { useAuth } from './hooks/useAuth'
 import { supabase } from './services/supabaseClient'
 import LoadingSpinner from './components/LoadingSpinner'
+import AnimatedBackground from './components/AnimatedBackground'
 import Login from './pages/Login'
 import Setup2FA from './pages/Setup2FA'
 import Verify2FA from './pages/Verify2FA'
@@ -74,6 +75,7 @@ function RequireFounder({ children }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <AnimatedBackground />
       <Routes>
         {/* Public */}
         <Route path="/login" element={<Login />} />

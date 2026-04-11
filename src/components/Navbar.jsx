@@ -22,10 +22,10 @@ export default function Navbar() {
         right: 0,
         height: 52,
         zIndex: 100,
-        background: 'rgba(255,255,255,0.82)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-        borderBottom: '1px solid rgba(0,0,0,0.08)',
+        background: 'rgba(11,25,41,0.75)',
+        backdropFilter: 'blur(24px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
         boxShadow: 'none',
         display: 'flex',
         alignItems: 'center',
@@ -33,16 +33,30 @@ export default function Navbar() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: 1200, margin: '0 auto' }}>
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <img src="/logo.jpg" alt="Elect Technologies" style={{ height: 28, width: 28, objectFit: 'contain', borderRadius: 4 }} />
+        {/* Logo + company name */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'default' }}>
+          <img
+            src="/logo.jpg"
+            alt="Elect Technologies"
+            style={{ height: 32, width: 32, objectFit: 'contain', borderRadius: 6 }}
+          />
+          <span style={{
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
+            fontSize: 17,
+            letterSpacing: '-0.02em',
+            lineHeight: 1,
+            userSelect: 'none',
+          }}>
+            <span style={{ fontWeight: 400, color: '#4f9cf9' }}>Elect</span>
+            <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
+          </span>
         </div>
 
         {/* Right */}
         {user && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {/* Email */}
-            <span className="nav-email" style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
+            <span className="nav-email" style={{ fontSize: 12, color: 'rgba(242,242,247,0.4)' }}>
               {user.email}
             </span>
 
@@ -54,13 +68,13 @@ export default function Navbar() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 5,
                     background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500,
+                    color: 'rgba(242,242,247,0.65)', fontSize: 12, fontWeight: 500,
                     padding: '3px 8px', borderRadius: 'var(--radius-sm)',
                     transition: 'color 150ms, background 150ms',
                     fontFamily: 'inherit',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--bg-elevated)' }}
-                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'none' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'rgba(242,242,247,0.65)'; e.currentTarget.style.background = 'none' }}
                 >
                   <ClipboardList size={13} strokeWidth={2} />
                   <span className="nav-signout-text">Reports</span>
@@ -70,13 +84,13 @@ export default function Navbar() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 5,
                     background: 'none', border: 'none', cursor: 'pointer',
-                    color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500,
+                    color: 'rgba(242,242,247,0.65)', fontSize: 12, fontWeight: 500,
                     padding: '3px 8px', borderRadius: 'var(--radius-sm)',
                     transition: 'color 150ms, background 150ms',
                     fontFamily: 'inherit',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--bg-elevated)' }}
-                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.background = 'none' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'rgba(242,242,247,0.65)'; e.currentTarget.style.background = 'none' }}
                 >
                   <ClipboardList size={13} strokeWidth={2} />
                   <span className="nav-signout-text">Activity Log</span>
