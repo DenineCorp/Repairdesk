@@ -61,15 +61,16 @@ export default function TicketStatus() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 8 }}>
             <div style={{
               width: 40, height: 40,
-              background: '#e3181a',
-              borderRadius: 10,
+              background: 'transparent',
+              borderRadius: '50%',
+              border: '2.5px solid #e3181a',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
               <span style={{ color: '#fff', fontWeight: 900, fontSize: 15, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
             </div>
             <span style={{ fontFamily: '-apple-system, "Helvetica Neue", sans-serif', fontSize: 20, letterSpacing: '-0.02em' }}>
-              <span style={{ fontWeight: 700, color: '#ffffff' }}>Elect</span>
+              <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
               <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
             </span>
           </div>

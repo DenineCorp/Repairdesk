@@ -145,8 +145,9 @@ export default function Login() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 10 }}>
             <div style={{
               width: 48, height: 48,
-              background: '#e3181a',
-              borderRadius: 12,
+              background: 'transparent',
+              borderRadius: '50%',
+              border: '3px solid #e3181a',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
@@ -156,7 +157,7 @@ export default function Login() {
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
               fontSize: 24, letterSpacing: '-0.02em', lineHeight: 1,
             }}>
-              <span style={{ fontWeight: 700, color: '#ffffff' }}>Elect</span>
+              <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
               <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
             </span>
           </div>

@@ -37,8 +37,9 @@ export default function Navbar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'default' }}>
           <div style={{
             width: 32, height: 32,
-            background: '#e3181a',
-            borderRadius: 8,
+            background: 'transparent',
+            borderRadius: '50%',
+            border: '2.5px solid #e3181a',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
           }}>
@@ -51,7 +52,7 @@ export default function Navbar() {
             lineHeight: 1,
             userSelect: 'none',
           }}>
-            <span style={{ fontWeight: 700, color: '#ffffff' }}>Elect</span>
+            <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
             <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
           </span>
         </div>
