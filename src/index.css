@@ -108,12 +108,23 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-2);
+  transition: box-shadow 200ms ease;
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-3);
 }
 
 .glass-stat {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-1);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.glass-stat:hover {
+  box-shadow: var(--shadow-2);
+  transform: translateY(-1px);
 }
 
 /* ── Scrollbar ────────────────────────────────────────────────────────────────  */
@@ -158,10 +169,22 @@ input[type="number"]::-webkit-outer-spin-button {
 /* ── Pulse animation ─────────────────────────────────────────────────────────── */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 0.45; transform: scale(0.75); }
 }
 .pulse-dot {
-  animation: pulse-dot 2s ease-in-out infinite;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+/* ── Shine animation (for premium buttons / KPI cards) ─────────────────────── */
+@keyframes shine {
+  from { transform: translateX(-100%) skewX(-12deg); }
+  to   { transform: translateX(250%)  skewX(-12deg); }
+}
+
+/* ── Gradient border glow ────────────────────────────────────────────────────── */
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
 }
 
 /* ── Skeleton loader ─────────────────────────────────────────────────────────── */

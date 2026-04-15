@@ -15,7 +15,7 @@ function sanitizeAuthError(err) {
 }
 
 export default function Login() {
-  const [mode, setMode]           = useState('login') // 'login' | 'signup'
+  const [mode, setMode]           = useState('login')
   const [email, setEmail]         = useState('')
   const [password, setPassword]   = useState('')
   const [confirmPw, setConfirmPw] = useState('')
@@ -104,17 +104,17 @@ export default function Login() {
 
   const inputStyle = (field) => ({
     width: '100%',
-    background: '#ffffff',
-    border: `1px solid ${focusedField === field ? '#0071e3' : 'rgba(0,0,0,0.12)'}`,
-    borderRadius: 'var(--radius-md)',
+    background: focusedField === field ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.05)',
+    border: `1px solid ${focusedField === field ? 'rgba(79,156,249,0.6)' : 'rgba(255,255,255,0.1)'}`,
+    borderRadius: '10px',
     padding: '11px 14px',
-    color: '#1d1d1f',
+    color: '#f2f2f7',
     fontSize: 15,
     outline: 'none',
     fontFamily: 'inherit',
-    transition: 'border-color 150ms ease, box-shadow 150ms ease',
-    boxShadow: focusedField === field ? '0 0 0 4px rgba(0,113,227,0.15)' : 'none',
-    caretColor: '#0071e3',
+    transition: 'border-color 150ms ease, background 150ms ease, box-shadow 150ms ease',
+    boxShadow: focusedField === field ? '0 0 0 3px rgba(79,156,249,0.15)' : 'none',
+    caretColor: '#4f9cf9',
   })
 
   return (
@@ -130,17 +130,17 @@ export default function Login() {
       zIndex: 1,
     }}>
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         style={{ width: '100%', maxWidth: 400 }}
       >
         {/* Logo + company name */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.08, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          style={{ textAlign: 'center', marginBottom: 32 }}
+          transition={{ delay: 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          style={{ textAlign: 'center', marginBottom: 36 }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 10 }}>
             <div style={{
@@ -150,6 +150,7 @@ export default function Login() {
               border: '3px solid #e3181a',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
+              boxShadow: '0 0 20px rgba(227,24,26,0.25)',
             }}>
               <span style={{ color: '#fff', fontWeight: 900, fontSize: 18, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
             </div>
@@ -161,21 +162,29 @@ export default function Login() {
               <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
             </span>
           </div>
-          <p style={{ fontSize: 14, color: 'rgba(242,242,247,0.45)' }}>
+          <p style={{ fontSize: 14, color: 'rgba(242,242,247,0.4)', letterSpacing: '0.01em' }}>
             Staff portal — internal use only
           </p>
         </motion.div>
 
         {/* Card */}
         <div style={{
-          background: '#ffffff',
-          border: '1px solid rgba(0,0,0,0.08)',
-          borderRadius: 'var(--radius-2xl)',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '20px',
           padding: '36px 32px',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 32px 80px rgba(0,0,0,0.6), 0 8px 32px rgba(0,0,0,0.4)',
         }}>
           {/* Mode tabs */}
-          <div style={{ display: 'flex', gap: 0, marginBottom: 28, background: 'rgba(0,0,0,0.04)', borderRadius: 'var(--radius-md)', padding: 3 }}>
+          <div style={{
+            display: 'flex', gap: 0, marginBottom: 28,
+            background: 'rgba(255,255,255,0.05)',
+            borderRadius: '10px',
+            padding: 3,
+            border: '1px solid rgba(255,255,255,0.07)',
+          }}>
             {['login', 'signup'].map(m => (
               <button
                 key={m}
@@ -183,11 +192,11 @@ export default function Login() {
                 onClick={() => { setMode(m); setError(null); setSignupDone(false) }}
                 style={{
                   flex: 1, border: 'none', fontFamily: 'inherit', fontSize: 14, fontWeight: 500,
-                  cursor: 'pointer', padding: '7px 0', borderRadius: 'calc(var(--radius-md) - 1px)',
-                  transition: 'background 150ms, color 150ms',
-                  background: mode === m ? '#ffffff' : 'transparent',
-                  color: mode === m ? '#1d1d1f' : '#6e6e73',
-                  boxShadow: mode === m ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  cursor: 'pointer', padding: '8px 0', borderRadius: '8px',
+                  transition: 'background 150ms, color 150ms, box-shadow 150ms',
+                  background: mode === m ? 'rgba(255,255,255,0.1)' : 'transparent',
+                  color: mode === m ? '#f2f2f7' : 'rgba(242,242,247,0.4)',
+                  boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.3)' : 'none',
                 }}
               >
                 {m === 'login' ? 'Sign in' : 'Create account'}
@@ -201,10 +210,10 @@ export default function Login() {
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               style={{
-                background: 'rgba(255,59,48,0.06)',
-                border: '1px solid rgba(255,59,48,0.18)',
-                color: '#ff3b30',
-                borderRadius: 'var(--radius-md)',
+                background: 'rgba(255,59,48,0.1)',
+                border: '1px solid rgba(255,59,48,0.22)',
+                color: '#ff6b6b',
+                borderRadius: '10px',
                 padding: '10px 14px',
                 fontSize: 14,
                 marginBottom: 20,
@@ -216,29 +225,29 @@ export default function Login() {
 
           {/* Signup success */}
           {signupDone ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '16px 0',
-            }}>
+            <div style={{ textAlign: 'center', padding: '16px 0' }}>
               <div style={{
                 width: 48, height: 48, borderRadius: '50%',
-                background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)',
+                background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 margin: '0 auto 16px',
                 fontSize: 22,
               }}>✓</div>
-              <p style={{ fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>Check your email</p>
-              <p style={{ fontSize: 14, color: '#6e6e73', lineHeight: 1.5 }}>
-                We sent a confirmation link to <strong>{email}</strong>. Verify your email, then sign in to set up 2FA.
+              <p style={{ fontSize: 15, fontWeight: 500, color: '#f2f2f7', marginBottom: 8 }}>Check your email</p>
+              <p style={{ fontSize: 14, color: 'rgba(242,242,247,0.55)', lineHeight: 1.6 }}>
+                We sent a confirmation link to <strong style={{ color: '#f2f2f7' }}>{email}</strong>. Verify your email, then sign in to set up 2FA.
               </p>
               <button
                 type="button"
                 onClick={() => { setMode('login'); setSignupDone(false); setError(null) }}
                 style={{
                   marginTop: 20, background: '#0071e3', color: '#fff', border: 'none',
-                  borderRadius: 'var(--radius-md)', padding: '10px 24px',
-                  fontSize: 14, fontWeight: 400, cursor: 'pointer', fontFamily: 'inherit',
+                  borderRadius: '10px', padding: '10px 24px',
+                  fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
+                  transition: 'background 150ms',
                 }}
+                onMouseEnter={e => e.currentTarget.style.background = '#0077ed'}
+                onMouseLeave={e => e.currentTarget.style.background = '#0071e3'}
               >
                 Go to sign in
               </button>
@@ -246,7 +255,7 @@ export default function Login() {
           ) : mode === 'signup' ? (
             <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'rgba(242,242,247,0.6)', marginBottom: 7 }}>
                   Work email
                 </label>
                 <input
@@ -260,10 +269,10 @@ export default function Login() {
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
                 />
-                <p style={{ fontSize: 11, color: '#aeaeb2', marginTop: 5 }}>Must be an @electtech.ca email address</p>
+                <p style={{ fontSize: 12, color: 'rgba(242,242,247,0.3)', marginTop: 5 }}>Must be an @electtech.ca email address</p>
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'rgba(242,242,247,0.6)', marginBottom: 7 }}>
                   Password
                 </label>
                 <input
@@ -279,7 +288,7 @@ export default function Login() {
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'rgba(242,242,247,0.6)', marginBottom: 7 }}>
                   Confirm password
                 </label>
                 <input
@@ -298,11 +307,13 @@ export default function Login() {
                 type="submit"
                 disabled={loading}
                 style={{
-                  width: '100%', background: loading ? 'rgba(0,113,227,0.45)' : '#0071e3',
-                  color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
-                  padding: '12px 16px', fontSize: 15, fontWeight: 400,
+                  width: '100%',
+                  background: loading ? 'rgba(0,113,227,0.5)' : '#0071e3',
+                  color: '#fff', border: 'none', borderRadius: '10px',
+                  padding: '12px 16px', fontSize: 15, fontWeight: 500,
                   cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', marginTop: 4,
                   transition: 'background 200ms ease, transform 80ms ease',
+                  boxShadow: loading ? 'none' : '0 4px 16px rgba(0,113,227,0.3)',
                 }}
                 onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#0077ed' }}
                 onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#0071e3' }}
@@ -315,7 +326,7 @@ export default function Login() {
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'rgba(242,242,247,0.6)', marginBottom: 7 }}>
                   Email
                 </label>
                 <input
@@ -331,7 +342,7 @@ export default function Login() {
                 />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#6e6e73', marginBottom: 7 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'rgba(242,242,247,0.6)', marginBottom: 7 }}>
                   Password
                 </label>
                 <input
@@ -350,11 +361,13 @@ export default function Login() {
                 type="submit"
                 disabled={loading}
                 style={{
-                  width: '100%', background: loading ? 'rgba(0,113,227,0.45)' : '#0071e3',
-                  color: '#fff', border: 'none', borderRadius: 'var(--radius-md)',
-                  padding: '12px 16px', fontSize: 15, fontWeight: 400,
+                  width: '100%',
+                  background: loading ? 'rgba(0,113,227,0.5)' : '#0071e3',
+                  color: '#fff', border: 'none', borderRadius: '10px',
+                  padding: '12px 16px', fontSize: 15, fontWeight: 500,
                   cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', marginTop: 4,
                   transition: 'background 200ms ease, transform 80ms ease',
+                  boxShadow: loading ? 'none' : '0 4px 16px rgba(0,113,227,0.3)',
                 }}
                 onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#0077ed' }}
                 onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#0071e3' }}
@@ -369,8 +382,8 @@ export default function Login() {
 
         <p style={{
           textAlign: 'center',
-          fontSize: 12,
-          color: '#aeaeb2',
+          fontSize: 13,
+          color: 'rgba(242,242,247,0.3)',
           marginTop: 20,
         }}>
           {mode === 'signup' ? 'Read-only access by default — a founder can escalate your role.' : 'Authorised access only'}

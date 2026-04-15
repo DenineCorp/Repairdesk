@@ -22,11 +22,11 @@ export default function Navbar() {
         right: 0,
         height: 52,
         zIndex: 100,
-        background: 'rgba(11,25,41,0.75)',
-        backdropFilter: 'blur(24px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+        background: 'rgba(11,25,41,0.82)',
+        backdropFilter: 'blur(32px) saturate(200%)',
+        WebkitBackdropFilter: 'blur(32px) saturate(200%)',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: 'none',
+        boxShadow: '0 1px 0 rgba(79,156,249,0.08), 0 4px 24px rgba(0,0,0,0.3)',
         display: 'flex',
         alignItems: 'center',
         padding: '0 20px',
@@ -42,6 +42,7 @@ export default function Navbar() {
             border: '2.5px solid #e3181a',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
+            boxShadow: '0 0 12px rgba(227,24,26,0.2)',
           }}>
             <span style={{ color: '#fff', fontWeight: 900, fontSize: 14, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
           </div>

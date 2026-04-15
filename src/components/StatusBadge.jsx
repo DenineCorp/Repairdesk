@@ -1,27 +1,31 @@
 const STATUS_CONFIG = {
   pending: {
-    color: '#8b8b9a',
-    bg: 'rgba(139,139,154,0.1)',
-    border: 'rgba(139,139,154,0.15)',
+    color: '#ff9f0a',
+    bg: 'rgba(255,159,10,0.1)',
+    border: 'rgba(255,159,10,0.22)',
     label: 'Pending',
+    pulse: true,
   },
   'in progress': {
     color: 'var(--accent-blue)',
     bg: 'var(--accent-blue-dim)',
-    border: 'rgba(227,24,55,0.2)',
+    border: 'rgba(0,113,227,0.22)',
     label: 'In Progress',
+    pulse: true,
   },
   ready: {
     color: 'var(--accent-green)',
     bg: 'var(--accent-green-dim)',
-    border: 'rgba(16,185,129,0.2)',
+    border: 'rgba(16,185,129,0.22)',
     label: 'Ready',
+    pulse: false,
   },
   collected: {
     color: 'var(--text-tertiary)',
     bg: 'transparent',
     border: 'var(--border-subtle)',
     label: 'Collected',
+    pulse: false,
   },
 }
 
@@ -32,24 +36,29 @@ export default function StatusBadge({ status }) {
     <span style={{
       display: 'inline-flex',
       alignItems: 'center',
-      gap: 5,
+      gap: 6,
       fontSize: 12,
-      fontWeight: 500,
+      fontWeight: 600,
       color: cfg.color,
       background: cfg.bg,
       border: `1px solid ${cfg.border}`,
-      borderRadius: 'var(--radius-sm)',
-      padding: '3px 8px',
+      borderRadius: '20px',
+      padding: '3px 10px',
       lineHeight: 1.4,
       whiteSpace: 'nowrap',
+      letterSpacing: '0.01em',
     }}>
-      <span style={{
-        width: 6,
-        height: 6,
-        borderRadius: '50%',
-        background: cfg.color,
-        flexShrink: 0,
-      }} />
+      <span
+        className={cfg.pulse ? 'pulse-dot' : undefined}
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: '50%',
+          background: cfg.color,
+          flexShrink: 0,
+          boxShadow: cfg.pulse ? `0 0 6px ${cfg.color}` : 'none',
+        }}
+      />
       {cfg.label}
     </span>
   )
