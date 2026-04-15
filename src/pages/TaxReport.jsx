@@ -126,7 +126,7 @@ export default function TaxReport() {
   // ── Styles ──────────────────────────────────────────────────────────────────
   const thStyle = {
     padding: '10px 14px',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
     color: 'var(--text-secondary)',
     textTransform: 'uppercase',
@@ -153,8 +153,8 @@ export default function TaxReport() {
       }}>
         {value}
       </div>
-      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6 }}>{label}</div>
-      {sub && <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>{sub}</div>}
+      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6 }}>{label}</div>
+      {sub && <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginTop: 2 }}>{sub}</div>}
     </motion.div>
   )
 
@@ -178,7 +178,7 @@ export default function TaxReport() {
             <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Tax Report
             </h1>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
               BC tax breakdown — GST 5% + PST 7% on all paid repairs
             </p>
           </div>
@@ -202,7 +202,7 @@ export default function TaxReport() {
                     border: 'none',
                     borderRight: i < PERIODS.length - 1 ? '1px solid var(--border-subtle)' : 'none',
                     padding: '6px 12px',
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: period === p.value ? 600 : 400,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -224,7 +224,7 @@ export default function TaxReport() {
                 border: '1px solid var(--border-default)',
                 borderRadius: 'var(--radius-md)',
                 color: 'var(--text-secondary)',
-                fontSize: 13, fontWeight: 500,
+                fontSize: 14, fontWeight: 500,
                 padding: '7px 12px',
                 cursor: payments.length === 0 ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit',
@@ -272,7 +272,7 @@ export default function TaxReport() {
         {/* ── Breakdown table ─────────────────────────────────────────────────── */}
         <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
           {loading ? (
-            <p style={{ padding: '40px', fontSize: 13, color: 'var(--text-tertiary)', textAlign: 'center' }}>
+            <p style={{ padding: '40px', fontSize: 14, color: 'var(--text-tertiary)', textAlign: 'center' }}>
               Loading…
             </p>
           ) : (
@@ -299,7 +299,7 @@ export default function TaxReport() {
                     const td = {
                       padding: '11px 14px',
                       borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)',
-                      fontSize: 13,
+                      fontSize: 14,
                     }
                     return (
                       <tr key={p.id}>
@@ -340,7 +340,7 @@ export default function TaxReport() {
                         colSpan={4}
                         style={{
                           padding: '10px 14px',
-                          fontSize: 11, fontWeight: 600,
+                          fontSize: 12, fontWeight: 600,
                           color: 'var(--text-secondary)',
                           textTransform: 'uppercase', letterSpacing: '0.05em',
                           borderTop: '1px solid var(--border-default)',
@@ -366,7 +366,7 @@ export default function TaxReport() {
               </table>
 
               {payments.length === 0 && (
-                <p style={{ textAlign: 'center', padding: '40px', fontSize: 13, color: 'var(--text-tertiary)' }}>
+                <p style={{ textAlign: 'center', padding: '40px', fontSize: 14, color: 'var(--text-tertiary)' }}>
                   No paid transactions in this period.
                 </p>
               )}
@@ -377,7 +377,7 @@ export default function TaxReport() {
         {/* ── Remittance note ─────────────────────────────────────────────────── */}
         {payments.length > 0 && (
           <p style={{
-            marginTop: 16, fontSize: 12,
+            marginTop: 16, fontSize: 13,
             color: 'var(--text-tertiary)',
             textAlign: 'right',
             letterSpacing: '0.01em',

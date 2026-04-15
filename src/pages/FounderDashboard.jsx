@@ -31,7 +31,7 @@ function Toast({ toasts }) {
               border: `1px solid ${t.type === 'success' ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}`,
               borderRadius: 'var(--radius-md)',
               padding: '10px 14px',
-              fontSize: 13,
+              fontSize: 14,
               color: t.type === 'success' ? 'var(--accent-green)' : 'var(--accent-red)',
               boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
               pointerEvents: 'auto',
@@ -66,7 +66,7 @@ function OfflineBanner() {
       background: 'var(--accent-amber-dim)',
       borderBottom: '1px solid rgba(245,158,11,0.2)',
       padding: '7px 24px',
-      fontSize: 12, fontWeight: 500,
+      fontSize: 13, fontWeight: 500,
       color: 'var(--accent-amber)',
       textAlign: 'center',
     }}>
@@ -158,7 +158,7 @@ const inputStyle = {
   borderRadius: 'var(--radius-md)',
   padding: '8px 12px',
   color: 'var(--text-primary)',
-  fontSize: 13,
+  fontSize: 14,
   outline: 'none',
   fontFamily: 'inherit',
   transition: 'border-color 150ms ease, box-shadow 150ms ease',
@@ -185,7 +185,7 @@ function NotifyButton({ ticket, addToast }) {
 
   if (state === 'sent') {
     return (
-      <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-tertiary)', flexShrink: 0 }}>
+      <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-tertiary)', flexShrink: 0 }}>
         Notified ✓
       </span>
     )
@@ -243,7 +243,7 @@ function NotifyButton({ ticket, addToast }) {
         border: '1px solid rgba(16,185,129,0.2)',
         borderRadius: 'var(--radius-sm)',
         padding: '4px 10px',
-        fontSize: 12, fontWeight: 500,
+        fontSize: 13, fontWeight: 500,
         cursor: state === 'loading' ? 'not-allowed' : 'pointer',
         fontFamily: 'inherit',
         opacity: state === 'loading' ? 0.6 : 1,
@@ -346,7 +346,7 @@ export default function FounderDashboard() {
       <div style={{ fontSize: 24, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>
         {value}
       </div>
-      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6 }}>{label}</div>
+      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6 }}>{label}</div>
     </motion.div>
   )
 
@@ -358,7 +358,7 @@ export default function FounderDashboard() {
           border: '1px solid var(--border-default)',
           borderRadius: 'var(--radius-md)',
           padding: '8px 12px',
-          fontSize: 12,
+          fontSize: 13,
           color: 'var(--text-primary)',
         }}>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 2 }}>{label}</p>
@@ -371,7 +371,7 @@ export default function FounderDashboard() {
 
   const thStyle = {
     padding: '10px 16px',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
     color: 'var(--text-secondary)',
     textTransform: 'uppercase',
@@ -400,7 +400,7 @@ export default function FounderDashboard() {
             <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Founder Dashboard
             </h1>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
               {unpaidCount} awaiting payment
             </p>
           </div>
@@ -410,7 +410,7 @@ export default function FounderDashboard() {
               display: 'flex', alignItems: 'center', gap: 6,
               background: 'var(--accent-blue)', color: '#fff',
               border: 'none', borderRadius: 'var(--radius-md)',
-              padding: '8px 14px', fontSize: 13, fontWeight: 500,
+              padding: '8px 14px', fontSize: 14, fontWeight: 500,
               cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
             }}
             onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}
@@ -440,7 +440,7 @@ export default function FounderDashboard() {
               padding: 20,
               marginBottom: 24,
             }}>
-              <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
                 Revenue — last 7 days
               </p>
               <ResponsiveContainer width="100%" height={160}>
@@ -448,12 +448,12 @@ export default function FounderDashboard() {
                   <CartesianGrid vertical={false} stroke="var(--border-subtle)" />
                   <XAxis
                     dataKey="label"
-                    tick={{ fill: 'var(--text-secondary)', fontSize: 11 }}
+                    tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fill: 'var(--text-secondary)', fontSize: 11 }}
+                    tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
                     axisLine={false}
                     tickLine={false}
                     tickFormatter={v => `CAD ${v}`}
@@ -500,7 +500,7 @@ export default function FounderDashboard() {
                   border: '1px solid var(--border-default)',
                   borderRadius: 'var(--radius-md)',
                   color: 'var(--text-secondary)',
-                  fontSize: 13, fontWeight: 500,
+                  fontSize: 14, fontWeight: 500,
                   padding: '7px 12px',
                   cursor: filtered.length === 0 ? 'not-allowed' : 'pointer',
                   fontFamily: 'inherit',
@@ -558,7 +558,7 @@ export default function FounderDashboard() {
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
-                  <p style={{ textAlign: 'center', padding: '32px 0', fontSize: 13, color: 'var(--text-tertiary)' }}>
+                  <p style={{ textAlign: 'center', padding: '32px 0', fontSize: 14, color: 'var(--text-tertiary)' }}>
                     No tickets found.
                   </p>
                 )}
@@ -592,7 +592,7 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
           onClick={onNavigate}
           style={{
             fontFamily: 'ui-monospace, "Cascadia Code", monospace',
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: 600,
             color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)',
             cursor: 'pointer',
@@ -602,9 +602,9 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
         </span>
       </td>
       <td style={{ ...tdStyle, color: 'var(--text-primary)', fontWeight: 500 }}>{ticket.customer_name}</td>
-      <td style={{ ...tdStyle, color: 'var(--text-secondary)', fontSize: 13 }}>{ticket.device}</td>
+      <td style={{ ...tdStyle, color: 'var(--text-secondary)', fontSize: 14 }}>{ticket.device}</td>
       <td style={tdStyle}><StatusBadge status={ticket.status} /></td>
-      <td style={{ ...tdStyle, color: overdue ? 'var(--accent-red)' : 'var(--text-secondary)', fontSize: 13 }}>
+      <td style={{ ...tdStyle, color: overdue ? 'var(--accent-red)' : 'var(--text-secondary)', fontSize: 14 }}>
         {formatDate(ticket.date_expected)}
       </td>
       <td style={tdStyle}>
@@ -618,7 +618,7 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
           return (
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
-              fontSize: 12, fontWeight: 500,
+              fontSize: 13, fontWeight: 500,
               color: cfg.color, background: cfg.bg,
               border: `1px solid ${cfg.border}`,
               borderRadius: 'var(--radius-sm)',
@@ -630,7 +630,7 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
           )
         })()}
       </td>
-      <td style={{ ...tdStyle, fontFamily: 'ui-monospace, monospace', fontSize: 13, color: isPaid ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
+      <td style={{ ...tdStyle, fontFamily: 'ui-monospace, monospace', fontSize: 14, color: isPaid ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
         {payment?.amount_paid ? `CAD ${parseFloat(payment.amount_paid).toFixed(2)}` : '—'}
       </td>
       <td style={tdStyle}>

@@ -59,13 +59,21 @@ export default function TicketStatus() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 8 }}>
-            <img src="/logo.jpg" alt="ET" style={{ width: 40, height: 40, objectFit: 'contain', borderRadius: 10 }} />
-            <span style={{ fontFamily: '-apple-system, "Helvetica Neue", sans-serif', fontSize: 19, letterSpacing: '-0.02em' }}>
-              <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
+            <div style={{
+              width: 40, height: 40,
+              background: '#e3181a',
+              borderRadius: 10,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <span style={{ color: '#fff', fontWeight: 900, fontSize: 15, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
+            </div>
+            <span style={{ fontFamily: '-apple-system, "Helvetica Neue", sans-serif', fontSize: 20, letterSpacing: '-0.02em' }}>
+              <span style={{ fontWeight: 700, color: '#ffffff' }}>Elect</span>
               <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
             </span>
           </div>
-          <p style={{ fontSize: 12, color: 'rgba(242,242,247,0.45)' }}>Repair Status</p>
+          <p style={{ fontSize: 13, color: 'rgba(242,242,247,0.45)' }}>Repair Status</p>
         </div>
 
         {/* Card */}
@@ -80,13 +88,13 @@ export default function TicketStatus() {
           ) : notFound ? (
             <div style={{ textAlign: 'center' }}>
               <p style={{ fontSize: 16, fontWeight: 600, color: '#1d1d1f', marginBottom: 8 }}>Ticket not found</p>
-              <p style={{ fontSize: 13, color: '#6e6e73' }}>The reference ID on this label could not be found.</p>
+              <p style={{ fontSize: 14, color: '#6e6e73' }}>The reference ID on this label could not be found.</p>
             </div>
           ) : (
             <>
               {/* Issue ID */}
               <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                <p style={{ fontSize: 11, color: '#aeaeb2', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+                <p style={{ fontSize: 12, color: '#aeaeb2', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
                   Reference
                 </p>
                 <p style={{ fontSize: 28, fontWeight: 900, color: '#1d1d1f', letterSpacing: 1 }}>
@@ -105,7 +113,7 @@ export default function TicketStatus() {
                 <p style={{ fontSize: 18, fontWeight: 700, color: cfg.color, marginBottom: 4 }}>
                   {cfg.label}
                 </p>
-                <p style={{ fontSize: 13, color: '#6e6e73' }}>{cfg.desc}</p>
+                <p style={{ fontSize: 14, color: '#6e6e73' }}>{cfg.desc}</p>
               </div>
 
               {/* Details — device, issue description, dates. No customer personal data. */}
@@ -119,7 +127,7 @@ export default function TicketStatus() {
                     : []),
                 ].map(([label, value]) => (
                   <div key={label}>
-                    <p style={{ fontSize: 11, color: '#aeaeb2', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+                    <p style={{ fontSize: 12, color: '#aeaeb2', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
                       {label}
                     </p>
                     <p style={{ fontSize: 14, fontWeight: 500, color: '#1d1d1f' }}>{value}</p>
@@ -129,7 +137,7 @@ export default function TicketStatus() {
                 {/* Issue description — full width */}
                 {ticket.issue && (
                   <div style={{ gridColumn: '1 / -1' }}>
-                    <p style={{ fontSize: 11, color: '#aeaeb2', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+                    <p style={{ fontSize: 12, color: '#aeaeb2', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
                       Issue
                     </p>
                     <p style={{ fontSize: 14, fontWeight: 500, color: '#1d1d1f', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>{ticket.issue}</p>
@@ -137,7 +145,7 @@ export default function TicketStatus() {
                 )}
               </div>
 
-              <p style={{ fontSize: 11, color: '#aeaeb2', textAlign: 'center', marginTop: 20 }}>
+              <p style={{ fontSize: 12, color: '#aeaeb2', textAlign: 'center', marginTop: 20 }}>
                 Questions? Visit us or call during business hours.
               </p>
             </>

@@ -143,16 +143,24 @@ export default function Login() {
           style={{ textAlign: 'center', marginBottom: 32 }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 10 }}>
-            <img src="/logo.jpg" alt="Elect Technologies" style={{ width: 48, height: 48, objectFit: 'contain', borderRadius: 12 }} />
+            <div style={{
+              width: 48, height: 48,
+              background: '#e3181a',
+              borderRadius: 12,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <span style={{ color: '#fff', fontWeight: 900, fontSize: 18, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
+            </div>
             <span style={{
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
-              fontSize: 22, letterSpacing: '-0.02em', lineHeight: 1,
+              fontSize: 24, letterSpacing: '-0.02em', lineHeight: 1,
             }}>
-              <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
+              <span style={{ fontWeight: 700, color: '#ffffff' }}>Elect</span>
               <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
             </span>
           </div>
-          <p style={{ fontSize: 13, color: 'rgba(242,242,247,0.45)' }}>
+          <p style={{ fontSize: 14, color: 'rgba(242,242,247,0.45)' }}>
             Staff portal — internal use only
           </p>
         </motion.div>
@@ -173,7 +181,7 @@ export default function Login() {
                 type="button"
                 onClick={() => { setMode(m); setError(null); setSignupDone(false) }}
                 style={{
-                  flex: 1, border: 'none', fontFamily: 'inherit', fontSize: 13, fontWeight: 500,
+                  flex: 1, border: 'none', fontFamily: 'inherit', fontSize: 14, fontWeight: 500,
                   cursor: 'pointer', padding: '7px 0', borderRadius: 'calc(var(--radius-md) - 1px)',
                   transition: 'background 150ms, color 150ms',
                   background: mode === m ? '#ffffff' : 'transparent',
@@ -197,7 +205,7 @@ export default function Login() {
                 color: '#ff3b30',
                 borderRadius: 'var(--radius-md)',
                 padding: '10px 14px',
-                fontSize: 13,
+                fontSize: 14,
                 marginBottom: 20,
               }}
             >
@@ -219,7 +227,7 @@ export default function Login() {
                 fontSize: 22,
               }}>✓</div>
               <p style={{ fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>Check your email</p>
-              <p style={{ fontSize: 13, color: '#6e6e73', lineHeight: 1.5 }}>
+              <p style={{ fontSize: 14, color: '#6e6e73', lineHeight: 1.5 }}>
                 We sent a confirmation link to <strong>{email}</strong>. Verify your email, then sign in to set up 2FA.
               </p>
               <button

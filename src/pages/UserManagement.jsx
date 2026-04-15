@@ -17,7 +17,7 @@ function RolePill({ role }) {
   const cfg = ROLE_CFG[role] ?? ROLE_CFG.viewer
   return (
     <span style={{
-      fontSize: 11, fontWeight: 500,
+      fontSize: 12, fontWeight: 500,
       color: cfg.color, background: cfg.bg,
       border: `1px solid ${cfg.border}`,
       borderRadius: 'var(--radius-sm)',
@@ -119,7 +119,7 @@ export default function UserManagement() {
               <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
                 User Management
               </h1>
-              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
                 Manage roles for all staff accounts
               </p>
             </div>
@@ -130,7 +130,7 @@ export default function UserManagement() {
               display: 'flex', alignItems: 'center', gap: 6,
               background: 'none', border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-md)',
-              color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500,
+              color: 'var(--text-secondary)', fontSize: 13, fontWeight: 500,
               padding: '6px 12px', cursor: 'pointer', fontFamily: 'inherit',
               transition: 'color 150ms, border-color 150ms',
             }}
@@ -149,7 +149,7 @@ export default function UserManagement() {
           background: 'rgba(0,113,227,0.04)',
           border: '1px solid rgba(0,113,227,0.1)',
           borderRadius: 'var(--radius-md)',
-          fontSize: 12, color: 'var(--text-secondary)',
+          fontSize: 13, color: 'var(--text-secondary)',
         }}>
           <strong style={{ color: 'var(--text-primary)', marginRight: 4 }}>Roles:</strong>
           <span><strong style={{ color: 'var(--accent-amber)' }}>Founder</strong> — full access + user management</span>
@@ -165,7 +165,7 @@ export default function UserManagement() {
           <div style={{
             background: 'var(--accent-red-dim)', border: '1px solid rgba(239,68,68,0.2)',
             color: 'var(--accent-red)', borderRadius: 'var(--radius-md)',
-            padding: '12px 16px', fontSize: 13,
+            padding: '12px 16px', fontSize: 14,
           }}>
             {error}
           </div>
@@ -175,7 +175,7 @@ export default function UserManagement() {
               display: 'grid', gridTemplateColumns: '1fr 140px 140px 100px',
               gap: 12, padding: '10px 16px',
               borderBottom: '1px solid var(--border-subtle)',
-              fontSize: 11, fontWeight: 600,
+              fontSize: 12, fontWeight: 600,
               color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em',
             }}>
               <span>Email</span>
@@ -185,7 +185,7 @@ export default function UserManagement() {
             </div>
 
             {users.length === 0 ? (
-              <p style={{ fontSize: 13, color: 'var(--text-tertiary)', padding: '20px 16px' }}>No users found.</p>
+              <p style={{ fontSize: 14, color: 'var(--text-tertiary)', padding: '20px 16px' }}>No users found.</p>
             ) : users.map(u => {
               const isSelf = u.id === currentUserId
               const pending = pendingRoles[u.id]
@@ -205,13 +205,13 @@ export default function UserManagement() {
                   }}
                 >
                   <div>
-                    <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: isSelf ? 600 : 400 }}>
+                    <span style={{ fontSize: 14, color: 'var(--text-primary)', fontWeight: isSelf ? 600 : 400 }}>
                       {u.email}
                     </span>
                     {isSelf && (
-                      <span style={{ fontSize: 11, color: 'var(--text-tertiary)', marginLeft: 6 }}>(you)</span>
+                      <span style={{ fontSize: 12, color: 'var(--text-tertiary)', marginLeft: 6 }}>(you)</span>
                     )}
-                    <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 1 }}>
+                    <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginTop: 1 }}>
                       Joined {formatDate(u.created_at)}
                     </div>
                   </div>
@@ -220,7 +220,7 @@ export default function UserManagement() {
 
                   <div>
                     {isSelf ? (
-                      <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>—</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>—</span>
                     ) : (
                       <select
                         value={pending ?? u.role}
@@ -230,7 +230,7 @@ export default function UserManagement() {
                           border: `1px solid ${isDirty ? 'var(--accent-blue)' : 'var(--border-default)'}`,
                           borderRadius: 'var(--radius-sm)',
                           color: 'var(--text-primary)',
-                          fontSize: 12, padding: '5px 8px',
+                          fontSize: 13, padding: '5px 8px',
                           cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
                           width: '100%',
                         }}
@@ -250,7 +250,7 @@ export default function UserManagement() {
                         onClick={() => saveRole(u.id)}
                         disabled={!isDirty || saving === u.id}
                         style={{
-                          fontSize: 12, fontWeight: 500,
+                          fontSize: 13, fontWeight: 500,
                           padding: '5px 12px',
                           borderRadius: 'var(--radius-sm)',
                           border: 'none',

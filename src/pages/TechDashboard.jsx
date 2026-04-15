@@ -51,7 +51,7 @@ function Toast({ toasts }) {
               border: `1px solid ${t.type === 'success' ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)'}`,
               borderRadius: 'var(--radius-md)',
               padding: '10px 14px',
-              fontSize: 13,
+              fontSize: 14,
               color: t.type === 'success' ? 'var(--accent-green)' : 'var(--accent-red)',
               boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
               pointerEvents: 'auto',
@@ -81,7 +81,7 @@ function PaymentBadge({ status }) {
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 5,
-      fontSize: 11, fontWeight: 500,
+      fontSize: 12, fontWeight: 500,
       color: cfg.color, background: cfg.bg,
       border: `1px solid ${cfg.border}`,
       borderRadius: 'var(--radius-sm)',
@@ -161,7 +161,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
       {/* Amount input */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 0 }} onClick={e => e.stopPropagation()}>
         <span style={{
-          fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)',
+          fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)',
           background: 'var(--bg-elevated)',
           border: '1px solid var(--border-default)',
           borderRight: 'none',
@@ -186,7 +186,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
           borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
           padding: '4px 7px',
           color: 'var(--text-primary)',
-          fontSize: 12,
+          fontSize: 13,
           outline: 'none',
           fontFamily: 'inherit',
         }}
@@ -205,7 +205,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
           border: '1px solid var(--border-default)',
           borderRadius: 'var(--radius-sm)',
           color: 'var(--text-primary)',
-          fontSize: 12,
+          fontSize: 13,
           padding: '4px 8px',
           cursor: 'pointer',
           fontFamily: 'inherit',
@@ -229,7 +229,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
           border: '1px solid rgba(16,185,129,0.2)',
           borderRadius: 'var(--radius-sm)',
           padding: '4px 10px',
-          fontSize: 12, fontWeight: 500,
+          fontSize: 13, fontWeight: 500,
           cursor: saving ? 'not-allowed' : 'pointer',
           fontFamily: 'inherit',
           opacity: saving ? 0.6 : 1,
@@ -248,7 +248,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
           onClick={e => e.stopPropagation()}
           style={{
             display: 'flex', alignItems: 'center', gap: 6,
-            fontSize: 11, color: 'var(--text-tertiary)',
+            fontSize: 12, color: 'var(--text-tertiary)',
             flexBasis: '100%',
             paddingLeft: 2,
             flexWrap: 'wrap',
@@ -287,7 +287,7 @@ function NotifyButton({ ticket, addToast }) {
 
   if (state === 'sent') {
     return (
-      <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-tertiary)', flexShrink: 0 }}>
+      <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-tertiary)', flexShrink: 0 }}>
         Notified ✓
       </span>
     )
@@ -344,7 +344,7 @@ function NotifyButton({ ticket, addToast }) {
         border: '1px solid rgba(16,185,129,0.2)',
         borderRadius: 'var(--radius-sm)',
         padding: '4px 10px',
-        fontSize: 12, fontWeight: 500,
+        fontSize: 13, fontWeight: 500,
         cursor: state === 'loading' ? 'not-allowed' : 'pointer',
         fontFamily: 'inherit',
         display: 'flex', alignItems: 'center', gap: 5,
@@ -378,7 +378,7 @@ function OfflineBanner() {
       background: 'var(--accent-amber-dim)',
       borderBottom: '1px solid rgba(245,158,11,0.2)',
       padding: '7px 24px',
-      fontSize: 12, fontWeight: 500,
+      fontSize: 13, fontWeight: 500,
       color: 'var(--accent-amber)',
       textAlign: 'center',
     }}>
@@ -408,7 +408,7 @@ function SkeletonRows({ count = 3 }) {
 const SectionHeading = ({ children, showDot, dotColor }) => (
   <div style={{
     display: 'flex', alignItems: 'center', gap: 8,
-    fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)',
+    fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)',
     letterSpacing: '0.05em', textTransform: 'uppercase',
     marginBottom: 12, paddingBottom: 8,
     borderBottom: '1px solid var(--border-subtle)',
@@ -452,7 +452,7 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flas
       {/* Issue ID */}
       <span style={{
         fontFamily: 'ui-monospace, "Cascadia Code", "Fira Code", monospace',
-        fontSize: 13, fontWeight: 600,
+        fontSize: 14, fontWeight: 600,
         color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)',
         minWidth: 95, flexShrink: 0,
       }}>
@@ -460,20 +460,20 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flas
       </span>
 
       {/* Customer */}
-      <span style={{ fontWeight: 500, color: 'var(--text-primary)', flex: '1 1 120px', fontSize: 13, minWidth: 0 }}>
+      <span style={{ fontWeight: 500, color: 'var(--text-primary)', flex: '1 1 120px', fontSize: 14, minWidth: 0 }}>
         {ticket.customer_name}
       </span>
 
       {/* Device */}
       <span style={{
-        color: 'var(--text-secondary)', fontSize: 13, flex: '1 1 120px',
+        color: 'var(--text-secondary)', fontSize: 14, flex: '1 1 120px',
         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0,
       }}>
         {ticket.device}
       </span>
 
       {/* Expected date */}
-      <span style={{ color: overdue ? 'var(--accent-red)' : 'var(--text-tertiary)', fontSize: 12, flexShrink: 0 }}>
+      <span style={{ color: overdue ? 'var(--accent-red)' : 'var(--text-tertiary)', fontSize: 13, flexShrink: 0 }}>
         {formatDate(ticket.date_expected)}
       </span>
 
@@ -501,7 +501,7 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flas
             border: '1px solid var(--border-default)',
             borderRadius: 'var(--radius-sm)',
             color: 'var(--text-primary)',
-            fontSize: 12, padding: '4px 8px',
+            fontSize: 13, padding: '4px 8px',
             cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
             opacity: updating === ticket.id ? 0.5 : 1,
             flexShrink: 0,
@@ -529,7 +529,7 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flas
 }
 
 const EmptyState = ({ text }) => (
-  <p style={{ fontSize: 13, color: 'var(--text-tertiary)', padding: '16px 12px' }}>{text}</p>
+  <p style={{ fontSize: 14, color: 'var(--text-tertiary)', padding: '16px 12px' }}>{text}</p>
 )
 
 const containerVariants = {
@@ -629,7 +629,7 @@ export default function TechDashboard() {
       style={{ borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}
     >
       <div style={{ fontSize: 28, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em' }}>{value}</div>
-      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6, letterSpacing: '0.01em' }}>{label}</div>
+      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6, letterSpacing: '0.01em' }}>{label}</div>
     </motion.div>
   )
 
@@ -672,7 +672,7 @@ export default function TechDashboard() {
             <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Tech Dashboard
             </h1>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
               {active.length} active job{active.length !== 1 ? 's' : ''}
             </p>
           </div>
@@ -683,7 +683,7 @@ export default function TechDashboard() {
                 display: 'flex', alignItems: 'center', gap: 6,
                 background: 'var(--accent-blue)', color: '#fff',
                 border: 'none', borderRadius: 'var(--radius-md)',
-                padding: '8px 14px', fontSize: 13, fontWeight: 500,
+                padding: '8px 14px', fontSize: 14, fontWeight: 500,
                 cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
               }}
               onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}

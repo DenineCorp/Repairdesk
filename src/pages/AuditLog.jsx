@@ -58,13 +58,13 @@ function EventRow({ log, isLast }) {
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 3 }}>
-          <span style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-primary)' }}>
+          <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)' }}>
             {cfg.label}
           </span>
           {log.details?.issue_id && (
             <span style={{
               fontFamily: 'ui-monospace, "Cascadia Code", monospace',
-              fontSize: 11, fontWeight: 600,
+              fontSize: 12, fontWeight: 600,
               color: 'var(--accent-cyan)',
               background: 'var(--accent-cyan-dim)',
               border: '1px solid rgba(255,77,109,0.15)',
@@ -75,10 +75,10 @@ function EventRow({ log, isLast }) {
             </span>
           )}
         </div>
-        <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4, lineHeight: 1.5 }}>
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4, lineHeight: 1.5 }}>
           {buildDescription(log)}
         </p>
-        <p style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
+        <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
           {log.details?.performed_by_email ?? 'System'} · {formatTs(log.created_at)}
         </p>
       </div>
@@ -91,7 +91,7 @@ const inputStyle = {
   border: '1px solid var(--border-subtle)',
   borderRadius: 'var(--radius-md)',
   color: 'var(--text-primary)',
-  fontSize: 12,
+  fontSize: 13,
   padding: '7px 12px',
   cursor: 'pointer',
   fontFamily: 'inherit',
@@ -142,7 +142,7 @@ export default function AuditLog() {
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 4,
             background: 'none', border: 'none', cursor: 'pointer',
-            color: 'var(--text-secondary)', fontSize: 13,
+            color: 'var(--text-secondary)', fontSize: 14,
             fontFamily: 'inherit', padding: '0 0 16px 0',
             transition: 'color 150ms',
           }}
@@ -158,7 +158,7 @@ export default function AuditLog() {
             <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Activity Log
             </h1>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
               {filtered.length} event{filtered.length !== 1 ? 's' : ''}
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function AuditLog() {
 
         <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', padding: 0, overflow: 'hidden' }}>
           {filtered.length === 0 ? (
-            <p style={{ textAlign: 'center', padding: '40px 0', fontSize: 13, color: 'var(--text-tertiary)' }}>
+            <p style={{ textAlign: 'center', padding: '40px 0', fontSize: 14, color: 'var(--text-tertiary)' }}>
               No events found.
             </p>
           ) : (

@@ -22,7 +22,7 @@ function formatDate(dateStr) {
 }
 
 const fieldLabelStyle = {
-  fontSize: 11,
+  fontSize: 12,
   fontWeight: 500,
   color: 'var(--text-tertiary)',
   textTransform: 'uppercase',
@@ -94,7 +94,7 @@ export default function TicketDetail() {
       <Navbar />
       <div style={{ maxWidth: 700, margin: '0 auto', padding: '80px 24px', textAlign: 'center' }}>
         <p style={{ color: 'var(--accent-red)', fontSize: 14 }}>{error ?? 'Ticket not found.'}</p>
-        <button onClick={() => navigate(-1)} style={{ marginTop: 16, background: 'none', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', padding: '8px 16px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13 }}>
+        <button onClick={() => navigate(-1)} style={{ marginTop: 16, background: 'none', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)', padding: '8px 16px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14 }}>
           Go back
         </button>
       </div>
@@ -121,7 +121,7 @@ export default function TicketDetail() {
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 4,
             background: 'none', border: 'none', cursor: 'pointer',
-            color: 'var(--text-secondary)', fontSize: 13,
+            color: 'var(--text-secondary)', fontSize: 14,
             fontFamily: 'inherit', padding: '0 0 16px 0',
             transition: 'color 150ms',
           }}
@@ -147,7 +147,7 @@ export default function TicketDetail() {
             <StatusBadge status={ticket.status} />
             {overdue && (
               <span style={{
-                fontSize: 12, fontWeight: 500,
+                fontSize: 13, fontWeight: 500,
                 color: 'var(--accent-red)',
                 background: 'var(--accent-red-dim)',
                 border: '1px solid rgba(239,68,68,0.2)',
@@ -168,7 +168,7 @@ export default function TicketDetail() {
               border: '1px solid var(--border-default)',
               borderRadius: 'var(--radius-md)',
               color: 'var(--text-secondary)',
-              fontSize: 13, fontWeight: 500,
+              fontSize: 14, fontWeight: 500,
               padding: '7px 12px',
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -220,10 +220,10 @@ export default function TicketDetail() {
           flexWrap: 'wrap',
         }}>
           <div>
-            <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 2 }}>
+            <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 2 }}>
               Customer Notification
             </p>
-            <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
+            <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>
               {notifStatus === 'sent'
                 ? `SMS sent to ${ticket.customer_phone}`
                 : notifStatus && notifStatus !== 'sent'
@@ -241,7 +241,7 @@ export default function TicketDetail() {
               border: notifStatus === 'error' ? '1px solid rgba(239,68,68,0.2)' : '1px solid rgba(16,185,129,0.2)',
               borderRadius: 'var(--radius-md)',
               padding: '7px 14px',
-              fontSize: 13, fontWeight: 500,
+              fontSize: 14, fontWeight: 500,
               cursor: notifying || notifStatus === 'sent' ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit',
               transition: 'background 150ms',
@@ -273,7 +273,7 @@ export default function TicketDetail() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <img src="/logo.jpg" alt="ET" style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: 6 }} />
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'black', letterSpacing: 0.3, lineHeight: 1.2 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'black', letterSpacing: 0.3, lineHeight: 1.2 }}>
                   Elect Technologies
                 </div>
                 <div style={{ fontSize: 9, color: '#555', letterSpacing: 0.2 }}>Service Receipt</div>
@@ -282,7 +282,7 @@ export default function TicketDetail() {
             <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: 2, color: 'black' }}>{ticket.issue_id}</div>
           </div>
           <hr style={{ borderColor: 'black', margin: '12px 0' }} />
-          <table style={{ width: '100%', fontSize: 13, borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
             <tbody>
               {[
                 ['Customer', ticket.customer_name],

@@ -176,7 +176,7 @@ export default function IntakeForm() {
         <h1 style={{ fontSize: 20, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: 4 }}>
           New Repair Ticket
         </h1>
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 24 }}>
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24 }}>
           Register a new device. A unique issue ID will be assigned automatically.
         </p>
 
@@ -188,7 +188,7 @@ export default function IntakeForm() {
             color: 'var(--accent-red)',
             borderRadius: 'var(--radius-md)',
             padding: '8px 12px',
-            fontSize: 13,
+            fontSize: 14,
             marginBottom: 16,
           }}>
             {error}
@@ -209,7 +209,7 @@ export default function IntakeForm() {
                 color: 'var(--accent-green)',
                 borderRadius: 'var(--radius-md)',
                 padding: '8px 12px',
-                fontSize: 13,
+                fontSize: 14,
                 marginBottom: 16,
               }}
             >
