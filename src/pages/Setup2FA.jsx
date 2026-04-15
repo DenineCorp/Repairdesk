@@ -4,12 +4,12 @@ import { motion } from 'framer-motion'
 import { ShieldCheck } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
 
-const inputStyle = {
-  background: 'var(--bg-elevated)',
-  border: '1px solid var(--border-subtle)',
-  borderRadius: 'var(--radius-md)',
-  padding: '9px 0',
-  color: 'var(--text-primary)',
+const codeInputStyle = {
+  background: 'rgba(255,255,255,0.06)',
+  border: '1px solid rgba(255,255,255,0.12)',
+  borderRadius: '10px',
+  padding: '12px 0',
+  color: '#f2f2f7',
   fontSize: 24,
   outline: 'none',
   fontFamily: 'ui-monospace, "Cascadia Code", monospace',
@@ -31,17 +31,14 @@ export default function Setup2FA() {
 
   useEffect(() => {
     async function enroll() {
-      // Check for existing factors
       const { data: factorsData } = await supabase.auth.mfa.listFactors()
       const existingTotp = factorsData?.totp ?? []
 
-      // If a verified factor already exists, skip setup
       if (existingTotp.some(f => f.status === 'verified')) {
         navigate('/verify-2fa', { replace: true })
         return
       }
 
-      // Unenroll any stale unverified factors before re-enrolling
       for (const factor of existingTotp) {
         await supabase.auth.mfa.unenroll({ factorId: factor.id })
       }
@@ -77,7 +74,7 @@ export default function Setup2FA() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f5f5f7',
+      background: 'transparent',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -85,43 +82,63 @@ export default function Setup2FA() {
       position: 'relative',
       zIndex: 1,
     }}>
-      <div style={{ display: 'none' }} />
-
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-        style={{ width: '100%', maxWidth: 400, position: 'relative', zIndex: 1 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        style={{ width: '100%', maxWidth: 420 }}
       >
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 28 }}>
+          <div style={{
+            width: 40, height: 40,
+            background: 'transparent',
+            borderRadius: '50%',
+            border: '2.5px solid #e3181a',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+            boxShadow: '0 0 16px rgba(227,24,26,0.22)',
+          }}>
+            <span style={{ color: '#fff', fontWeight: 900, fontSize: 15, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
+          </div>
+          <span style={{ fontFamily: '-apple-system, "Helvetica Neue", sans-serif', fontSize: 20, letterSpacing: '-0.02em' }}>
+            <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
+            <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
+          </span>
+        </div>
+
+        {/* Card */}
         <div style={{
-          background: '#ffffff',
-          border: '1px solid rgba(0,0,0,0.08)',
-          borderRadius: 'var(--radius-2xl)',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '20px',
           padding: 32,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 32px 80px rgba(0,0,0,0.6), 0 8px 32px rgba(0,0,0,0.4)',
         }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-              <ShieldCheck size={20} color="var(--accent-cyan)" strokeWidth={2} />
-              <span style={{ fontWeight: 700, fontSize: 18, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+              <ShieldCheck size={20} color="#4f9cf9" strokeWidth={2} />
+              <span style={{ fontWeight: 700, fontSize: 18, color: '#f2f2f7', letterSpacing: '-0.02em' }}>
                 Set Up Two-Factor Auth
               </span>
             </div>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+            <p style={{ fontSize: 13, color: 'rgba(242,242,247,0.5)', marginTop: 4 }}>
               Scan this QR code with Google Authenticator or Authy
             </p>
           </div>
 
-          <div style={{ height: 1, background: 'var(--border-subtle)', margin: '0 0 24px' }} />
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0 0 24px' }} />
 
           {/* Error */}
           {error && (
             <div style={{
-              background: 'var(--accent-red-dim)',
-              border: '1px solid rgba(239,68,68,0.2)',
-              color: 'var(--accent-red)',
-              borderRadius: 'var(--radius-md)',
+              background: 'rgba(255,59,48,0.1)',
+              border: '1px solid rgba(255,59,48,0.22)',
+              color: '#ff6b6b',
+              borderRadius: '10px',
               padding: '8px 12px',
               fontSize: 13,
               marginBottom: 16,
@@ -131,32 +148,33 @@ export default function Setup2FA() {
           )}
 
           {enrolling ? (
-            <p style={{ textAlign: 'center', color: 'var(--text-tertiary)', fontSize: 13 }}>Loading…</p>
+            <p style={{ textAlign: 'center', color: 'rgba(242,242,247,0.4)', fontSize: 13 }}>Loading…</p>
           ) : qrCode ? (
             <form onSubmit={handleVerify} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
               {/* QR code */}
               <div style={{
                 background: 'white',
-                borderRadius: 'var(--radius-md)',
+                borderRadius: '12px',
                 padding: 10,
                 flexShrink: 0,
                 lineHeight: 0,
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.15)',
               }}>
                 <img src={qrCode} alt="2FA QR code" width={180} height={180} style={{ display: 'block' }} />
               </div>
 
               {/* Secret key */}
               <div style={{ width: '100%' }}>
-                <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
+                <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(242,242,247,0.45)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>
                   Manual entry key
                 </p>
                 <p style={{
                   fontFamily: 'ui-monospace, monospace',
                   fontSize: 12,
-                  color: 'var(--text-secondary)',
-                  background: 'var(--bg-elevated)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-md)',
+                  color: 'rgba(242,242,247,0.6)',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '10px',
                   padding: '8px 12px',
                   wordBreak: 'break-all',
                   letterSpacing: '0.05em',
@@ -167,7 +185,7 @@ export default function Setup2FA() {
 
               {/* Code input */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, width: '100%' }}>
-                <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                <label style={{ fontSize: 13, fontWeight: 500, color: 'rgba(242,242,247,0.6)' }}>
                   Enter the 6-digit code to confirm
                 </label>
                 <input
@@ -177,9 +195,9 @@ export default function Setup2FA() {
                   value={code}
                   onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder="000000"
-                  style={inputStyle}
-                  onFocus={e => { e.target.style.borderColor = 'rgba(227,24,55,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(227,24,55,0.08)' }}
-                  onBlur={e => { e.target.style.borderColor = 'var(--border-subtle)'; e.target.style.boxShadow = 'none' }}
+                  style={codeInputStyle}
+                  onFocus={e => { e.target.style.borderColor = 'rgba(79,156,249,0.6)'; e.target.style.boxShadow = '0 0 0 3px rgba(79,156,249,0.15)' }}
+                  onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.12)'; e.target.style.boxShadow = 'none' }}
                   autoComplete="one-time-code"
                 />
               </div>
@@ -189,24 +207,29 @@ export default function Setup2FA() {
                 disabled={verifying || code.length !== 6}
                 style={{
                   width: '100%',
-                  background: verifying || code.length !== 6 ? 'rgba(227,24,55,0.5)' : 'var(--accent-blue)',
+                  background: verifying || code.length !== 6 ? 'rgba(0,113,227,0.4)' : '#0071e3',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '9px 16px',
+                  borderRadius: '10px',
+                  padding: '11px 16px',
                   fontSize: 14, fontWeight: 500,
                   cursor: verifying || code.length !== 6 ? 'not-allowed' : 'pointer',
                   fontFamily: 'inherit',
                   transition: 'background 150ms ease',
+                  boxShadow: verifying || code.length !== 6 ? 'none' : '0 4px 16px rgba(0,113,227,0.3)',
                 }}
-                onMouseEnter={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#c0162f' }}
-                onMouseLeave={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = 'var(--accent-blue)' }}
+                onMouseEnter={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#0077ed' }}
+                onMouseLeave={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#0071e3' }}
               >
                 {verifying ? 'Verifying…' : 'Activate 2FA'}
               </button>
             </form>
           ) : null}
         </div>
+
+        <p style={{ textAlign: 'center', fontSize: 13, color: 'rgba(242,242,247,0.3)', marginTop: 20 }}>
+          Authorised staff only
+        </p>
       </motion.div>
     </div>
   )

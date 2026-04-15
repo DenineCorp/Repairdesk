@@ -101,7 +101,7 @@ export default function TaxReport() {
         'Device':                 t?.device          ?? '—',
         'Service Charge (CAD)':   subtotal.toFixed(2),
         'GST 5% (CAD)':           gst.toFixed(2),
-        'PST 8% (CAD)':           pst.toFixed(2),
+        'PST 7% (CAD)':           pst.toFixed(2),
         'Total Tax (CAD)':        taxTotal.toFixed(2),
         'Total Charged (CAD)':    totalCharged.toFixed(2),
       }
@@ -114,7 +114,7 @@ export default function TaxReport() {
       'Device':                 '',
       'Service Charge (CAD)':   totals.subtotal.toFixed(2),
       'GST 5% (CAD)':           totals.gst.toFixed(2),
-      'PST 8% (CAD)':           totals.pst.toFixed(2),
+      'PST 7% (CAD)':           totals.pst.toFixed(2),
       'Total Tax (CAD)':        totals.taxTotal.toFixed(2),
       'Total Charged (CAD)':    totals.totalCharged.toFixed(2),
     })
@@ -133,7 +133,7 @@ export default function TaxReport() {
     letterSpacing: '0.05em',
     textAlign: 'left',
     borderBottom: '1px solid var(--border-subtle)',
-    background: 'rgba(255,255,255,0.04)',
+    background: 'rgba(0,0,0,0.025)',
     whiteSpace: 'nowrap',
   }
 
@@ -335,7 +335,7 @@ export default function TaxReport() {
                 {/* Totals footer */}
                 {payments.length > 0 && (
                   <tfoot>
-                    <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
+                    <tr style={{ background: 'rgba(0,0,0,0.02)' }}>
                       <td
                         colSpan={4}
                         style={{

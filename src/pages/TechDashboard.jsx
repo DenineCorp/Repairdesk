@@ -686,7 +686,7 @@ export default function TechDashboard() {
                 padding: '8px 14px', fontSize: 14, fontWeight: 500,
                 cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
               }}
-              onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}
+              onMouseEnter={e => e.currentTarget.style.background = '#0077ed'}
               onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-blue)'}
             >
               <Plus size={14} strokeWidth={2.5} />

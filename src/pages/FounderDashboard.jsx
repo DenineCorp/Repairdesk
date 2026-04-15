@@ -378,7 +378,7 @@ export default function FounderDashboard() {
     letterSpacing: '0.05em',
     textAlign: 'left',
     borderBottom: '1px solid var(--border-subtle)',
-    background: 'rgba(255,255,255,0.04)',
+    background: 'rgba(0,0,0,0.025)',
     whiteSpace: 'nowrap',
   }
 
@@ -413,7 +413,7 @@ export default function FounderDashboard() {
               padding: '8px 14px', fontSize: 14, fontWeight: 500,
               cursor: 'pointer', fontFamily: 'inherit', transition: 'background 150ms',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = '#c0162f'}
+            onMouseEnter={e => e.currentTarget.style.background = '#0077ed'}
             onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-blue)'}
           >
             <Plus size={14} strokeWidth={2.5} />

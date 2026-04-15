@@ -31,7 +31,7 @@ export default function Verify2FA() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f5f5f7',
+      background: 'transparent',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -39,43 +39,63 @@ export default function Verify2FA() {
       position: 'relative',
       zIndex: 1,
     }}>
-      <div style={{ display: 'none' }} />
-
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-        style={{ width: '100%', maxWidth: 380, position: 'relative', zIndex: 1 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        style={{ width: '100%', maxWidth: 380 }}
       >
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 28 }}>
+          <div style={{
+            width: 40, height: 40,
+            background: 'transparent',
+            borderRadius: '50%',
+            border: '2.5px solid #e3181a',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+            boxShadow: '0 0 16px rgba(227,24,26,0.22)',
+          }}>
+            <span style={{ color: '#fff', fontWeight: 900, fontSize: 15, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
+          </div>
+          <span style={{ fontFamily: '-apple-system, "Helvetica Neue", sans-serif', fontSize: 20, letterSpacing: '-0.02em' }}>
+            <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
+            <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
+          </span>
+        </div>
+
+        {/* Card */}
         <div style={{
-          background: '#ffffff',
-          border: '1px solid rgba(0,0,0,0.08)',
-          borderRadius: 'var(--radius-2xl)',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '20px',
           padding: 32,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 32px 80px rgba(0,0,0,0.6), 0 8px 32px rgba(0,0,0,0.4)',
         }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-              <ShieldCheck size={20} color="var(--accent-cyan)" strokeWidth={2} />
-              <span style={{ fontWeight: 700, fontSize: 18, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+              <ShieldCheck size={20} color="#4f9cf9" strokeWidth={2} />
+              <span style={{ fontWeight: 700, fontSize: 18, color: '#f2f2f7', letterSpacing: '-0.02em' }}>
                 Two-Factor Auth
               </span>
             </div>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+            <p style={{ fontSize: 13, color: 'rgba(242,242,247,0.5)', marginTop: 4 }}>
               Enter your authenticator code
             </p>
           </div>
 
-          <div style={{ height: 1, background: 'var(--border-subtle)', margin: '0 0 24px' }} />
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0 0 24px' }} />
 
           {/* Error */}
           {error && (
             <div style={{
-              background: 'var(--accent-red-dim)',
-              border: '1px solid rgba(239,68,68,0.2)',
-              color: 'var(--accent-red)',
-              borderRadius: 'var(--radius-md)',
+              background: 'rgba(255,59,48,0.1)',
+              border: '1px solid rgba(255,59,48,0.22)',
+              color: '#ff6b6b',
+              borderRadius: '10px',
               padding: '8px 12px',
               fontSize: 13,
               marginBottom: 16,
@@ -96,21 +116,21 @@ export default function Verify2FA() {
               autoFocus
               autoComplete="one-time-code"
               style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-md)',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '10px',
                 padding: '12px 0',
-                color: 'var(--text-primary)',
-                fontSize: 24,
+                color: '#f2f2f7',
+                fontSize: 28,
                 outline: 'none',
                 fontFamily: 'ui-monospace, "Cascadia Code", monospace',
                 letterSpacing: '0.3em',
                 textAlign: 'center',
-                width: 180,
+                width: 200,
                 transition: 'border-color 150ms ease, box-shadow 150ms ease',
               }}
-              onFocus={e => { e.target.style.borderColor = 'rgba(227,24,55,0.5)'; e.target.style.boxShadow = '0 0 0 3px rgba(227,24,55,0.08)' }}
-              onBlur={e => { e.target.style.borderColor = 'var(--border-subtle)'; e.target.style.boxShadow = 'none' }}
+              onFocus={e => { e.target.style.borderColor = 'rgba(79,156,249,0.6)'; e.target.style.boxShadow = '0 0 0 3px rgba(79,156,249,0.15)' }}
+              onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.12)'; e.target.style.boxShadow = 'none' }}
             />
 
             <button
@@ -118,25 +138,26 @@ export default function Verify2FA() {
               disabled={verifying || code.length !== 6}
               style={{
                 width: '100%',
-                background: verifying || code.length !== 6 ? 'rgba(227,24,55,0.5)' : 'var(--accent-blue)',
+                background: verifying || code.length !== 6 ? 'rgba(0,113,227,0.4)' : '#0071e3',
                 color: '#fff',
                 border: 'none',
-                borderRadius: 'var(--radius-md)',
-                padding: '9px 16px',
+                borderRadius: '10px',
+                padding: '11px 16px',
                 fontSize: 14, fontWeight: 500,
                 cursor: verifying || code.length !== 6 ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit',
                 transition: 'background 150ms ease',
+                boxShadow: verifying || code.length !== 6 ? 'none' : '0 4px 16px rgba(0,113,227,0.3)',
               }}
-              onMouseEnter={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#c0162f' }}
-              onMouseLeave={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = 'var(--accent-blue)' }}
+              onMouseEnter={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#0077ed' }}
+              onMouseLeave={e => { if (!verifying && code.length === 6) e.currentTarget.style.background = '#0071e3' }}
             >
               {verifying ? 'Verifying…' : 'Verify'}
             </button>
           </form>
         </div>
 
-        <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-tertiary)', marginTop: 16 }}>
+        <p style={{ textAlign: 'center', fontSize: 13, color: 'rgba(242,242,247,0.3)', marginTop: 20 }}>
           Elect Technologies — authorised staff only
         </p>
       </motion.div>

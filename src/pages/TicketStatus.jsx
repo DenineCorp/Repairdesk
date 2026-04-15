@@ -4,10 +4,10 @@ import { motion } from 'framer-motion'
 import { supabase } from '../services/supabaseClient'
 
 const STATUS_CFG = {
-  pending:     { label: 'Pending',     color: '#ff9f0a', bg: 'rgba(255,159,10,0.12)',  desc: 'Your device has been logged and is in the queue.' },
-  'in progress': { label: 'In Progress', color: '#4f9cf9', bg: 'rgba(79,156,249,0.12)', desc: 'A technician is actively working on your device.' },
-  ready:       { label: 'Ready',       color: '#34c759', bg: 'rgba(52,199,89,0.12)',   desc: 'Your device is repaired and ready for pickup!' },
-  collected:   { label: 'Collected',   color: '#6e6e73', bg: 'rgba(110,110,115,0.12)', desc: 'This device has been collected. Thank you!' },
+  pending:       { label: 'Pending',     color: '#ff9f0a', bg: 'rgba(255,159,10,0.12)',  border: 'rgba(255,159,10,0.25)',  desc: 'Your device has been logged and is in the queue.',       pulse: true },
+  'in progress': { label: 'In Progress', color: '#4f9cf9', bg: 'rgba(79,156,249,0.12)',  border: 'rgba(79,156,249,0.25)',  desc: 'A technician is actively working on your device.',       pulse: true },
+  ready:         { label: 'Ready',       color: '#34c759', bg: 'rgba(52,199,89,0.12)',   border: 'rgba(52,199,89,0.25)',   desc: 'Your device is repaired and ready for pickup!',         pulse: false },
+  collected:     { label: 'Collected',   color: '#6e6e73', bg: 'rgba(110,110,115,0.12)', border: 'rgba(110,110,115,0.2)',  desc: 'This device has been collected. Thank you!',             pulse: false },
 }
 
 function formatDate(d) {
@@ -106,14 +106,23 @@ export default function TicketStatus() {
               {/* Status badge */}
               <div style={{
                 background: cfg.bg,
-                borderRadius: 12,
+                border: `1px solid ${cfg.border}`,
+                borderRadius: 14,
                 padding: '14px 16px',
                 marginBottom: 20,
                 textAlign: 'center',
               }}>
-                <p style={{ fontSize: 18, fontWeight: 700, color: cfg.color, marginBottom: 4 }}>
-                  {cfg.label}
-                </p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 6 }}>
+                  <span
+                    className={cfg.pulse ? 'pulse-dot' : undefined}
+                    style={{
+                      width: 8, height: 8, borderRadius: '50%',
+                      background: cfg.color, flexShrink: 0,
+                      boxShadow: cfg.pulse ? `0 0 8px ${cfg.color}` : 'none',
+                    }}
+                  />
+                  <p style={{ fontSize: 18, fontWeight: 700, color: cfg.color }}>{cfg.label}</p>
+                </div>
                 <p style={{ fontSize: 14, color: '#6e6e73' }}>{cfg.desc}</p>
               </div>
 

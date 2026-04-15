@@ -300,7 +300,7 @@ export default function IntakeForm() {
                   fontFamily: 'inherit',
                   transition: 'background 150ms',
                 }}
-                onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = '#c0162f' }}
+                onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = '#0077ed' }}
                 onMouseLeave={e => { if (!submitting) e.currentTarget.style.background = 'var(--accent-blue)' }}
               >
                 <Plus size={14} strokeWidth={2.5} />
