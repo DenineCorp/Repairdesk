@@ -276,18 +276,27 @@ export default function FounderDashboard() {
 
   const handleExport = () => {
     const ts = new Date().toISOString().split('T')[0]
-    const rows = filtered.map(t => ({
-      'Issue ID':       t.issue_id,
-      'Customer':       t.customer_name,
-      'Phone':          t.customer_phone,
-      'Device':         t.device,
-      'Issue':          t.issue,
-      'Status':         t.status,
-      'Date In':        formatDate(t.date_in),
-      'Expected':       formatDate(t.date_expected),
-      'Payment Status': t.payments?.[0]?.payment_status ?? 'unpaid',
-      'Amount (CAD)':   t.payments?.[0]?.amount_paid ? parseFloat(t.payments[0].amount_paid).toFixed(2) : '0.00',
-    }))
+    const rows = filtered.map(t => {
+      const p = t.payments?.[0]
+      const subtotal = parseFloat(p?.subtotal) > 0 ? parseFloat(p.subtotal) : (parseFloat(p?.amount_paid) || 0)
+      const gst      = parseFloat(p?.gst_amount) > 0 ? parseFloat(p.gst_amount) : +(subtotal * 0.05).toFixed(2)
+      const pst      = parseFloat(p?.pst_amount) > 0 ? parseFloat(p.pst_amount) : +(subtotal * 0.08).toFixed(2)
+      return {
+        'Issue ID':              t.issue_id,
+        'Customer':              t.customer_name,
+        'Phone':                 t.customer_phone,
+        'Device':                t.device,
+        'Issue':                 t.issue,
+        'Status':                t.status,
+        'Date In':               formatDate(t.date_in),
+        'Expected':              formatDate(t.date_expected),
+        'Payment Status':        p?.payment_status ?? 'unpaid',
+        'Service Charge (CAD)':  subtotal.toFixed(2),
+        'GST 5% (CAD)':          gst.toFixed(2),
+        'PST 8% (CAD)':          pst.toFixed(2),
+        'Total Charged (CAD)':   (subtotal + gst + pst).toFixed(2),
+      }
+    })
     downloadCsv(`et-servicedesk-export-${ts}.csv`, rows)
   }
 

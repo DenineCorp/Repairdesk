@@ -106,16 +106,25 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
     setSaving(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
-      const amountVal = parseFloat(amount) || 0
+      const subtotalVal  = parseFloat(amount) || 0
+      const gstAmt       = +(subtotalVal * 0.05).toFixed(2)
+      const pstAmt       = +(subtotalVal * 0.08).toFixed(2)
+      const taxTotalVal  = +(gstAmt + pstAmt).toFixed(2)
+      const totalCharged = +(subtotalVal + taxTotalVal).toFixed(2)
       const isPaid = payStatus === 'paid'
 
       const { error } = await supabase
         .from('payments')
         .update({
           payment_status: payStatus,
-          amount_paid: amountVal,
-          paid_at: isPaid ? new Date().toISOString() : null,
-          updated_by: user.id,
+          amount_paid:    subtotalVal,   // pre-tax service charge
+          subtotal:       subtotalVal,
+          gst_amount:     gstAmt,
+          pst_amount:     pstAmt,
+          tax_total:      taxTotalVal,
+          total_charged:  totalCharged,
+          paid_at:        isPaid ? new Date().toISOString() : null,
+          updated_by:     user.id,
         })
         .eq('id', payment.id)
 
@@ -232,6 +241,26 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
       >
         {saving ? '…' : flashSaved ? 'Saved ✓' : 'Save'}
       </button>
+
+      {/* Live tax breakdown — shown only when an amount is entered */}
+      {parseFloat(amount) > 0 && (
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            fontSize: 11, color: 'var(--text-tertiary)',
+            flexBasis: '100%',
+            paddingLeft: 2,
+            flexWrap: 'wrap',
+          }}
+        >
+          <span>GST 5%: <strong style={{ color: 'var(--accent-blue)' }}>${(parseFloat(amount) * 0.05).toFixed(2)}</strong></span>
+          <span style={{ color: 'var(--border-default)' }}>·</span>
+          <span>PST 8%: <strong style={{ color: 'var(--accent-cyan)' }}>${(parseFloat(amount) * 0.08).toFixed(2)}</strong></span>
+          <span style={{ color: 'var(--border-default)' }}>·</span>
+          <span>Customer pays: <strong style={{ color: 'var(--text-primary)' }}>CAD {(parseFloat(amount) * 1.13).toFixed(2)}</strong></span>
+        </div>
+      )}
     </div>
   )
 }

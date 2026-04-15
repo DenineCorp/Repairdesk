@@ -14,6 +14,7 @@ import TicketDetail from './pages/TicketDetail'
 import AuditLog from './pages/AuditLog'
 import UserManagement from './pages/UserManagement'
 import TicketStatus from './pages/TicketStatus'
+import TaxReport from './pages/TaxReport'
 
 /** Redirects unauthenticated users; enforces AAL2 if TOTP is enrolled */
 function RequireAuth({ children }) {
@@ -93,6 +94,7 @@ export default function App() {
         <Route path="/ticket/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
         <Route path="/audit-log" element={<RequireAuth><AuditLog /></RequireAuth>} />
         <Route path="/users" element={<RequireAuth><RequireFounder><UserManagement /></RequireFounder></RequireAuth>} />
+        <Route path="/tax-report" element={<RequireAuth><RequireFounder><TaxReport /></RequireFounder></RequireAuth>} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

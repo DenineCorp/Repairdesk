@@ -1,4 +1,4 @@
-import { LogOut, ClipboardList, Users } from 'lucide-react'
+import { LogOut, ClipboardList, Users, Receipt } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
@@ -98,7 +98,25 @@ export default function Navbar() {
               </>
             )}
 
-            {/* Founder-only: User Management */}
+            {/* Founder-only: Tax Report + User Management */}
+            {role === 'founder' && (
+              <button
+                onClick={() => navigate('/tax-report')}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'rgba(242,242,247,0.65)', fontSize: 12, fontWeight: 500,
+                  padding: '3px 8px', borderRadius: 'var(--radius-sm)',
+                  transition: 'color 150ms, background 150ms',
+                  fontFamily: 'inherit',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(242,242,247,0.65)'; e.currentTarget.style.background = 'none' }}
+              >
+                <Receipt size={13} strokeWidth={2} />
+                <span className="nav-signout-text">Tax Report</span>
+              </button>
+            )}
             {role === 'founder' && (
               <button
                 onClick={() => navigate('/users')}
