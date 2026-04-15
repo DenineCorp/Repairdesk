@@ -70,7 +70,7 @@ export default function TicketStatus() {
               <span style={{ color: '#fff', fontWeight: 900, fontSize: 15, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
             </div>
             <span style={{ fontFamily: '-apple-system, "Helvetica Neue", sans-serif', fontSize: 20, letterSpacing: '-0.02em' }}>
-              <span style={{ fontWeight: 700, color: '#4f9cf9' }}>Elect</span>
+              <span style={{ fontWeight: 700, background: 'linear-gradient(90deg, #4f9cf9 0%, #e3181a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Elect</span>
               <span style={{ fontWeight: 700, color: '#ffffff' }}> Technologies</span>
             </span>
           </div>
