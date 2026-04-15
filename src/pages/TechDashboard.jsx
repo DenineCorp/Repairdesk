@@ -108,7 +108,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
       const { data: { user } } = await supabase.auth.getUser()
       const subtotalVal  = parseFloat(amount) || 0
       const gstAmt       = +(subtotalVal * 0.05).toFixed(2)
-      const pstAmt       = +(subtotalVal * 0.08).toFixed(2)
+      const pstAmt       = +(subtotalVal * 0.07).toFixed(2)
       const taxTotalVal  = +(gstAmt + pstAmt).toFixed(2)
       const totalCharged = +(subtotalVal + taxTotalVal).toFixed(2)
       const isPaid = payStatus === 'paid'
@@ -256,9 +256,9 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
         >
           <span>GST 5%: <strong style={{ color: 'var(--accent-blue)' }}>${(parseFloat(amount) * 0.05).toFixed(2)}</strong></span>
           <span style={{ color: 'var(--border-default)' }}>·</span>
-          <span>PST 8%: <strong style={{ color: 'var(--accent-cyan)' }}>${(parseFloat(amount) * 0.08).toFixed(2)}</strong></span>
+          <span>PST 7%: <strong style={{ color: 'var(--accent-cyan)' }}>${(parseFloat(amount) * 0.07).toFixed(2)}</strong></span>
           <span style={{ color: 'var(--border-default)' }}>·</span>
-          <span>Customer pays: <strong style={{ color: 'var(--text-primary)' }}>CAD {(parseFloat(amount) * 1.13).toFixed(2)}</strong></span>
+          <span>Customer pays: <strong style={{ color: 'var(--text-primary)' }}>CAD {(parseFloat(amount) * 1.12).toFixed(2)}</strong></span>
         </div>
       )}
     </div>

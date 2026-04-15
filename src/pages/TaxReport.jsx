@@ -5,9 +5,9 @@ import { supabase } from '../services/supabaseClient'
 import { downloadCsv } from '../utils/exportCsv'
 import Navbar from '../components/Navbar'
 
-// ── Ontario HST rates ─────────────────────────────────────────────────────────
-const GST_RATE = 0.05   // 5% federal
-const PST_RATE = 0.08   // 8% Ontario provincial (HST component)
+// ── BC tax rates ──────────────────────────────────────────────────────────────
+const GST_RATE = 0.05   // 5% federal (GST)
+const PST_RATE = 0.07   // 7% BC provincial (PST)
 
 const PERIODS = [
   { label: 'This Month',    value: 'month' },
@@ -179,7 +179,7 @@ export default function TaxReport() {
               Tax Report
             </h1>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
-              Ontario HST breakdown — GST 5% + PST 8% on all paid repairs
+              BC tax breakdown — GST 5% + PST 7% on all paid repairs
             </p>
           </div>
 
@@ -253,19 +253,19 @@ export default function TaxReport() {
             label="GST Collected"
             value={cad(totals.gst)}
             color="var(--accent-blue)"
-            sub="5% federal — to CRA"
+            sub="5% federal — remit to CRA"
           />
           <KpiCard
             label="PST Collected"
             value={cad(totals.pst)}
             color="var(--accent-cyan)"
-            sub="8% Ontario — to CRA"
+            sub="7% BC provincial — remit to BC gov"
           />
           <KpiCard
             label="Total Tax to Remit"
             value={cad(totals.taxTotal)}
             color="var(--accent-amber)"
-            sub={`13% HST on ${payments.length} payment${payments.length !== 1 ? 's' : ''}`}
+            sub={`12% on ${payments.length} payment${payments.length !== 1 ? 's' : ''}`}
           />
         </div>
 
@@ -286,7 +286,7 @@ export default function TaxReport() {
                     <th style={thStyle}>Device</th>
                     <th style={{ ...thStyle, textAlign: 'right' }}>Service Charge</th>
                     <th style={{ ...thStyle, textAlign: 'right' }}>GST (5%)</th>
-                    <th style={{ ...thStyle, textAlign: 'right' }}>PST (8%)</th>
+                    <th style={{ ...thStyle, textAlign: 'right' }}>PST (7%)</th>
                     <th style={{ ...thStyle, textAlign: 'right' }}>Total Charged</th>
                   </tr>
                 </thead>
@@ -382,7 +382,7 @@ export default function TaxReport() {
             textAlign: 'right',
             letterSpacing: '0.01em',
           }}>
-            GST/HST Business Number required for CRA remittance. Consult your accountant for filing deadlines.
+            GST remitted to CRA · PST remitted to BC Ministry of Finance. Consult your accountant for filing deadlines.
           </p>
         )}
       </motion.main>
