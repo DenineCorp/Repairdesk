@@ -152,7 +152,13 @@ export default function Login() {
               flexShrink: 0,
               boxShadow: '0 0 20px rgba(227,24,26,0.25)',
             }}>
-              <span style={{ color: '#fff', fontWeight: 900, fontSize: 18, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
+              <svg viewBox="0 0 18 16" fill="none" style={{ width: '56%', height: '56%', flexShrink: 0 }}>
+                <line x1="0.9" y1="0.9" x2="17.1" y2="0.9" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="0.9" y1="0.9" x2="0.9" y2="15.1" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="0.9" y1="8"   x2="8.5"  y2="8"   stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="0.9" y1="15.1" x2="8.5" y2="15.1" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="13.5" y1="0.9" x2="13.5" y2="15.1" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
             </div>
             <span style={{
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif',

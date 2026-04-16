@@ -67,7 +67,13 @@ export default function TicketStatus() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
-              <span style={{ color: '#fff', fontWeight: 900, fontSize: 15, letterSpacing: '-0.5px', lineHeight: 1, userSelect: 'none' }}>ET</span>
+              <svg viewBox="0 0 18 16" fill="none" style={{ width: '56%', height: '56%', flexShrink: 0 }}>
+                <line x1="0.9" y1="0.9" x2="17.1" y2="0.9" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="0.9" y1="0.9" x2="0.9" y2="15.1" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="0.9" y1="8"   x2="8.5"  y2="8"   stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="0.9" y1="15.1" x2="8.5" y2="15.1" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+                <line x1="13.5" y1="0.9" x2="13.5" y2="15.1" stroke="#e3181a" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
             </div>
             <span style={{ fontFamily: '-apple-system, "Helvetica Neue", sans-serif', fontSize: 20, letterSpacing: '-0.02em' }}>
               <span style={{ fontWeight: 700, background: 'linear-gradient(90deg, #4f9cf9 0%, #e3181a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Elect</span>
