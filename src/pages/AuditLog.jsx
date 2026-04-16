@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Plus, RefreshCw, CreditCard, Bell, Clock, ChevronLeft } from 'lucide-react'
+import { Plus, RefreshCw, CreditCard, Bell, Clock, ChevronLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import { supabase } from '../services/supabaseClient'
 import Navbar from '../components/Navbar'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -36,52 +36,101 @@ function buildDescription(log) {
   }
 }
 
+function toTitleCase(key) {
+  return key
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase())
+}
+
 function EventRow({ log, isLast }) {
+  const [expanded, setExpanded] = useState(false)
   const cfg = ACTION_CONFIG[log.action] ?? { Icon: Clock, color: 'var(--text-tertiary)', label: log.action }
   const { Icon } = cfg
+  const details = log.details ?? {}
+  const detailEntries = Object.entries(details)
 
   return (
     <div style={{
-      display: 'flex', gap: 14,
-      padding: '14px 24px',
       borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)',
     }}>
-      <div style={{
-        width: 32, height: 32, borderRadius: 10, flexShrink: 0,
-        background: `color-mix(in srgb, ${cfg.color} 12%, transparent)`,
-        border: `1px solid color-mix(in srgb, ${cfg.color} 25%, transparent)`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        marginTop: 2,
-      }}>
-        <Icon size={14} color={cfg.color} strokeWidth={2} />
+      {/* Summary row — clickable */}
+      <div
+        onClick={() => setExpanded(prev => !prev)}
+        style={{
+          display: 'flex', gap: 14,
+          padding: '14px 24px',
+          cursor: 'pointer',
+          background: expanded ? 'rgba(255,255,255,0.02)' : 'transparent',
+          transition: 'background 120ms',
+        }}
+        onMouseEnter={e => { if (!expanded) e.currentTarget.style.background = 'var(--bg-hover)' }}
+        onMouseLeave={e => { if (!expanded) e.currentTarget.style.background = 'transparent' }}
+      >
+        <div style={{
+          width: 32, height: 32, borderRadius: 10, flexShrink: 0,
+          background: `color-mix(in srgb, ${cfg.color} 12%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${cfg.color} 25%, transparent)`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          marginTop: 2,
+        }}>
+          <Icon size={14} color={cfg.color} strokeWidth={2} />
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 3 }}>
+            <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)' }}>
+              {cfg.label}
+            </span>
+            {log.details?.issue_id && (
+              <span style={{
+                fontFamily: 'ui-monospace, "Cascadia Code", monospace',
+                fontSize: 12, fontWeight: 600,
+                color: 'var(--accent-cyan)',
+                background: 'var(--accent-cyan-dim)',
+                border: '1px solid rgba(255,77,109,0.15)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '1px 7px',
+              }}>
+                {log.details.issue_id}
+              </span>
+            )}
+          </div>
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4, lineHeight: 1.5 }}>
+            {buildDescription(log)}
+          </p>
+          <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
+            {log.details?.performed_by_email ?? 'System'} · {formatTs(log.created_at)}
+          </p>
+        </div>
+
+        {/* Chevron */}
+        <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: 'var(--text-tertiary)', paddingLeft: 8 }}>
+          {expanded
+            ? <ChevronUp size={15} strokeWidth={2} />
+            : <ChevronDown size={15} strokeWidth={2} />}
+        </div>
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 3 }}>
-          <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)' }}>
-            {cfg.label}
-          </span>
-          {log.details?.issue_id && (
-            <span style={{
-              fontFamily: 'ui-monospace, "Cascadia Code", monospace',
-              fontSize: 12, fontWeight: 600,
-              color: 'var(--accent-cyan)',
-              background: 'var(--accent-cyan-dim)',
-              border: '1px solid rgba(255,77,109,0.15)',
-              borderRadius: 'var(--radius-sm)',
-              padding: '1px 7px',
-            }}>
-              {log.details.issue_id}
-            </span>
-          )}
+      {/* Expanded detail panel */}
+      {expanded && detailEntries.length > 0 && (
+        <div style={{
+          padding: '0 24px 16px 70px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: '10px 24px',
+        }}>
+          {detailEntries.map(([key, val]) => (
+            <div key={key}>
+              <p style={{ fontSize: 11, fontWeight: 500, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>
+                {toTitleCase(key)}
+              </p>
+              <p style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.5, wordBreak: 'break-word' }}>
+                {val != null && val !== '' ? String(val) : '—'}
+              </p>
+            </div>
+          ))}
         </div>
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4, lineHeight: 1.5 }}>
-          {buildDescription(log)}
-        </p>
-        <p style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
-          {log.details?.performed_by_email ?? 'System'} · {formatTs(log.created_at)}
-        </p>
-      </div>
+      )}
     </div>
   )
 }

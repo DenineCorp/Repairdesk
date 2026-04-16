@@ -580,10 +580,12 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
     background: hovered ? 'var(--bg-hover)' : 'transparent',
     transition: 'background 100ms',
     verticalAlign: 'middle',
+    cursor: 'pointer',
   }
 
   return (
     <tr
+      onClick={onNavigate}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >

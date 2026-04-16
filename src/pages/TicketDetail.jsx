@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ChevronLeft, Printer, Bell } from 'lucide-react'
+import { ChevronLeft, Printer, Bell, Save } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { supabase } from '../services/supabaseClient'
 import { sendSMS } from '../services/twilioService'
+import { logAudit } from '../utils/auditLogger'
 import Navbar from '../components/Navbar'
 import StatusBadge from '../components/StatusBadge'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -59,11 +60,94 @@ export default function TicketDetail() {
   const [notifying, setNotifying] = useState(false)
   const [notifStatus, setNotifStatus] = useState(null) // 'sent' | 'error'
 
+  // Edit state
+  const [editStatus, setEditStatus] = useState('')
+  const [editAmount, setEditAmount] = useState('')
+  const [editPayStatus, setEditPayStatus] = useState('unpaid')
+  const [saving, setSaving] = useState(false)
+  const [saveMsg, setSaveMsg] = useState(null) // null | 'saved' | 'error'
+
+  const STATUSES = ['pending', 'in progress', 'ready', 'collected']
+
+  useEffect(() => {
+    if (ticket) {
+      setEditStatus(ticket.status ?? 'pending')
+      setEditAmount(ticket.payments?.[0]?.amount_paid != null ? String(ticket.payments[0].amount_paid) : '')
+      setEditPayStatus(ticket.payments?.[0]?.payment_status ?? 'unpaid')
+    }
+  }, [ticket])
+
+  const handleSave = async () => {
+    setSaving(true)
+    setSaveMsg(null)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+
+      const { error: ticketErr } = await supabase
+        .from('tickets')
+        .update({ status: editStatus, updated_at: new Date().toISOString() })
+        .eq('id', id)
+      if (ticketErr) throw ticketErr
+
+      if (ticket.payments?.[0]) {
+        const subtotal = parseFloat(editAmount) || 0
+        const gst = +(subtotal * 0.05).toFixed(2)
+        const pst = +(subtotal * 0.07).toFixed(2)
+        const { error: payErr } = await supabase
+          .from('payments')
+          .update({
+            payment_status: editPayStatus,
+            amount_paid: subtotal,
+            subtotal,
+            gst_amount: gst,
+            pst_amount: pst,
+            tax_total: +(gst + pst).toFixed(2),
+            total_charged: +(subtotal + gst + pst).toFixed(2),
+            paid_at: editPayStatus === 'paid' ? new Date().toISOString() : null,
+            updated_by: user.id,
+          })
+          .eq('id', ticket.payments[0].id)
+        if (payErr) throw payErr
+      }
+
+      const { data: refreshed, error: fetchErr } = await supabase
+        .from('tickets')
+        .select('id, issue_id, customer_name, customer_phone, device, issue, date_in, date_expected, status, warranty_days, created_by, payments(id, payment_status, amount_paid)')
+        .eq('id', id)
+        .single()
+      if (fetchErr) throw fetchErr
+      setTicket(refreshed)
+
+      setSaveMsg('saved')
+      setTimeout(() => setSaveMsg(null), 2000)
+
+      logAudit({
+        action: 'ticket.status_changed',
+        entity: 'ticket',
+        entityId: id,
+        details: {
+          issue_id: ticket.issue_id,
+          customer_name: ticket.customer_name,
+          old_status: ticket.status,
+          new_status: editStatus,
+          payment_status: editPayStatus,
+          amount_paid: (parseFloat(editAmount) || 0).toFixed(2),
+        },
+      })
+    } catch (err) {
+      console.error('[handleSave]', err)
+      setSaveMsg('error')
+      setTimeout(() => setSaveMsg(null), 3000)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   useEffect(() => {
     async function fetchTicket() {
       const { data, error } = await supabase
         .from('tickets')
-        .select('id, issue_id, customer_name, customer_phone, device, issue, date_in, date_expected, status, warranty_days, created_by, payments(payment_status, amount_paid)')
+        .select('id, issue_id, customer_name, customer_phone, device, issue, date_in, date_expected, status, warranty_days, created_by, payments(id, payment_status, amount_paid)')
         .eq('id', id)
         .single()
       if (error) setError('Failed to load ticket.')
@@ -205,6 +289,139 @@ export default function TicketDetail() {
               {ticket.issue}
             </p>
           </div>
+        </div>
+
+        {/* Edit card */}
+        <div className="glass-card" style={{
+          borderRadius: 'var(--radius-lg)',
+          padding: 20,
+          marginBottom: 16,
+        }}>
+          <p style={{
+            fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)',
+            textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16,
+          }}>
+            Update Ticket
+          </p>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+            {/* Status */}
+            <div>
+              <p style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 4 }}>Status</p>
+              <select
+                value={editStatus}
+                onChange={e => setEditStatus(e.target.value)}
+                style={{
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--text-primary)',
+                  fontSize: 13,
+                  padding: '6px 10px',
+                  fontFamily: 'inherit',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                {STATUSES.map(s => (
+                  <option key={s} value={s}>
+                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Service charge */}
+            <div>
+              <p style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 4 }}>Service charge</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>CAD</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={editAmount}
+                  onChange={e => setEditAmount(e.target.value)}
+                  style={{
+                    width: 100,
+                    background: 'var(--bg-elevated)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: 'var(--radius-sm)',
+                    color: 'var(--text-primary)',
+                    fontSize: 13,
+                    padding: '6px 10px',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    cursor: 'text',
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Payment status */}
+            <div>
+              <p style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 4 }}>Payment</p>
+              <select
+                value={editPayStatus}
+                onChange={e => setEditPayStatus(e.target.value)}
+                style={{
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--text-primary)',
+                  fontSize: 13,
+                  padding: '6px 10px',
+                  fontFamily: 'inherit',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="unpaid">Unpaid</option>
+                <option value="partial">Partial</option>
+                <option value="paid">Paid</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tax breakdown */}
+          {parseFloat(editAmount) > 0 && (
+            <p style={{ fontSize: 12, color: 'var(--text-tertiary)', marginTop: 10 }}>
+              GST CAD {(parseFloat(editAmount) * 0.05).toFixed(2)}
+              {' · '}
+              PST CAD {(parseFloat(editAmount) * 0.07).toFixed(2)}
+              {' · '}
+              Customer pays CAD {(parseFloat(editAmount) * 1.12).toFixed(2)}
+            </p>
+          )}
+
+          {/* Save button */}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              width: '100%',
+              marginTop: 12,
+              padding: '9px 16px',
+              fontSize: 14, fontWeight: 500,
+              fontFamily: 'inherit',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              transition: 'background 150ms, color 150ms',
+              ...(saveMsg === 'saved'
+                ? { background: 'rgba(16,185,129,0.15)', color: 'var(--accent-green)' }
+                : saveMsg === 'error'
+                ? { background: 'rgba(239,68,68,0.12)', color: 'var(--accent-red)' }
+                : { background: saving ? 'rgba(0,113,227,0.5)' : '#0071e3', color: '#fff', opacity: saving ? 0.7 : 1 }
+              ),
+            }}
+            onMouseEnter={e => { if (!saving && !saveMsg) e.currentTarget.style.background = '#0077ed' }}
+            onMouseLeave={e => { if (!saving && !saveMsg) e.currentTarget.style.background = '#0071e3' }}
+          >
+            <Save size={13} strokeWidth={2} />
+            {saving ? 'Saving…' : saveMsg === 'saved' ? 'Saved ✓' : saveMsg === 'error' ? 'Error — try again' : 'Save Changes'}
+          </button>
         </div>
 
         {/* Notification section */}
