@@ -190,7 +190,7 @@ export default function TaxReport() {
               background: 'var(--bg-elevated)',
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--border-subtle)',
-              overflow: 'hidden',
+              overflowX: 'auto',
             }}>
               {PERIODS.map((p, i) => (
                 <button
@@ -201,8 +201,8 @@ export default function TaxReport() {
                     color: period === p.value ? '#4f9cf9' : 'var(--text-secondary)',
                     border: 'none',
                     borderRight: i < PERIODS.length - 1 ? '1px solid var(--border-subtle)' : 'none',
-                    padding: '6px 12px',
-                    fontSize: 13,
+                    padding: '6px 9px',
+                    fontSize: 12,
                     fontWeight: period === p.value ? 600 : 400,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
@@ -306,7 +306,7 @@ export default function TaxReport() {
                         <td style={{ ...td, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                           {formatDate(p.paid_at)}
                         </td>
-                        <td style={{ ...td, fontFamily: 'ui-monospace, monospace', fontWeight: 600, color: 'var(--accent-cyan)' }}>
+                        <td style={{ ...td, fontFamily: 'ui-monospace, monospace', fontWeight: 600, color: 'var(--accent-cyan)', whiteSpace: 'nowrap' }}>
                           {ticket?.issue_id ?? '—'}
                         </td>
                         <td style={{ ...td, fontWeight: 500, color: 'var(--text-primary)' }}>

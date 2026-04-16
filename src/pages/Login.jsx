@@ -239,7 +239,7 @@ export default function Login() {
               }}>✓</div>
               <p style={{ fontSize: 15, fontWeight: 500, color: '#f2f2f7', marginBottom: 8 }}>Check your email</p>
               <p style={{ fontSize: 14, color: 'rgba(242,242,247,0.55)', lineHeight: 1.6 }}>
-                We sent a confirmation link to <strong style={{ color: '#f2f2f7' }}>{email}</strong>. Verify your email, then sign in to set up 2FA.
+                We sent a confirmation link to <strong style={{ color: '#f2f2f7' }}>{email}</strong>. Verify your email, then sign in.
               </p>
               <button
                 type="button"

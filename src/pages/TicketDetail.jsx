@@ -194,10 +194,8 @@ export default function TicketDetail() {
           <FieldBlock label="Customer name" value={ticket.customer_name} />
           <FieldBlock label="Device" value={ticket.device} />
           <FieldBlock label="Phone" value={ticket.customer_phone} mono />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-            <FieldBlock label="Date in" value={formatDate(ticket.date_in)} />
-            <FieldBlock label="Expected" value={formatDate(ticket.date_expected)} />
-          </div>
+          <FieldBlock label="Date in" value={formatDate(ticket.date_in)} />
+          <FieldBlock label="Expected" value={formatDate(ticket.date_expected)} />
           {ticket.warranty_days != null && (
             <FieldBlock label="Warranty" value={`${ticket.warranty_days} day${ticket.warranty_days !== 1 ? 's' : ''}`} />
           )}
@@ -279,7 +277,7 @@ export default function TicketDetail() {
                 <div style={{ fontSize: 9, color: '#555', letterSpacing: 0.2 }}>Service Receipt</div>
               </div>
             </div>
-            <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: 2, color: 'black' }}>{ticket.issue_id}</div>
+            <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: 2, color: 'black', whiteSpace: 'nowrap' }}>{ticket.issue_id}</div>
           </div>
           <hr style={{ borderColor: 'black', margin: '12px 0' }} />
           <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>

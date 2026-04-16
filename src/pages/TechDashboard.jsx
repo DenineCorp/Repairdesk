@@ -629,7 +629,7 @@ export default function TechDashboard() {
       style={{ borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}
     >
       <div style={{ fontSize: 28, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em' }}>{value}</div>
-      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6, letterSpacing: '0.01em' }}>{label}</div>
+      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6, letterSpacing: '0.01em', whiteSpace: 'nowrap' }}>{label}</div>
     </motion.div>
   )
 

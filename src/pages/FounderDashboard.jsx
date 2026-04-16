@@ -343,10 +343,10 @@ export default function FounderDashboard() {
       className="glass-stat"
       style={{ borderRadius: 'var(--radius-lg)', padding: '16px 20px' }}
     >
-      <div style={{ fontSize: 24, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>
+      <div style={{ fontSize: 18, fontWeight: 700, color: color ?? 'var(--text-primary)', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
         {value}
       </div>
-      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 6 }}>{label}</div>
+      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 6, whiteSpace: 'nowrap' }}>{label}</div>
     </motion.div>
   )
 
@@ -596,6 +596,7 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
             fontWeight: 600,
             color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)',
             cursor: 'pointer',
+            whiteSpace: 'nowrap',
           }}
         >
           {ticket.issue_id}
