@@ -97,9 +97,7 @@ export default function Login() {
       return
     }
     setAttempts(0)
-    const { data: mfaData } = await supabase.auth.mfa.listFactors()
-    const totpFactors = mfaData?.totp ?? []
-    navigate(totpFactors.length === 0 ? '/setup-2fa' : '/verify-2fa')
+    navigate('/')
   }
 
   const inputStyle = (field) => ({

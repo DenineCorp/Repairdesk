@@ -104,7 +104,7 @@ export default function AnimatedBackground() {
   return (
     <>
       {/* Subtle grid */}
-      <div style={{
+      <div className="no-print" style={{
         position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
         backgroundImage: `
           linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
@@ -116,7 +116,7 @@ export default function AnimatedBackground() {
       }} />
 
       {/* Brand red orb — bottom left */}
-      <div style={{
+      <div className="no-print" style={{
         position: 'fixed', bottom: -280, left: -180, zIndex: 0, pointerEvents: 'none',
         width: 700, height: 700,
         background: 'radial-gradient(circle, rgba(227,24,26,0.09) 0%, transparent 65%)',
@@ -124,7 +124,7 @@ export default function AnimatedBackground() {
       }} />
 
       {/* Brand blue orb — top right */}
-      <div style={{
+      <div className="no-print" style={{
         position: 'fixed', top: -200, right: -200, zIndex: 0, pointerEvents: 'none',
         width: 600, height: 600,
         background: 'radial-gradient(circle, rgba(79,156,249,0.07) 0%, transparent 65%)',
@@ -132,7 +132,7 @@ export default function AnimatedBackground() {
       }} />
 
       {/* Top vignette */}
-      <div style={{
+      <div className="no-print" style={{
         position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
         background: 'radial-gradient(ellipse 100% 50% at 50% 0%, rgba(79,156,249,0.05) 0%, transparent 60%)',
       }} />
@@ -140,6 +140,7 @@ export default function AnimatedBackground() {
       {/* Particle canvas */}
       <canvas
         ref={canvasRef}
+        className="no-print"
         style={{
           position: 'fixed', inset: 0, width: '100%', height: '100%',
           zIndex: 0, pointerEvents: 'none',

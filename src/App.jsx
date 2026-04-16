@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
-import { supabase } from './services/supabaseClient'
 import LoadingSpinner from './components/LoadingSpinner'
 import AnimatedBackground from './components/AnimatedBackground'
 import Login from './pages/Login'
@@ -16,27 +14,12 @@ import UserManagement from './pages/UserManagement'
 import TicketStatus from './pages/TicketStatus'
 import TaxReport from './pages/TaxReport'
 
-/** Redirects unauthenticated users; enforces AAL2 if TOTP is enrolled */
+/** Redirects unauthenticated users */
 function RequireAuth({ children }) {
   const { user, loading } = useAuth()
   const location = useLocation()
-  const [aalChecked, setAalChecked] = useState(false)
-  const [needsMfa, setNeedsMfa] = useState(false)
-
-  useEffect(() => {
-    if (loading) return
-    if (!user) { setAalChecked(true); return }
-    supabase.auth.mfa.getAuthenticatorAssuranceLevel().then(({ data }) => {
-      if (data?.nextLevel === 'aal2' && data?.currentLevel !== 'aal2') {
-        setNeedsMfa(true)
-      }
-      setAalChecked(true)
-    })
-  }, [user, loading])
-
-  if (loading || !aalChecked) return <LoadingSpinner message="Authenticating…" />
+  if (loading) return <LoadingSpinner message="Authenticating…" />
   if (!user) return <Navigate to="/login" state={{ from: location }} replace />
-  if (needsMfa) return <Navigate to="/verify-2fa" replace />
   return children
 }
 

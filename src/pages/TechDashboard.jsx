@@ -139,7 +139,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
           issue_id: ticket?.issue_id,
           customer_name: ticket?.customer_name,
           payment_status: payStatus,
-          amount_paid: amountVal.toFixed(2),
+          amount_paid: subtotalVal.toFixed(2),
         },
       })
       onSaved()
@@ -153,7 +153,7 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
   return (
     <div
       onClick={e => e.stopPropagation()}
-      style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}
+      style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, flexWrap: 'wrap', maxWidth: '100%' }}
     >
       {/* Current payment badge */}
       <PaymentBadge status={payment?.payment_status ?? 'unpaid'} />
