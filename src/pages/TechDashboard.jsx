@@ -151,114 +151,108 @@ function PaymentControls({ payment, ticket, onSaved, onError }) {
   }
 
   return (
-    <div
-      onClick={e => e.stopPropagation()}
-      style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, flexWrap: 'wrap', maxWidth: '100%' }}
-    >
-      {/* Current payment badge */}
-      <PaymentBadge status={payment?.payment_status ?? 'unpaid'} />
+    <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      {/* Controls row — nowrap so nothing spills */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'nowrap' }}>
+        {/* Current payment badge */}
+        <PaymentBadge status={payment?.payment_status ?? 'unpaid'} />
 
-      {/* Amount input */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 0 }} onClick={e => e.stopPropagation()}>
-        <span style={{
-          fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)',
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          borderRight: 'none',
-          borderRadius: 'var(--radius-sm) 0 0 var(--radius-sm)',
-          padding: '4px 6px',
-          lineHeight: 1,
-          userSelect: 'none',
-          whiteSpace: 'nowrap',
-        }}>CAD</span>
-        <input
-        type="number"
-        min="0"
-        step="0.01"
-        placeholder="0.00"
-        value={amount}
-        onChange={e => setAmount(e.target.value)}
-        onClick={e => e.stopPropagation()}
-        style={{
-          width: 64,
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
-          padding: '4px 7px',
-          color: 'var(--text-primary)',
-          fontSize: 13,
-          outline: 'none',
-          fontFamily: 'inherit',
-        }}
-        onFocus={e => e.target.style.borderColor = 'rgba(227,24,55,0.5)'}
-        onBlur={e => e.target.style.borderColor = 'var(--border-default)'}
-      />
+        {/* Amount input */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0 }} onClick={e => e.stopPropagation()}>
+          <span style={{
+            fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)',
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-default)',
+            borderRight: 'none',
+            borderRadius: 'var(--radius-sm) 0 0 var(--radius-sm)',
+            padding: '4px 6px',
+            lineHeight: 1,
+            userSelect: 'none',
+            whiteSpace: 'nowrap',
+          }}>CAD</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            value={amount}
+            onChange={e => setAmount(e.target.value)}
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: 64,
+              background: 'var(--bg-elevated)',
+              border: '1px solid var(--border-default)',
+              borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
+              padding: '4px 7px',
+              color: 'var(--text-primary)',
+              fontSize: 13,
+              outline: 'none',
+              fontFamily: 'inherit',
+            }}
+            onFocus={e => e.target.style.borderColor = 'rgba(227,24,55,0.5)'}
+            onBlur={e => e.target.style.borderColor = 'var(--border-default)'}
+          />
+        </div>
+
+        {/* Payment status selector */}
+        <select
+          value={payStatus}
+          onChange={e => setPayStatus(e.target.value)}
+          onClick={e => e.stopPropagation()}
+          style={{
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-sm)',
+            color: 'var(--text-primary)',
+            fontSize: 13,
+            padding: '4px 8px',
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            outline: 'none',
+          }}
+        >
+          {PAYMENT_STATUSES.map(s => (
+            <option key={s} value={s} style={{ background: '#ffffff' }}>
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </option>
+          ))}
+        </select>
+
+        {/* Save button */}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          style={{
+            background: flashSaved ? 'rgba(16,185,129,0.2)' : 'var(--accent-green-dim)',
+            color: 'var(--accent-green)',
+            border: '1px solid rgba(16,185,129,0.2)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '4px 10px',
+            fontSize: 13, fontWeight: 500,
+            cursor: saving ? 'not-allowed' : 'pointer',
+            fontFamily: 'inherit',
+            opacity: saving ? 0.6 : 1,
+            transition: 'background 200ms',
+            whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={e => { if (!saving && !flashSaved) e.currentTarget.style.background = 'rgba(16,185,129,0.2)' }}
+          onMouseLeave={e => { if (!flashSaved) e.currentTarget.style.background = 'var(--accent-green-dim)' }}
+        >
+          {saving ? '…' : flashSaved ? 'Saved ✓' : 'Save'}
+        </button>
       </div>
 
-      {/* Payment status selector */}
-      <select
-        value={payStatus}
-        onChange={e => setPayStatus(e.target.value)}
-        onClick={e => e.stopPropagation()}
-        style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-sm)',
-          color: 'var(--text-primary)',
-          fontSize: 13,
-          padding: '4px 8px',
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-          outline: 'none',
-        }}
-      >
-        {PAYMENT_STATUSES.map(s => (
-          <option key={s} value={s} style={{ background: '#ffffff' }}>
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-          </option>
-        ))}
-      </select>
-
-      {/* Save button */}
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        style={{
-          background: flashSaved ? 'rgba(16,185,129,0.2)' : 'var(--accent-green-dim)',
-          color: 'var(--accent-green)',
-          border: '1px solid rgba(16,185,129,0.2)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '4px 10px',
-          fontSize: 13, fontWeight: 500,
-          cursor: saving ? 'not-allowed' : 'pointer',
-          fontFamily: 'inherit',
-          opacity: saving ? 0.6 : 1,
-          transition: 'background 200ms',
-          whiteSpace: 'nowrap',
-        }}
-        onMouseEnter={e => { if (!saving && !flashSaved) e.currentTarget.style.background = 'rgba(16,185,129,0.2)' }}
-        onMouseLeave={e => { if (!flashSaved) e.currentTarget.style.background = 'var(--accent-green-dim)' }}
-      >
-        {saving ? '…' : flashSaved ? 'Saved ✓' : 'Save'}
-      </button>
-
-      {/* Live tax breakdown — shown only when an amount is entered */}
+      {/* Tax breakdown — only when amount > 0 */}
       {parseFloat(amount) > 0 && (
         <div
           onClick={e => e.stopPropagation()}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            fontSize: 12, color: 'var(--text-tertiary)',
-            flexBasis: '100%',
-            paddingLeft: 2,
-            flexWrap: 'wrap',
-          }}
+          style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: 'var(--text-tertiary)', flexWrap: 'wrap' }}
         >
-          <span>GST 5%: <strong style={{ color: 'var(--accent-blue)' }}>${(parseFloat(amount) * 0.05).toFixed(2)}</strong></span>
+          <span>GST 5%: <strong style={{ color: 'var(--accent-blue)' }}>${(parseFloat(amount)*0.05).toFixed(2)}</strong></span>
           <span style={{ color: 'var(--border-default)' }}>·</span>
-          <span>PST 7%: <strong style={{ color: 'var(--accent-cyan)' }}>${(parseFloat(amount) * 0.07).toFixed(2)}</strong></span>
+          <span>PST 7%: <strong style={{ color: 'var(--accent-cyan)' }}>${(parseFloat(amount)*0.07).toFixed(2)}</strong></span>
           <span style={{ color: 'var(--border-default)' }}>·</span>
-          <span>Customer pays: <strong style={{ color: 'var(--text-primary)' }}>CAD {(parseFloat(amount) * 1.12).toFixed(2)}</strong></span>
+          <span>Total: <strong style={{ color: 'var(--text-primary)' }}>CAD {(parseFloat(amount)*1.12).toFixed(2)}</strong></span>
         </div>
       )}
     </div>
@@ -424,107 +418,91 @@ const SectionHeading = ({ children, showDot, dotColor }) => (
 )
 
 // ── Ticket Row ────────────────────────────────────────────────────────────────
-const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, flashSuccess, onPaymentSaved, onPaymentError, addToast, readOnly }) => {
+const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, isLast, flashSuccess, onPaymentSaved, onPaymentError, addToast, readOnly }) => {
   const overdue = isOverdue(ticket.date_expected, ticket.status)
   const [hovered, setHovered] = useState(false)
   const payment = ticket.payments?.[0]
 
+  const tdBase = {
+    padding: '10px 14px',
+    borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)',
+    background: flashSuccess ? 'rgba(16,185,129,0.04)' : hovered ? 'var(--bg-hover)' : 'transparent',
+    transition: 'background 150ms',
+    verticalAlign: 'middle',
+    cursor: 'pointer',
+  }
+
   return (
-    <div
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 10,
-        padding: '10px 12px',
-        borderRadius: 'var(--radius-md)',
-        background: flashSuccess
-          ? 'rgba(16,185,129,0.06)'
-          : hovered ? 'var(--bg-hover)' : 'transparent',
-        transition: 'background 200ms ease',
-        cursor: 'pointer',
-        borderLeft: accentLeft ? `2px solid ${accentLeft}` : '2px solid transparent',
-        paddingLeft: accentLeft ? 10 : 12,
-        flexWrap: 'wrap',
-        rowGap: 6,
-      }}
-    >
-      {/* Issue ID */}
-      <span style={{
-        fontFamily: 'ui-monospace, "Cascadia Code", "Fira Code", monospace',
-        fontSize: 14, fontWeight: 600,
-        color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)',
-        minWidth: 95, flexShrink: 0,
-      }}>
-        {ticket.issue_id}
-      </span>
-
-      {/* Customer */}
-      <span style={{ fontWeight: 500, color: 'var(--text-primary)', flex: '1 1 120px', fontSize: 14, minWidth: 0 }}>
+    <tr onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick}>
+      {/* Issue ID — accent left border on this cell */}
+      <td style={{ ...tdBase, borderLeft: `3px solid ${accentLeft || 'transparent'}`, paddingLeft: accentLeft ? 11 : 14 }}>
+        <span style={{
+          fontFamily: 'ui-monospace, "Cascadia Code", monospace',
+          fontSize: 13, fontWeight: 600,
+          color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)',
+          whiteSpace: 'nowrap',
+        }}>
+          {ticket.issue_id}
+        </span>
+      </td>
+      <td style={{ ...tdBase, color: 'var(--text-primary)', fontWeight: 500, whiteSpace: 'nowrap' }}>
         {ticket.customer_name}
-      </span>
-
-      {/* Device */}
-      <span style={{
-        color: 'var(--text-secondary)', fontSize: 14, flex: '1 1 120px',
-        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0,
-      }}>
+      </td>
+      <td style={{ ...tdBase, color: 'var(--text-secondary)', fontSize: 13, whiteSpace: 'nowrap' }}>
         {ticket.device}
-      </span>
-
-      {/* Expected date */}
-      <span style={{ color: overdue ? 'var(--accent-red)' : 'var(--text-tertiary)', fontSize: 13, flexShrink: 0 }}>
+      </td>
+      <td style={{ ...tdBase, color: overdue ? 'var(--accent-red)' : 'var(--text-tertiary)', fontSize: 13, whiteSpace: 'nowrap' }}>
         {formatDate(ticket.date_expected)}
-      </span>
-
-      {/* Ticket status badge */}
-      <div style={{ flexShrink: 0 }}>
-        <StatusBadge status={ticket.status} />
-      </div>
-
-      {/* Notify button — only for ready tickets, not for viewers */}
-      {!readOnly && ticket.status === 'ready' && (
-        <div onClick={e => e.stopPropagation()}>
-          <NotifyButton ticket={ticket} addToast={addToast} />
+      </td>
+      {/* Status cell — stopPropagation so clicking the dropdown doesn't navigate */}
+      <td style={tdBase} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap' }}>
+          <StatusBadge status={ticket.status} />
+          {!readOnly && (
+            <select
+              value={ticket.status}
+              onChange={e => { e.stopPropagation(); onStatusChange(ticket.id, e.target.value) }}
+              disabled={updating === ticket.id}
+              onClick={e => e.stopPropagation()}
+              style={{
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-sm)',
+                color: 'var(--text-primary)',
+                fontSize: 12, padding: '3px 6px',
+                cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
+                opacity: updating === ticket.id ? 0.5 : 1,
+                flexShrink: 0,
+              }}
+            >
+              {STATUSES.map(s => (
+                <option key={s} value={s} style={{ background: '#ffffff' }}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
-      )}
-
-      {/* Ticket status select — hidden for viewers */}
-      {!readOnly && (
-        <select
-          value={ticket.status}
-          onChange={e => { e.stopPropagation(); onStatusChange(ticket.id, e.target.value) }}
-          disabled={updating === ticket.id}
-          onClick={e => e.stopPropagation()}
-          style={{
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-default)',
-            borderRadius: 'var(--radius-sm)',
-            color: 'var(--text-primary)',
-            fontSize: 13, padding: '4px 8px',
-            cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
-            opacity: updating === ticket.id ? 0.5 : 1,
-            flexShrink: 0,
-          }}
-        >
-          {STATUSES.map(s => (
-            <option key={s} value={s} style={{ background: '#ffffff' }}>
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-            </option>
-          ))}
-        </select>
-      )}
-
-      {/* Payment controls — hidden for viewers */}
-      {!readOnly && payment && (
-        <PaymentControls
-          payment={payment}
-          ticket={ticket}
-          onSaved={onPaymentSaved}
-          onError={onPaymentError}
-        />
-      )}
-    </div>
+      </td>
+      {/* Payment + Notify cell */}
+      <td style={tdBase} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {!readOnly && payment ? (
+            <PaymentControls
+              payment={payment}
+              ticket={ticket}
+              onSaved={onPaymentSaved}
+              onError={onPaymentError}
+            />
+          ) : (
+            payment && <PaymentBadge status={payment.payment_status} />
+          )}
+          {!readOnly && ticket.status === 'ready' && (
+            <NotifyButton ticket={ticket} addToast={addToast} />
+          )}
+        </div>
+      </td>
+    </tr>
   )
 }
 
@@ -633,25 +611,52 @@ export default function TechDashboard() {
     </motion.div>
   )
 
+  const thStyle = {
+    padding: '8px 14px',
+    fontSize: 11,
+    fontWeight: 600,
+    color: 'var(--text-tertiary)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+    textAlign: 'left',
+    borderBottom: '1px solid var(--border-subtle)',
+    background: 'rgba(0,0,0,0.02)',
+    whiteSpace: 'nowrap',
+  }
+
   const renderRows = (list, accentLeft) => (
-    <motion.div variants={containerVariants} initial="hidden" animate="show">
-      {list.map(t => (
-        <motion.div key={t.id} variants={itemVariants}>
-          <TicketRow
-            ticket={t}
-            onStatusChange={updateStatus}
-            updating={updating}
-            onClick={() => navigate(`/ticket/${t.id}`)}
-            accentLeft={accentLeft}
-            flashSuccess={!!flashRows[t.id]}
-            onPaymentSaved={handlePaymentSaved}
-            onPaymentError={handlePaymentError}
-            addToast={addToast}
-            readOnly={readOnly}
-          />
-        </motion.div>
-      ))}
-    </motion.div>
+    <div style={{ overflowX: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 760 }}>
+        <thead>
+          <tr>
+            <th style={thStyle}>Issue ID</th>
+            <th style={thStyle}>Customer</th>
+            <th style={thStyle}>Device</th>
+            <th style={thStyle}>Expected</th>
+            <th style={thStyle}>Status</th>
+            <th style={thStyle}>Payment</th>
+          </tr>
+        </thead>
+        <tbody>
+          {list.map((t, i) => (
+            <TicketRow
+              key={t.id}
+              ticket={t}
+              onStatusChange={updateStatus}
+              updating={updating}
+              onClick={() => navigate(`/ticket/${t.id}`)}
+              accentLeft={accentLeft}
+              isLast={i === list.length - 1}
+              flashSuccess={!!flashRows[t.id]}
+              onPaymentSaved={handlePaymentSaved}
+              onPaymentError={handlePaymentError}
+              addToast={addToast}
+              readOnly={readOnly}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 
   return (
@@ -724,20 +729,26 @@ export default function TechDashboard() {
 
             {/* Overdue + Due Today */}
             <div className="split-grid">
-              <div className="glass-card" style={{ border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
-                <SectionHeading showDot={overdue.length > 0} dotColor="var(--accent-red)">Overdue</SectionHeading>
-                {overdue.length === 0 ? <EmptyState text="No overdue jobs" /> : renderRows(overdue, 'var(--accent-red)')}
+              <div className="glass-card" style={{ border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                <div style={{ padding: '12px 16px 0' }}>
+                  <SectionHeading showDot={overdue.length > 0} dotColor="var(--accent-red)">Overdue</SectionHeading>
+                </div>
+                {overdue.length === 0 ? <div style={{ padding: '0 16px 12px' }}><EmptyState text="No overdue jobs" /></div> : renderRows(overdue, 'var(--accent-red)')}
               </div>
-              <div className="glass-card" style={{ border: '1px solid rgba(245,158,11,0.18)', borderRadius: 'var(--radius-lg)', padding: 16 }}>
-                <SectionHeading showDot={false}>Due Today</SectionHeading>
-                {dueToday.length === 0 ? <EmptyState text="Nothing due today" /> : renderRows(dueToday, 'var(--accent-amber)')}
+              <div className="glass-card" style={{ border: '1px solid rgba(245,158,11,0.18)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                <div style={{ padding: '12px 16px 0' }}>
+                  <SectionHeading showDot={false}>Due Today</SectionHeading>
+                </div>
+                {dueToday.length === 0 ? <div style={{ padding: '0 16px 12px' }}><EmptyState text="Nothing due today" /></div> : renderRows(dueToday, 'var(--accent-amber)')}
               </div>
             </div>
 
             {/* All active */}
-            <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', padding: 16 }}>
-              <SectionHeading showDot={false}>All Active Jobs</SectionHeading>
-              {active.length === 0 ? <EmptyState text="No active jobs" /> : renderRows(active, null)}
+            <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+              <div style={{ padding: '12px 16px 0' }}>
+                <SectionHeading showDot={false}>All Active Jobs</SectionHeading>
+              </div>
+              {active.length === 0 ? <div style={{ padding: '0 16px 12px' }}><EmptyState text="No active jobs" /></div> : renderRows(active, null)}
             </div>
           </>
         )}
