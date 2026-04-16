@@ -670,7 +670,7 @@ export default function TechDashboard() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
           <div>
             <h1 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-              Tech Dashboard
+              Dashboard
             </h1>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
               {active.length} active job{active.length !== 1 ? 's' : ''}

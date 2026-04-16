@@ -380,6 +380,7 @@ export default function FounderDashboard() {
     borderBottom: '1px solid var(--border-subtle)',
     background: 'rgba(0,0,0,0.025)',
     whiteSpace: 'nowrap',
+    whiteSpace: 'nowrap',
   }
 
   return (
@@ -523,7 +524,7 @@ export default function FounderDashboard() {
               overflow: 'hidden',
             }}>
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 680 }}>
                   <thead>
                     <tr>
                       <th style={thStyle}>Issue ID</th>
@@ -591,23 +592,21 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
     >
       <td style={tdStyle}>
         <span
-          onClick={onNavigate}
           style={{
             fontFamily: 'ui-monospace, "Cascadia Code", monospace',
             fontSize: 14,
             fontWeight: 600,
             color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)',
-            cursor: 'pointer',
             whiteSpace: 'nowrap',
           }}
         >
           {ticket.issue_id}
         </span>
       </td>
-      <td style={{ ...tdStyle, color: 'var(--text-primary)', fontWeight: 500 }}>{ticket.customer_name}</td>
-      <td style={{ ...tdStyle, color: 'var(--text-secondary)', fontSize: 14 }}>{ticket.device}</td>
+      <td style={{ ...tdStyle, color: 'var(--text-primary)', fontWeight: 500, whiteSpace: 'nowrap' }}>{ticket.customer_name}</td>
+      <td style={{ ...tdStyle, color: 'var(--text-secondary)', fontSize: 14, whiteSpace: 'nowrap' }}>{ticket.device}</td>
       <td style={tdStyle}><StatusBadge status={ticket.status} /></td>
-      <td style={{ ...tdStyle, color: overdue ? 'var(--accent-red)' : 'var(--text-secondary)', fontSize: 14 }}>
+      <td style={{ ...tdStyle, color: overdue ? 'var(--accent-red)' : 'var(--text-secondary)', fontSize: 14, whiteSpace: 'nowrap' }}>
         {formatDate(ticket.date_expected)}
       </td>
       <td style={tdStyle}>

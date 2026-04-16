@@ -1,4 +1,4 @@
-import { LogOut, ClipboardList, Users, Receipt } from 'lucide-react'
+import { LogOut, LayoutDashboard, ScrollText, Users, Receipt } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
@@ -34,7 +34,10 @@ export default function Navbar() {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: 1200, margin: '0 auto' }}>
         {/* Logo + company name */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'default' }}>
+        <div
+          onClick={() => navigate('/')}
+          style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
+        >
           <div style={{
             width: 32, height: 32,
             background: 'transparent',
@@ -72,11 +75,11 @@ export default function Navbar() {
               {user.email}
             </span>
 
-            {/* Technician + Founder nav links */}
+            {/* Dashboard nav link — routes per role */}
             {(role === 'founder' || role === 'technician') && (
               <>
                 <button
-                  onClick={() => navigate('/founder-dashboard')}
+                  onClick={() => navigate(role === 'founder' ? '/founder-dashboard' : '/tech-dashboard')}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 5,
                     background: 'none', border: 'none', cursor: 'pointer',
@@ -88,8 +91,8 @@ export default function Navbar() {
                   onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'rgba(242,242,247,0.65)'; e.currentTarget.style.background = 'none' }}
                 >
-                  <ClipboardList size={13} strokeWidth={2} />
-                  <span className="nav-signout-text">Reports</span>
+                  <LayoutDashboard size={13} strokeWidth={2} />
+                  <span className="nav-signout-text">Dashboard</span>
                 </button>
                 <button
                   onClick={() => navigate('/audit-log')}
@@ -104,7 +107,7 @@ export default function Navbar() {
                   onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'rgba(242,242,247,0.65)'; e.currentTarget.style.background = 'none' }}
                 >
-                  <ClipboardList size={13} strokeWidth={2} />
+                  <ScrollText size={13} strokeWidth={2} />
                   <span className="nav-signout-text">Activity Log</span>
                 </button>
               </>

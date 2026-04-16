@@ -29,6 +29,7 @@ const fieldLabelStyle = {
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
   marginBottom: 4,
+  whiteSpace: 'nowrap',
 }
 
 const fieldValueStyle = {
