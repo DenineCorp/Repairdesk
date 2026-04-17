@@ -380,7 +380,6 @@ export default function FounderDashboard() {
     borderBottom: '1px solid var(--border-subtle)',
     background: 'rgba(0,0,0,0.025)',
     whiteSpace: 'nowrap',
-    whiteSpace: 'nowrap',
   }
 
   return (

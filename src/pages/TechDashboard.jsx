@@ -418,7 +418,7 @@ const SectionHeading = ({ children, showDot, dotColor }) => (
 )
 
 // ── Ticket Row ────────────────────────────────────────────────────────────────
-const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, isLast, flashSuccess, onPaymentSaved, onPaymentError, addToast, readOnly }) => {
+const TicketRow = ({ ticket, onClick, accentLeft, isLast, flashSuccess, addToast, readOnly }) => {
   const overdue = isOverdue(ticket.date_expected, ticket.status)
   const [hovered, setHovered] = useState(false)
   const payment = ticket.payments?.[0]
@@ -432,16 +432,17 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, isLa
     cursor: 'pointer',
   }
 
+  const ps = payment?.payment_status ?? 'unpaid'
+  const payCfg = ps === 'paid'
+    ? { color: 'var(--accent-green)', bg: 'var(--accent-green-dim)', border: 'rgba(16,185,129,0.2)', label: 'Paid' }
+    : ps === 'partial'
+    ? { color: 'var(--accent-cyan)', bg: 'var(--accent-cyan-dim)', border: 'rgba(255,77,109,0.2)', label: 'Partial' }
+    : { color: 'var(--accent-amber)', bg: 'var(--accent-amber-dim)', border: 'rgba(245,158,11,0.2)', label: 'Unpaid' }
+
   return (
     <tr onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={onClick}>
-      {/* Issue ID — accent left border on this cell */}
       <td style={{ ...tdBase, borderLeft: `3px solid ${accentLeft || 'transparent'}`, paddingLeft: accentLeft ? 11 : 14 }}>
-        <span style={{
-          fontFamily: 'ui-monospace, "Cascadia Code", monospace',
-          fontSize: 13, fontWeight: 600,
-          color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)',
-          whiteSpace: 'nowrap',
-        }}>
+        <span style={{ fontFamily: 'ui-monospace, "Cascadia Code", monospace', fontSize: 13, fontWeight: 600, color: overdue ? 'var(--accent-red)' : 'var(--accent-cyan)', whiteSpace: 'nowrap' }}>
           {ticket.issue_id}
         </span>
       </td>
@@ -454,53 +455,22 @@ const TicketRow = ({ ticket, onStatusChange, updating, onClick, accentLeft, isLa
       <td style={{ ...tdBase, color: overdue ? 'var(--accent-red)' : 'var(--text-tertiary)', fontSize: 13, whiteSpace: 'nowrap' }}>
         {formatDate(ticket.date_expected)}
       </td>
-      {/* Status cell — stopPropagation so clicking the dropdown doesn't navigate */}
-      <td style={tdBase} onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap' }}>
-          <StatusBadge status={ticket.status} />
-          {!readOnly && (
-            <select
-              value={ticket.status}
-              onChange={e => { e.stopPropagation(); onStatusChange(ticket.id, e.target.value) }}
-              disabled={updating === ticket.id}
-              onClick={e => e.stopPropagation()}
-              style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border-default)',
-                borderRadius: 'var(--radius-sm)',
-                color: 'var(--text-primary)',
-                fontSize: 12, padding: '3px 6px',
-                cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
-                opacity: updating === ticket.id ? 0.5 : 1,
-                flexShrink: 0,
-              }}
-            >
-              {STATUSES.map(s => (
-                <option key={s} value={s} style={{ background: '#ffffff' }}>
-                  {s.charAt(0).toUpperCase() + s.slice(1)}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
+      <td style={tdBase}>
+        <StatusBadge status={ticket.status} />
       </td>
-      {/* Payment + Notify cell */}
+      <td style={tdBase}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 500, color: payCfg.color, background: payCfg.bg, border: `1px solid ${payCfg.border}`, borderRadius: 'var(--radius-sm)', padding: '3px 8px' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: payCfg.color, flexShrink: 0 }} />
+          {payCfg.label}
+        </span>
+      </td>
+      <td style={{ ...tdBase, whiteSpace: 'nowrap' }}>
+        {payment?.amount_paid != null ? `CAD ${Number(payment.amount_paid).toFixed(2)}` : '—'}
+      </td>
       <td style={tdBase} onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {!readOnly && payment ? (
-            <PaymentControls
-              payment={payment}
-              ticket={ticket}
-              onSaved={onPaymentSaved}
-              onError={onPaymentError}
-            />
-          ) : (
-            payment && <PaymentBadge status={payment.payment_status} />
-          )}
-          {!readOnly && ticket.status === 'ready' && (
-            <NotifyButton ticket={ticket} addToast={addToast} />
-          )}
-        </div>
+        {!readOnly && ticket.status === 'ready' && (
+          <NotifyButton ticket={ticket} addToast={addToast} />
+        )}
       </td>
     </tr>
   )
@@ -635,6 +605,8 @@ export default function TechDashboard() {
             <th style={thStyle}>Expected</th>
             <th style={thStyle}>Status</th>
             <th style={thStyle}>Payment</th>
+            <th style={thStyle}>Amount</th>
+            <th style={thStyle}>Notify</th>
           </tr>
         </thead>
         <tbody>
@@ -642,14 +614,10 @@ export default function TechDashboard() {
             <TicketRow
               key={t.id}
               ticket={t}
-              onStatusChange={updateStatus}
-              updating={updating}
               onClick={() => navigate(`/ticket/${t.id}`)}
               accentLeft={accentLeft}
               isLast={i === list.length - 1}
               flashSuccess={!!flashRows[t.id]}
-              onPaymentSaved={handlePaymentSaved}
-              onPaymentError={handlePaymentError}
               addToast={addToast}
               readOnly={readOnly}
             />
