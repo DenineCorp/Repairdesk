@@ -303,7 +303,7 @@ export default function FounderDashboard() {
   const fetchData = async () => {
     const { data: tickets, error } = await supabase
       .from('tickets')
-      .select(`*, payments(id,payment_status,amount_paid,paid_at)`)
+      .select(`*, payments(id,payment_status,amount_paid,total_charged,paid_at)`)
       .order('created_at', { ascending: false })
     if (!error) setData(tickets)
     setLoading(false)
@@ -632,7 +632,7 @@ function TableRow({ ticket, payment, overdue, isPaid, isLast, onNavigate, addToa
         })()}
       </td>
       <td style={{ ...tdStyle, fontFamily: 'ui-monospace, monospace', fontSize: 14, color: isPaid ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
-        {payment?.amount_paid ? `CAD ${parseFloat(payment.amount_paid).toFixed(2)}` : '—'}
+        {payment?.total_charged != null ? `CAD ${parseFloat(payment.total_charged).toFixed(2)}` : payment?.amount_paid ? `CAD ${(parseFloat(payment.amount_paid) * 1.12).toFixed(2)}` : '—'}
       </td>
       <td style={tdStyle}>
         {ticket.status === 'ready' && <NotifyButton ticket={ticket} addToast={addToast} />}

@@ -258,8 +258,8 @@ const TicketRow = ({ ticket, onClick, accentLeft, isLast, flashSuccess, addToast
           {payCfg.label}
         </span>
       </td>
-      <td style={{ ...tdBase, whiteSpace: 'nowrap' }}>
-        {payment?.amount_paid != null ? `CAD ${Number(payment.amount_paid).toFixed(2)}` : '—'}
+      <td style={{ ...tdBase, whiteSpace: 'nowrap', color: 'var(--text-primary)' }}>
+        {payment?.total_charged != null ? `CAD ${Number(payment.total_charged).toFixed(2)}` : payment?.amount_paid != null ? `CAD ${(Number(payment.amount_paid) * 1.12).toFixed(2)}` : '—'}
       </td>
       <td style={tdBase} onClick={e => e.stopPropagation()}>
         {!readOnly && ticket.status === 'ready' && (
@@ -306,7 +306,7 @@ export default function TechDashboard() {
   const fetchTickets = useCallback(async () => {
     const { data, error } = await supabase
       .from('tickets')
-      .select('*, payments(id, payment_status, amount_paid, paid_at)')
+      .select('*, payments(id, payment_status, amount_paid, total_charged, paid_at)')
       .order('created_at', { ascending: false })
     if (!error) setTickets(data)
     setLoading(false)
