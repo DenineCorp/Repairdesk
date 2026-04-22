@@ -100,9 +100,7 @@ export default function Login() {
       return
     }
     setAttempts(0)
-    const { data: factorsData } = await supabase.auth.mfa.listFactors()
-    const verifiedTotp = factorsData?.totp?.find(f => f.status === 'verified')
-    navigate(verifiedTotp ? '/verify-2fa' : '/')
+    navigate('/')
   }
 
   const handleForgotPassword = async (e) => {

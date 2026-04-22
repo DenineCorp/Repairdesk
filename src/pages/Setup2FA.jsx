@@ -34,13 +34,21 @@ export default function Setup2FA() {
       const { data: factorsData } = await supabase.auth.mfa.listFactors()
       const existingTotp = factorsData?.totp ?? []
 
-      if (existingTotp.some(f => f.status === 'verified')) {
-        navigate('/verify-2fa', { replace: true })
-        return
-      }
-
-      for (const factor of existingTotp) {
-        await supabase.auth.mfa.unenroll({ factorId: factor.id })
+      if (existingTotp.length > 0) {
+        // Try client-side unenroll (works for unverified factors)
+        for (const factor of existingTotp) {
+          await supabase.auth.mfa.unenroll({ factorId: factor.id })
+        }
+        // If any verified factors remain, use admin API to force-delete
+        const { data: refreshed } = await supabase.auth.mfa.listFactors()
+        const remaining = refreshed?.totp ?? []
+        if (remaining.length > 0) {
+          const { data: { session } } = await supabase.auth.getSession()
+          await fetch('/api/reset-mfa', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          })
+        }
       }
 
       const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'ET ServiceDesk' })
