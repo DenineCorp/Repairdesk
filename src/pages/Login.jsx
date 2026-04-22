@@ -26,6 +26,9 @@ export default function Login() {
   const [attempts, setAttempts]   = useState(0)
   const [lockedUntil, setLockedUntil] = useState(null)
   const [countdown, setCountdown] = useState(0)
+  const [forgotMode, setForgotMode] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotSent, setForgotSent] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -97,7 +100,21 @@ export default function Login() {
       return
     }
     setAttempts(0)
-    navigate('/')
+    const { data: factorsData } = await supabase.auth.mfa.listFactors()
+    const verifiedTotp = factorsData?.totp?.find(f => f.status === 'verified')
+    navigate(verifiedTotp ? '/verify-2fa' : '/')
+  }
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    const { error: resetErr } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/login`,
+    })
+    setLoading(false)
+    if (resetErr) { setError(resetErr.message ?? 'Failed to send reset email.'); return }
+    setForgotSent(true)
   }
 
   const inputStyle = (field) => ({
@@ -227,8 +244,41 @@ export default function Login() {
             </motion.div>
           )}
 
+          {/* Forgot password flow */}
+          {forgotMode && (
+            forgotSent ? (
+              <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                <p style={{ fontSize: 15, fontWeight: 500, color: '#f2f2f7', marginBottom: 8 }}>Check your email</p>
+                <p style={{ fontSize: 14, color: 'rgba(242,242,247,0.55)', lineHeight: 1.6 }}>
+                  Password reset link sent to <strong style={{ color: '#f2f2f7' }}>{forgotEmail}</strong>.
+                </p>
+                <button type="button" onClick={() => { setForgotMode(false); setForgotSent(false); setError(null) }}
+                  style={{ marginTop: 16, background: 'none', border: 'none', color: 'rgba(79,156,249,0.9)', fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'underline' }}>
+                  Back to sign in
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotPassword} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'rgba(242,242,247,0.6)', marginBottom: 7 }}>Email</label>
+                  <input type="email" required value={forgotEmail} onChange={e => setForgotEmail(e.target.value)}
+                    style={inputStyle('forgotEmail')} placeholder="you@electtech.ca" autoComplete="email"
+                    onFocus={() => setFocusedField('forgotEmail')} onBlur={() => setFocusedField(null)} />
+                </div>
+                <button type="submit" disabled={loading}
+                  style={{ width: '100%', background: loading ? 'rgba(0,113,227,0.5)' : '#0071e3', color: '#fff', border: 'none', borderRadius: '10px', padding: '12px 16px', fontSize: 15, fontWeight: 500, cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit' }}>
+                  {loading ? 'Sending…' : 'Send Reset Link'}
+                </button>
+                <button type="button" onClick={() => { setForgotMode(false); setError(null) }}
+                  style={{ background: 'none', border: 'none', color: 'rgba(242,242,247,0.4)', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Back to sign in
+                </button>
+              </form>
+            )
+          )}
+
           {/* Signup success */}
-          {signupDone ? (
+          {!forgotMode && signupDone ? (
             <div style={{ textAlign: 'center', padding: '16px 0' }}>
               <div style={{
                 width: 48, height: 48, borderRadius: '50%',
@@ -379,6 +429,20 @@ export default function Login() {
                 onMouseUp={e => { if (!loading) e.currentTarget.style.transform = 'scale(1)' }}
               >
                 {loading ? 'Signing in…' : 'Sign in'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setForgotMode(true); setForgotEmail(email); setError(null) }}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'rgba(79,156,249,0.75)', fontSize: 13, fontFamily: 'inherit',
+                  textAlign: 'center', padding: '4px 0',
+                  transition: 'color 150ms',
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = 'rgba(79,156,249,1)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(79,156,249,0.75)'}
+              >
+                Forgot password?
               </button>
             </form>
           )}

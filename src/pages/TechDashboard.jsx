@@ -9,8 +9,7 @@ import { logAudit } from '../utils/auditLogger'
 import Navbar from '../components/Navbar'
 import StatusBadge from '../components/StatusBadge'
 
-const STATUSES = ['pending', 'in progress', 'ready', 'collected']
-const PAYMENT_STATUSES = ['unpaid', 'partial', 'paid']
+
 
 function isOverdue(dateExpected, status) {
   if (status === 'collected') return false
@@ -70,214 +69,9 @@ function Toast({ toasts }) {
   )
 }
 
-// ── Payment status badge (read-only) ─────────────────────────────────────────
-function PaymentBadge({ status }) {
-  const cfg = {
-    paid:    { color: 'var(--accent-green)', bg: 'var(--accent-green-dim)', border: 'rgba(16,185,129,0.2)', label: 'Paid' },
-    partial: { color: 'var(--accent-cyan)',  bg: 'var(--accent-cyan-dim)',  border: 'rgba(255,77,109,0.2)',  label: 'Partial' },
-    unpaid:  { color: 'var(--accent-amber)', bg: 'var(--accent-amber-dim)', border: 'rgba(245,158,11,0.2)', label: 'Unpaid' },
-  }[status?.toLowerCase()] ?? { color: 'var(--text-tertiary)', bg: 'transparent', border: 'var(--border-subtle)', label: status ?? 'Unpaid' }
-
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 5,
-      fontSize: 12, fontWeight: 500,
-      color: cfg.color, background: cfg.bg,
-      border: `1px solid ${cfg.border}`,
-      borderRadius: 'var(--radius-sm)',
-      padding: '3px 7px',
-      whiteSpace: 'nowrap',
-    }}>
-      <span style={{ width: 5, height: 5, borderRadius: '50%', background: cfg.color, flexShrink: 0 }} />
-      {cfg.label}
-    </span>
-  )
-}
-
-// ── Inline payment controls ───────────────────────────────────────────────────
-function PaymentControls({ payment, ticket, onSaved, onError }) {
-  const [amount, setAmount] = useState(payment?.amount_paid ? String(payment.amount_paid) : '')
-  const [payStatus, setPayStatus] = useState(payment?.payment_status ?? 'unpaid')
-  const [saving, setSaving] = useState(false)
-  const [flashSaved, setFlashSaved] = useState(false)
-
-  const handleSave = async (e) => {
-    e.stopPropagation()
-    setSaving(true)
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      const subtotalVal  = parseFloat(amount) || 0
-      const gstAmt       = +(subtotalVal * 0.05).toFixed(2)
-      const pstAmt       = +(subtotalVal * 0.07).toFixed(2)
-      const taxTotalVal  = +(gstAmt + pstAmt).toFixed(2)
-      const totalCharged = +(subtotalVal + taxTotalVal).toFixed(2)
-      const isPaid = payStatus === 'paid'
-
-      const { error } = await supabase
-        .from('payments')
-        .update({
-          payment_status: payStatus,
-          amount_paid:    subtotalVal,   // pre-tax service charge
-          subtotal:       subtotalVal,
-          gst_amount:     gstAmt,
-          pst_amount:     pstAmt,
-          tax_total:      taxTotalVal,
-          total_charged:  totalCharged,
-          paid_at:        isPaid ? new Date().toISOString() : null,
-          updated_by:     user.id,
-        })
-        .eq('id', payment.id)
-
-      if (error) throw error
-      setFlashSaved(true)
-      setTimeout(() => setFlashSaved(false), 1200)
-      logAudit({
-        action: 'payment.updated',
-        entity: 'payment',
-        entityId: payment.id,
-        details: {
-          issue_id: ticket?.issue_id,
-          customer_name: ticket?.customer_name,
-          payment_status: payStatus,
-          amount_paid: subtotalVal.toFixed(2),
-        },
-      })
-      onSaved()
-    } catch (err) {
-      onError(err.message)
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  return (
-    <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {/* Controls row — nowrap so nothing spills */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'nowrap' }}>
-        {/* Current payment badge */}
-        <PaymentBadge status={payment?.payment_status ?? 'unpaid'} />
-
-        {/* Amount input */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 0 }} onClick={e => e.stopPropagation()}>
-          <span style={{
-            fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)',
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-default)',
-            borderRight: 'none',
-            borderRadius: 'var(--radius-sm) 0 0 var(--radius-sm)',
-            padding: '4px 6px',
-            lineHeight: 1,
-            userSelect: 'none',
-            whiteSpace: 'nowrap',
-          }}>CAD</span>
-          <input
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="0.00"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            onClick={e => e.stopPropagation()}
-            style={{
-              width: 64,
-              background: 'var(--bg-elevated)',
-              border: '1px solid var(--border-default)',
-              borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
-              padding: '4px 7px',
-              color: 'var(--text-primary)',
-              fontSize: 13,
-              outline: 'none',
-              fontFamily: 'inherit',
-            }}
-            onFocus={e => e.target.style.borderColor = 'rgba(227,24,55,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'var(--border-default)'}
-          />
-        </div>
-
-        {/* Payment status selector */}
-        <select
-          value={payStatus}
-          onChange={e => setPayStatus(e.target.value)}
-          onClick={e => e.stopPropagation()}
-          style={{
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-default)',
-            borderRadius: 'var(--radius-sm)',
-            color: 'var(--text-primary)',
-            fontSize: 13,
-            padding: '4px 8px',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            outline: 'none',
-          }}
-        >
-          {PAYMENT_STATUSES.map(s => (
-            <option key={s} value={s} style={{ background: '#ffffff' }}>
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-            </option>
-          ))}
-        </select>
-
-        {/* Save button */}
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          style={{
-            background: flashSaved ? 'rgba(16,185,129,0.2)' : 'var(--accent-green-dim)',
-            color: 'var(--accent-green)',
-            border: '1px solid rgba(16,185,129,0.2)',
-            borderRadius: 'var(--radius-sm)',
-            padding: '4px 10px',
-            fontSize: 13, fontWeight: 500,
-            cursor: saving ? 'not-allowed' : 'pointer',
-            fontFamily: 'inherit',
-            opacity: saving ? 0.6 : 1,
-            transition: 'background 200ms',
-            whiteSpace: 'nowrap',
-          }}
-          onMouseEnter={e => { if (!saving && !flashSaved) e.currentTarget.style.background = 'rgba(16,185,129,0.2)' }}
-          onMouseLeave={e => { if (!flashSaved) e.currentTarget.style.background = 'var(--accent-green-dim)' }}
-        >
-          {saving ? '…' : flashSaved ? 'Saved ✓' : 'Save'}
-        </button>
-      </div>
-
-      {/* Tax breakdown — only when amount > 0 */}
-      {parseFloat(amount) > 0 && (
-        <div
-          onClick={e => e.stopPropagation()}
-          style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: 'var(--text-tertiary)', flexWrap: 'wrap' }}
-        >
-          <span>GST 5%: <strong style={{ color: 'var(--accent-blue)' }}>${(parseFloat(amount)*0.05).toFixed(2)}</strong></span>
-          <span style={{ color: 'var(--border-default)' }}>·</span>
-          <span>PST 7%: <strong style={{ color: 'var(--accent-cyan)' }}>${(parseFloat(amount)*0.07).toFixed(2)}</strong></span>
-          <span style={{ color: 'var(--border-default)' }}>·</span>
-          <span>Total: <strong style={{ color: 'var(--text-primary)' }}>CAD {(parseFloat(amount)*1.12).toFixed(2)}</strong></span>
-        </div>
-      )}
-    </div>
-  )
-}
-
 // ── Notify Button ─────────────────────────────────────────────────────────────
-function NotifyButton({ ticket, addToast }) {
-  const [state, setState] = useState('idle') // idle | loading | sent
-  const [checked, setChecked] = useState(false)
-
-  useEffect(() => {
-    supabase
-      .from('notifications')
-      .select('id')
-      .eq('ticket_id', ticket.id)
-      .eq('status', 'sent')
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) setState('sent')
-        setChecked(true)
-      })
-  }, [ticket.id])
-
-  if (!checked) return null
+function NotifyButton({ ticket, addToast, initialSent }) {
+  const [state, setState] = useState(initialSent ? 'sent' : 'idle')
 
   if (state === 'sent') {
     return (
@@ -418,7 +212,7 @@ const SectionHeading = ({ children, showDot, dotColor }) => (
 )
 
 // ── Ticket Row ────────────────────────────────────────────────────────────────
-const TicketRow = ({ ticket, onClick, accentLeft, isLast, flashSuccess, addToast, readOnly }) => {
+const TicketRow = ({ ticket, onClick, accentLeft, isLast, flashSuccess, addToast, readOnly, initialSent }) => {
   const overdue = isOverdue(ticket.date_expected, ticket.status)
   const [hovered, setHovered] = useState(false)
   const payment = ticket.payments?.[0]
@@ -469,7 +263,7 @@ const TicketRow = ({ ticket, onClick, accentLeft, isLast, flashSuccess, addToast
       </td>
       <td style={tdBase} onClick={e => e.stopPropagation()}>
         {!readOnly && ticket.status === 'ready' && (
-          <NotifyButton ticket={ticket} addToast={addToast} />
+          <NotifyButton ticket={ticket} addToast={addToast} initialSent={initialSent} />
         )}
       </td>
     </tr>
@@ -499,6 +293,8 @@ export default function TechDashboard() {
   const [updating, setUpdating] = useState(null)
   const [flashRows, setFlashRows] = useState({})
   const [toasts, setToasts] = useState([])
+  const [notifiedIds, setNotifiedIds] = useState(new Set())
+  const [search, setSearch] = useState('')
   const toastId = useRef(0)
 
   const addToast = useCallback((message, type = 'success') => {
@@ -516,7 +312,15 @@ export default function TechDashboard() {
     setLoading(false)
   }, [])
 
-  useEffect(() => { fetchTickets() }, [fetchTickets])
+  const fetchNotifiedIds = useCallback(async () => {
+    const { data } = await supabase
+      .from('notifications')
+      .select('ticket_id')
+      .eq('status', 'sent')
+    if (data) setNotifiedIds(new Set(data.map(n => n.ticket_id)))
+  }, [])
+
+  useEffect(() => { fetchTickets(); fetchNotifiedIds() }, [fetchTickets, fetchNotifiedIds])
 
   // Real-time subscription
   useEffect(() => {
@@ -620,6 +424,7 @@ export default function TechDashboard() {
               flashSuccess={!!flashRows[t.id]}
               addToast={addToast}
               readOnly={readOnly}
+              initialSent={notifiedIds.has(t.id)}
             />
           ))}
         </tbody>
@@ -713,10 +518,40 @@ export default function TechDashboard() {
 
             {/* All active */}
             <div className="glass-card" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-              <div style={{ padding: '12px 16px 0' }}>
+              <div style={{ padding: '12px 16px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                 <SectionHeading showDot={false}>All Active Jobs</SectionHeading>
+                <input
+                  type="text"
+                  placeholder="Search by name, ID or device…"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  style={{
+                    background: 'var(--bg-elevated)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-sm)',
+                    color: 'var(--text-primary)',
+                    fontSize: 13,
+                    padding: '5px 10px',
+                    outline: 'none',
+                    fontFamily: 'inherit',
+                    width: 220,
+                    marginBottom: 8,
+                  }}
+                />
               </div>
-              {active.length === 0 ? <div style={{ padding: '0 16px 12px' }}><EmptyState text="No active jobs" /></div> : renderRows(active, null)}
+              {(() => {
+                const q = search.toLowerCase()
+                const filtered = q
+                  ? active.filter(t =>
+                      t.customer_name?.toLowerCase().includes(q) ||
+                      t.issue_id?.toLowerCase().includes(q) ||
+                      t.device?.toLowerCase().includes(q)
+                    )
+                  : active
+                return filtered.length === 0
+                  ? <div style={{ padding: '0 16px 12px' }}><EmptyState text={search ? 'No matching jobs' : 'No active jobs'} /></div>
+                  : renderRows(filtered, null)
+              })()}
             </div>
           </>
         )}

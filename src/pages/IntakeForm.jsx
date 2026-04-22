@@ -289,7 +289,7 @@ export default function IntakeForm() {
                 disabled={submitting}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
-                  background: submitting ? 'rgba(227,24,55,0.5)' : 'var(--accent-blue)',
+                  background: submitting ? 'rgba(0,113,227,0.5)' : 'var(--accent-blue)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 'var(--radius-md)',

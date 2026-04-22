@@ -6,6 +6,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { supabase } from '../services/supabaseClient'
 import { sendSMS } from '../services/twilioService'
 import { logAudit } from '../utils/auditLogger'
+import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
 import StatusBadge from '../components/StatusBadge'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -55,6 +56,7 @@ function FieldBlock({ label, value, mono }) {
 export default function TicketDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { role } = useAuth()
   const [ticket, setTicket] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -162,8 +164,29 @@ export default function TicketDetail() {
     setNotifying(true)
     setNotifStatus(null)
     try {
+      const { data: { user } } = await supabase.auth.getUser()
       const message = `Hi ${ticket.customer_name}, your repair (${ticket.issue_id}) is now ${ticket.status}. Thank you — Elect Technologies.`
       await sendSMS({ to: ticket.customer_phone, message })
+      await supabase.from('notifications').insert({
+        ticket_id: ticket.id,
+        channel: 'sms',
+        sent_by: user.id,
+        message,
+        status: 'sent',
+        sent_at: new Date().toISOString(),
+      })
+      logAudit({
+        action: 'notification.sent',
+        entity: 'notification',
+        entityId: ticket.id,
+        details: {
+          issue_id: ticket.issue_id,
+          customer_name: ticket.customer_name,
+          customer_phone: ticket.customer_phone,
+          channel: 'sms',
+          status: 'sent',
+        },
+      })
       setNotifStatus('sent')
     } catch (err) {
       setNotifStatus(err?.message ?? 'SMS failed')
@@ -292,8 +315,8 @@ export default function TicketDetail() {
           </div>
         </div>
 
-        {/* Edit card */}
-        <div className="glass-card" style={{
+        {/* Edit card — hidden for viewers */}
+        {role !== 'viewer' && <div className="glass-card" style={{
           borderRadius: 'var(--radius-lg)',
           padding: 20,
           marginBottom: 16,
@@ -423,7 +446,7 @@ export default function TicketDetail() {
             <Save size={13} strokeWidth={2} />
             {saving ? 'Saving…' : saveMsg === 'saved' ? 'Saved ✓' : saveMsg === 'error' ? 'Error — try again' : 'Save Changes'}
           </button>
-        </div>
+        </div>}
 
         {/* Notification section */}
         <div className="glass-card" style={{
